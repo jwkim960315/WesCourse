@@ -9,6 +9,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "node-webcrawler": "^0.8.0"
+    "callback": "0.0.1",
+    "node-webcrawler": "^0.8.0",
+    "uniq": "^1.0.1"
   }
 }
