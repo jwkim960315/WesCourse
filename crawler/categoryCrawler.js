@@ -4,7 +4,7 @@ var uniq = require('uniq');
 var cb = require('callback');
 
 
-// var courses = [];
+var courses = [];
 var courseInfos = [];
 var courseInfoUrlFront = "https://iasext.wesleyan.edu/regprod/";
 var courseInfoUrlBack = "&offered=Y";
@@ -12,12 +12,6 @@ var categoryName;
 var courseAcronym;
 var courseName;
 var professors = "";
-
-var export_func = () => {
-    module.exports = {courses,courseInfos};
-};
-
-
 
 
     // https://iasext.wesleyan.edu/regprod/!wesmaps_page.html?crse_list=THEA&term=1179&offered=Y
@@ -31,7 +25,6 @@ var c = new Crawler({
         if (err) throw err;
 
         var categoryQuery = $('td[valign="top"]');
-        var courses = [];
 
         for(var i=0;i < categoryQuery.length;i++) {
             categoryQuery[`${i}`].children.map((obj,index) => {
@@ -66,7 +59,7 @@ var c = new Crawler({
             // console.log(courses);
         };
 
-        export_func(callback);
+        // export_func(callback);
 
         var c1 = new Crawler({
             maxConnection: 90,
@@ -121,7 +114,7 @@ var c = new Crawler({
                                 courseAcronym,
                                 date: (arr[arr.length-1].data.trim() === 'TBA;') ? arr[arr.length-1].data.trim().slice(0,-1) : arr[arr.length-1].data.trim(),
                                 term,
-                                termName,
+                                termName
                                 // field_id,
                             });
                             professors = "";
@@ -132,7 +125,7 @@ var c = new Crawler({
                 };
 
 
-
+                console.log(courseInfos);
 
             }
 
@@ -140,6 +133,10 @@ var c = new Crawler({
 
         for (var i=0;i < courses.length;i++) {
             c1.queue(courses[i].fieldUrl);
+            if (i === courses.length-1) {
+                module.exports = {courses,courseInfos};
+                console.log(courseInfos.length);
+            };
         };
 
         // module.exports = {courses,courseInfos};
@@ -151,11 +148,11 @@ var c = new Crawler({
     }
 });
 
-var gather = function (callback) {
-    c.queue(['https://iasext.wesleyan.edu/regprod/!wesmaps_page.html']);
-};
 
-gather();
+c.queue(['https://iasext.wesleyan.edu/regprod/!wesmaps_page.html']);
+
+
+
 
 
 
