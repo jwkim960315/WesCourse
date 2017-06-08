@@ -31,11 +31,9 @@ let renderData = {};
 let catalogDataManipulator = data => {
     tmpCategory = data[0].category;
     for (let i=0;i < data.length;++i) {
-        // console.log(tmpCategory);
         if (data[i].category === tmpCategory) {
             tmpCourseNames.push(data[i].name);
         } else {
-            // console.log(tmpCourseNames);
             renderData[tmpCategory] = tmpCourseNames;
             tmpCourseNames = [data[i].name];
             tmpCategory = data[i].category;
@@ -43,6 +41,8 @@ let catalogDataManipulator = data => {
         
     }
     renderData[tmpCategory] = tmpCourseNames;
+    tmpCategory = '';
+    tmpCourseNames = [];
     return renderData;
 };
 
