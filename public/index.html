@@ -28,7 +28,7 @@
 <script>
 
 function templateRender(data) {
-    let template = '<div class="categories" style="transform: translate(5%);">';
+    let template = '<div class="categories" style="border-radius: 0px;transform: translate(5%);">';
     let keys = Object.keys(data);
     let tmp;
     for (let i = 0; i < keys.length; ++i) {
@@ -103,13 +103,17 @@ $('.trigger').on('click',function () {
                 buttonsQuery.each(function(i,elem) {
                     if (e.currentTarget.dataset.target === `#collapse${i}`) {
                         $(`button[data-target="#collapse${i}"]`).blur();
+                        if (!$(`#collapse${i}`).find('hr').length) {
+                                $(`#collapse${i}`).append(`<hr/>`);
+                        }
+
                         if ($(`button[data-target="#collapse${i}"]`).attr('aria-expanded') === 'true') {
                             $(`button[data-target="#collapse${i}"]`).attr('class','btn btn-outline-danger');
                         } else {
                             $(`button[data-target="#collapse${i}"]`).attr('class','btn btn-danger');
                         }
-                        
-                    }    
+                    } 
+
                 });
                 
             });
