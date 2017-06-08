@@ -11,19 +11,13 @@
   "dependencies": {
     "axios": "^0.16.2",
     "body-parser": "^1.17.2",
-    "callback": "0.0.1",
     "cheerio": "^1.0.0-rc.1",
+    "ejs": "^2.5.6",
     "express": "^4.15.3",
-    "htmlparser2": "^3.9.2",
-    "iconv": "^2.2.3",
-    "jquery": "^3.2.1",
-    "jsdom": "^11.0.0",
     "lodash": "^4.17.4",
+    "method-override": "^2.3.9",
     "mysql": "^2.13.0",
-    "node-web-crawler": "0.0.6",
-    "node-webcrawler": "^0.8.0",
     "promise-mysql": "^3.0.1",
-    "request": "^2.81.0",
-    "uniq": "^1.0.1"
+    "request": "^2.81.0"
   }
 }
