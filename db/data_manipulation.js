@@ -2,9 +2,10 @@ const fs = require('fs');
 const _ = require('lodash');
 
 var courses = JSON.parse(fs.readFileSync(__dirname+'/json/courses.json'));
-var courseInfos = JSON.parse(fs.readFileSync(__dirname+'/json/courseInfos.json'));
+var courseInfos = JSON.parse(fs.readFileSync(__dirname+'/json/courseInfosTest.json'));
 var coursesVal = [];
 var courseInfosVal = [];
+let tmp = [];
 
 
 
@@ -17,10 +18,14 @@ courses.map((obj,index,arr) => {
 // console.log(courses[0]);
 
 courseInfos.map((obj) => {
-    courseInfosVal.push([obj.course_name,obj.section,obj.professors,obj.course_acronym,obj.class_date,obj.term,obj.term_name,obj.field_acronym]);
+    courseInfosVal.push([obj.course_name,obj.section,obj.professors,obj.course_acronym,obj.class_date,obj.term,obj.term_name,obj.field_acronym,obj.cross_list]);
 });
 
-
+// courseInfos.map((obj) => {
+//     if (obj.field_acronym !== obj.cross_list) {
+//         console.log(`${obj.field_acronym} <--> ${obj.cross_list}`);
+//     }
+// })
 
 // dedupCourseInfosVal = courseInfosVal.map((arr,i,itself) => {
 //     return String(arr);

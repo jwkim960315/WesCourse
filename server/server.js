@@ -69,12 +69,24 @@ app.get('/',(req,res) => {
     res.send('index.html',{});
 });
 
+
 app.get('/catalog',(req,res) => {
     connection.query('SELECT category,name FROM fields ORDER BY 1,2').then((data) => {
         data = catalogDataManipulator(data);
         res.send(data);
     });
 });
+
+
+// app.get('/:name',(req,res) => {
+//     let courseName = req.params.name;
+
+//     connection.query(`SELECT acronym FROM fields WHERE name="${courseName}"`).then(acronyms => {
+//         connection.query(`SELECT id,course_acronym,section,professors,class_date FROM courses WHERE field_acronym="${acronyms[0].acronym}",field_acronym=SUBSTR()`).then(data => {
+//             console.log(data[0]);
+//         });
+//     });
+// });
 
 
 
