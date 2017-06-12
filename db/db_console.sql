@@ -15,8 +15,9 @@ create table courses (
   course_acronym varchar(15) not NULL,
   class_date varchar(255) not null,
   term int not null,
-  term_name varchar(6) not null,
+  term_name varchar(100) not null,
   field_acronym varchar(4),
+  cross_list varchar(100) default "",
   created_at timestamp default current_timestamp,
   foreign key (field_acronym) references fields(acronym) on delete cascade
 );
@@ -61,6 +62,13 @@ select * from fields;
 
 update fields set category='OTHERS' where category='N/A';
 
+select * from courses where char_length(field_acronym)=3;
+
+select * from fields where acronym="ISTR";
+
+select * from courses where substr(field_acronym,1,3)!=substr(replace(course_acronym,"&",""),1,3);
+
+select course_acronym,field_acronym from courses where field_acronym="ISTR",field_acronym=substring(replace(course_acronym,"&",""),1,3);
 
 -- create table fields (
 --   name varchar(255) not null,
@@ -84,3 +92,18 @@ update fields set category='OTHERS' where category='N/A';
 --   created_at timestamp default current_timestamp,
 --   FOREIGN KEY (field_acronym) REFERENCES fields(acronym) on delete cascade
 -- );
+
+drop database wes_course_test;
+
+create database wes_course_test;
+
+use wes_course_test;
+
+select * from fields;
+
+SELECT acronym FROM fields WHERE name="Arabic";
+SELECT id,course_acronym,section,professors,class_date,cross_list FROM courses WHERE cross_list like "%ARAB;%" or cross_list like "%;ARAB%" or cross_list like "ARAB";
+# SELECT id,course_acronym,section,professors,class_date,cross_list FROM courses WHERE cross_list like in ("%ARAB;%","%;ARAB%","ARAB");
+# SELECT id,course_acronym,section,professors,class_date,cross_list FROM courses WHERE cross_list like "ARAB";
+
+SELECT id,course_acronym,section,professors,class_date,cross_list FROM courses WHERE course_acronym="ARHA299-01";
