@@ -100,9 +100,9 @@ fs.readFile(__dirname+'/../db/json/coursesTest.json','utf-8',(err,data) => {
                 courseInfos.push({
                     course_name: query1.slice(i).eq(0).text(),
                     section: parseInt(query.slice(i).eq(0).text().slice(-2)),
-                    professors: query2.slice(i).eq(0).text().trim().split('   ').slice(0,-1).join(';'),
+                    professors: (query2.slice(i).eq(0).text().trim().split('   ').slice(0,-1).join(';') === '') ? query2.slice(i).eq(0).text().trim().split('   ').slice(-1)[0].slice(0,5) : query2.slice(i).eq(0).text().trim().split('   ').slice(0,-1).join(';'),
                     course_acronym: query.slice(i).eq(0).text(),
-                    class_date: query2.slice(i).eq(0).text().trim().split('   ').slice(-1)[0],
+                    class_date: (query2.slice(i).eq(0).text().trim().split('   ').slice(-1)[0].includes('STAFF')) ? query2.slice(i).eq(0).text().trim().split('   ').slice(-1)[0].slice(5) : query2.slice(i).eq(0).text().trim().split('   ').slice(-1)[0],
                     term: parseInt(query.slice(i).eq(0)['0'].children[0].attribs.href.slice(-4)),
                     term_name: (i < query3_length) ? 'fall' : 'spring',
                     field_acronym: tmpField[0],

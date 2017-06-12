@@ -5,6 +5,8 @@ const methodOverride = require('method-override');
 const express = require('express');
 const ejs = require('ejs');
 const path = require('path');
+const fs = require('fs');
+const html = require('html');
 
 const port = process.env.port || 3000;
 
@@ -12,13 +14,19 @@ var app = express();
 
 // Pre-Setting for the server
 app.use(bodyParser.json());
-// app.use(bodyParser.json({ type: 'application/vnd.api+json' }));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(methodOverride('X-HTTP-Method-Override'));
-// app.set('view engine','ejs');
-// console.log(path.join(__dirname, '../public'));
-app.use(express.static(path.join(__dirname, '../public')));
-// app.use('views',__dirname);
+app.use(express.static(path.join(__dirname, '/../public')));
+app.set('view engine','ejs');
+
+
+// Important Variables
+
+const courses = JSON.parse(fs.readFileSync(__dirname+'/../db/json/coursesTest.json'));
+const courseInfos = JSON.parse(fs.readFileSync(__dirname+'/../db/json/courseInfosTest.json'));
+let filteredCourseInfos;
+
+
 
 // Temporary Variables
 
@@ -64,29 +72,57 @@ mysql.createConnection({
 
 // Routes
 
+let options;
 
 app.get('/',(req,res) => {
-    res.send('index.html',{});
+    options = {
+        root: __dirname + '/../views/'
+    };
+
+    res.sendFile('index.html',options);
 });
 
 
 app.get('/catalog',(req,res) => {
-    connection.query('SELECT category,name FROM fields ORDER BY 1,2').then((data) => {
+    connection.query('SELECT category,name FROM fields ORDER BY 1,2').then(data => {
         data = catalogDataManipulator(data);
+        // console.log(data);
         res.send(data);
     });
 });
 
 
-// app.get('/:name',(req,res) => {
-//     let courseName = req.params.name;
+app.get('/:name',(req,res) => {
+    let courseName = req.params.name;
 
-//     connection.query(`SELECT acronym FROM fields WHERE name="${courseName}"`).then(acronyms => {
-//         connection.query(`SELECT id,course_acronym,section,professors,class_date FROM courses WHERE field_acronym="${acronyms[0].acronym}",field_acronym=SUBSTR()`).then(data => {
-//             console.log(data[0]);
-//         });
-//     });
-// });
+    connection.query(`SELECT acronym FROM fields WHERE name="${courseName}"`).then(acronyms => {
+        console.log(acronyms);
+        filteredCourses = courseInfos.filter((obj,i,arr) => {
+            return obj.field_acronym === acronyms[0].acronym;
+        });
+
+        fallCourses = filteredCourses.filter((obj,i,arr) => {
+            return obj.term_name.includes('fall');
+        });
+
+        springCourses = filteredCourses.filter((obj,i,arr) => {
+            return obj.term_name.includes('spring');
+        });
+        res.render('specificField',{filteredCourses,fallCourses,springCourses});
+        
+    });
+});
+
+
+app.get('/:acronym/:course',(req,res) => {
+    // console.log(req.params.acronym);
+    // console.log(req.params.course);
+
+    connection.query('SELECT ')
+});
+
+
+
 
 
 

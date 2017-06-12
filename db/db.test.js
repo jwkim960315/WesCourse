@@ -69,23 +69,6 @@ console.log(coursesVal.slice(0,20));
 
 var connection;
 
-
-
-var insertId = (arr0,arr1) => {
-
-    for (var i=0;i < arr0.length;i++) {
-        // console.log("i : ",i);
-        for (var j=0;j < arr1.length;j++) {
-            // console.log("j : ",j);
-            if (arr0[i].acronym === arr1[j][arr1[j].length-1]) {
-                arr1[j].push(arr0[i].id);
-                // console.log(arr1[j]);
-            };
-        };
-    };
-    return arr1;
-};
-
 var dedupFunc = (lst) => {
     var someLst = lst.map((arr) => {
                       // console.log('hihihiihhi');
@@ -107,6 +90,9 @@ var dedupFunc = (lst) => {
     return someLst;
 
 };
+
+
+
 
 var filter2dArr =  (lst) => {
     return lst.filter((arr,index,itself) =>  {
@@ -159,12 +145,7 @@ mysql.createConnection({
     connection = conn;
 
     connection.query('INSERT INTO fields (category,name,url,acronym,term) values ?',[coursesVal]).then((tmp) => {
-        console.log(tmp);
-        var dedupCourseInfosVal = filter2dArr(courseInfosVal);
-        return Promise.resolve(dedupCourseInfosVal);
-    }).then((result) => {
-        console.log(result.slice(910,912));
-        connection.query('INSERT INTO courses (course_name,section,professors,course_acronym,class_date,term,term_name,field_acronym) values ?',[result]).then((ok) => {
+        connection.query('INSERT INTO courses (course_name,section,professors,course_acronym,class_date,term,term_name,field_acronym,cross_list) values ?',[courseInfosVal]).then((ok) => {
             console.log(ok);
             connection.end();
         }).catch((err) => {console.log(err);connection.end();});
