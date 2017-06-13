@@ -35,19 +35,19 @@ create table ratings (
   organization decimal(2,1) not null,
   effort decimal(2,1) not null,
   professors decimal(2,1) not null,
-  recommend BOOL not null,
-  field_acronym varchar(4) not null,
+  recommend INT not null,
+  course_id int not null,
   user_id int not null,
-  FOREIGN KEY (field_acronym) REFERENCES fields(acronym) on delete cascade,
+  FOREIGN KEY (course_id) REFERENCES courses(id) on delete cascade,
   FOREIGN KEY (user_id) REFERENCES users(id) on delete cascade
 );
 
 create table comments (
   id int AUTO_INCREMENT PRIMARY KEY,
   comment text not null,
-  field_acronym varchar(4) not null,
+  course_id int not null,
   user_id int not null,
-  FOREIGN KEY (field_acronym) REFERENCES fields(acronym) on delete cascade,
+  FOREIGN KEY (course_id) REFERENCES courses(id) on delete cascade,
   FOREIGN KEY (user_id) REFERENCES users(id) on delete cascade
 );
 
@@ -65,8 +65,6 @@ update fields set category='OTHERS' where category='N/A';
 select * from courses where char_length(field_acronym)=3;
 
 select * from fields where acronym="ISTR";
-
-select * from courses where substr(field_acronym,1,3)!=substr(replace(course_acronym,"&",""),1,3);
 
 select course_acronym,field_acronym from courses where field_acronym="ISTR",field_acronym=substring(replace(course_acronym,"&",""),1,3);
 
@@ -101,9 +99,49 @@ use wes_course_test;
 
 select * from fields;
 
+select * from courses where course_acronym = "ARAB101-01";
+
 SELECT acronym FROM fields WHERE name="Arabic";
 SELECT id,course_acronym,section,professors,class_date,cross_list FROM courses WHERE cross_list like "%ARAB;%" or cross_list like "%;ARAB%" or cross_list like "ARAB";
 # SELECT id,course_acronym,section,professors,class_date,cross_list FROM courses WHERE cross_list like in ("%ARAB;%","%;ARAB%","ARAB");
 # SELECT id,course_acronym,section,professors,class_date,cross_list FROM courses WHERE cross_list like "ARAB";
 
 SELECT id,course_acronym,section,professors,class_date,cross_list FROM courses WHERE course_acronym="ARHA299-01";
+
+select * from ratings inner join courses on ratings.course_id = courses.id inner join users on users.id = ratings.user_id having courses.course_name = "ARAB101-01";
+
+SELECT * FROM courses WHERE field_acronym = "ARAB";
+
+INSERT INTO users (username,email,password) values ('Me','fdsaf@fdasfas.com',SHA2('password',256));
+
+select * from ratings;
+
+INSERT INTO ratings (difficulty,organization,effort,professors,recommend,course_id,user_id) VALUES (3.9,3.9,3.9,3.9,true,196,2);
+INSERT INTO ratings (difficulty,organization,effort,professors,recommend,course_id,user_id) VALUES (4.9,4.9,4.9,4.9,true,196,2);
+
+SELECT avg(difficulty) as Difficulty,
+        avg(organization) as Organization,
+        avg(effort) as "Effort Required",
+        avg(ratings.professors) as "Professors Rating",
+        CASE
+          WHEN avg(recommend)>=.5 then "Yes"
+          ELSE "No"
+        END as "Recommend?",
+        courses.course_acronym
+from ratings
+  inner join courses
+    on ratings.course_id = courses.id
+  inner join users
+    on users.id = ratings.user_id
+GROUP BY ratings.course_id
+HAVING courses.course_acronym="ARAB101-01";
+
+
+select * from ratings;
+
+delete from users;
+
+
+
+
+select * from users;
