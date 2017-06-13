@@ -12,16 +12,18 @@
 <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
-        <script src='jquery-3.2.1.min.js'></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     </head>
 
     <body>
 
         <button class='trigger'>CLICK!</button>
+        <a href="/createUser" class="login">CREATE ACCOUNT</button>
 
         <div class="cont" style="position: relative;"></div>
         
         <script>
+
             //Catalog 
             function templateRender(data) {
                 let template = '<div class="categories" style="border-radius: 0px;text-align: center;">';
@@ -53,7 +55,7 @@
 
                         template += `<div class="row">
                                         <i style="padding-top: 4px;margin-right: 1%;" class="fa fa-chevron-circle-right" aria-hidden="true"></i>
-                                        <a style='color: black;display: inline-block;' href='/${name}'><strong>${name}</strong></a>
+                                        <a style='color: black;display: inline-block;' href='/catalog/${name}'><strong>${name}</strong></a>
                                     </div>`;
 
                         if (index === tmp) {
@@ -80,36 +82,27 @@
             };
 
 
-
-            // Specific Field
-            function SpecificFieldTemplateRender(lst) {
-                return lst.map((obj,i,arr) => {
-                    return `<div class="row">
-                                <a href="#">${obj.course_name}</a>
-                                <h6 style="text-align: right;display:inline-block">${obj.class_date}</h6>
-                                <h6>${obj.section}</h6>
-                                <h6>${obj.professors}</h6>
-                            </div>`;
-                }).join("");
-            }
-
             // Catalog Trigger Event Listener
-            $('.trigger').on('click',function () {
+            $('.trigger').on('click',function (e) {
+                e.preventDefault();
                 $.ajax({
                     url: '/catalog',
                     success: function (data) {
-                        let contQuery = $('.cont');
+                        contQuery = $('.cont');
                         if (contQuery.html() !== '') return;
-                        let template = templateRender(data);
+                        template = templateRender(data);
+                        // console.log(template);
                         contQuery.append(template);
+                        
 
-                        let buttonsQuery = $('button[data-toggle="collapse"]');
+                        buttonsQuery = $('button[data-toggle="collapse"]');
 
                         buttonsQuery.each(function (i,elem) {
                             $(`button[data-target="#collapse${i}"]`).attr('class','btn btn-outline-danger');
                         });
 
                         buttonsQuery.on('click' ,function (e) {
+                            e.preventDefault();
                             buttonsQuery.each(function(i,elem) {
                                 if (e.currentTarget.dataset.target === `#collapse${i}`) {
                                     $(`button[data-target="#collapse${i}"]`).blur();
@@ -133,16 +126,7 @@
                 });
             });
 
-            // Specific Field Event Listener
-            $('a').on('click',function() {
-                $.ajax({
-                    url: '/specificField',
-                    success: function (filteredCourseInfos) {
-                        console.log(filteredCourseInfos);
-                        $('.container').append(SpecificFieldTemplateRender(filteredCourseInfos));
-                    }
-                })
-            })
+            
 
 
 

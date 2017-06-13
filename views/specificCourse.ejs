@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="'utf-8">
+        <meta name="'viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+        <title>WesCourse</title>
+
+        <script src="https://use.fontawesome.com/b6a42b064c.js"></script>
+        
+
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src=https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.bundle.min.js></script>
+    </head>
+
+    <body>
+        <div class="container" style="width: 100%;">
+            <table>
+                <tbody>
+                    <tr>
+                        <h6 style="float: right;">Class Time: <%= courseInfo[0].class_date %></h6>
+                        <h2><%= courseInfo[0].course_acronym %></h2>
+                        <h6><%= courseInfo[0].course_name %></h6>
+                        <h6>Section: <%= courseInfo[0].section %></h6>
+                        <h6>Professor(s): <%= courseInfo[0].professors %><h6>
+
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="chart-container" style="position:relative; margin:auto; height:60vh; width: 80%">
+                <canvas id="myChart" width="100" height="100"></canvas>
+            </div>
+
+            
+
+
+            <div class="comments">
+                
+            </div>
+            
+
+
+            
+
+            <script>
+                    <% console.log(courseRating) %>
+                    <% if (!courseRating) { %>
+                            $('.chart-container').append('<p style="text-align:center;">NO DATA. PLEASE EVALUATE THIS COURSE IF YOU HAVE TAKEN IT.</p>');
+                    <% } else { %>
+                        <% let tmp = []; %>
+                        <% for (var i=0;i < Object.keys(courseRating).length-2; ++i) { %>
+                            <% tmp.push(courseRating[Object.keys(courseRating)[i]]) %>
+                        <% } %>
+                        var ctx = document.getElementById("myChart");
+                        var myChart = new Chart(ctx, {
+                            type: 'bar',
+                            data: {
+                                labels: ["Difficulty","Organization","Effort Required","Professor Rating"],
+                                datasets: [{
+                                    label: 'Average Ratings',
+                                    data: [<%= tmp %>],
+                                    backgroundColor: [
+                                        'rgba(255, 99, 132, 0.2)',
+                                        'rgba(54, 162, 235, 0.2)',
+                                        'rgba(255, 206, 86, 0.2)',
+                                        'rgba(75, 192, 192, 0.2)'
+                                    ],
+                                    borderColor: [
+                                        'rgba(255,99,132,1)',
+                                        'rgba(54, 162, 235, 1)',
+                                        'rgba(255, 206, 86, 1)',
+                                        'rgba(75, 192, 192, 1)'
+                                    ],
+                                    borderWidth: 1
+                                }]
+                            },
+                            options: {
+                                maintainAspectRatio: false,
+                                scales: {
+                                    xAxes: [{
+                                        barThickness: 120
+                                    }],
+                                    yAxes: [{
+                                        ticks: {
+                                            beginAtZero:true
+                                        }
+                                    }]
+                                }
+                            }
+                        });
+                    <% } %>
+                
+            </script>
+            
+        </div>
+    </body>
+
+</html>

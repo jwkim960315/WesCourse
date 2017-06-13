@@ -16,7 +16,7 @@ var app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(methodOverride('X-HTTP-Method-Override'));
-app.use(express.static(path.join(__dirname, '/../public')));
+// app.use(express.static(path.join(__dirname, '/../public')));
 app.set('view engine','ejs');
 
 
@@ -85,44 +85,157 @@ app.get('/',(req,res) => {
 
 app.get('/catalog',(req,res) => {
     connection.query('SELECT category,name FROM fields ORDER BY 1,2').then(data => {
+        // console.log('catalog running');
         data = catalogDataManipulator(data);
-        // console.log(data);
         res.send(data);
     });
 });
 
 
-app.get('/:name',(req,res) => {
-    let courseName = req.params.name;
-
-    connection.query(`SELECT acronym FROM fields WHERE name="${courseName}"`).then(acronyms => {
-        console.log(acronyms);
-        filteredCourses = courseInfos.filter((obj,i,arr) => {
-            return obj.field_acronym === acronyms[0].acronym;
-        });
-
-        fallCourses = filteredCourses.filter((obj,i,arr) => {
-            return obj.term_name.includes('fall');
-        });
-
-        springCourses = filteredCourses.filter((obj,i,arr) => {
-            return obj.term_name.includes('spring');
-        });
-        res.render('specificField',{filteredCourses,fallCourses,springCourses});
-        
+const course_getter = async (courseName) => {
+    return connection.query(`SELECT acronym FROM fields WHERE name="${courseName}"`).then((acronyms) => {
+        return acronyms;
     });
+};
+
+
+app.get('/catalog/:name',async (req,res) => {
+    courseName = req.params.name;
+    // if (courseName === 'jquery-3.2.1.min.js') return;
+    // console.log('***********************');
+    // console.log(courseName);
+
+
+    acronyms = await course_getter(courseName);
+    
+    // console.log(acronyms);
+    // console.log(acronyms[0]);
+    // console.log(acronyms[0].acronym);
+    filteredCourses = courseInfos.filter((obj,i,arr) => {
+        return obj.field_acronym === acronyms[0].acronym;
+    });
+
+    fallCourses = filteredCourses.filter((obj,i,arr) => {
+        return obj.term_name.includes('fall');
+    });
+
+    springCourses = filteredCourses.filter((obj,i,arr) => {
+        return obj.term_name.includes('spring');
+    });
+    res.render('specificField',{filteredCourses,fallCourses,springCourses});
+    return;
 });
 
 
-app.get('/:acronym/:course',(req,res) => {
-    // console.log(req.params.acronym);
-    // console.log(req.params.course);
+const ratings_getter = async (courseAcronym) => {
+    return connection.query(`SELECT avg(difficulty) as Difficulty,
+                                    avg(organization) as Organization,
+                                    avg(effort) as EffortRequired,
+                                    avg(ratings.professors) as ProfessorsRating,
+                                    CASE
+                                    WHEN avg(recommend)>=.5 then "Yes"
+                                    ELSE "No"
+                                    END as Recommend,
+                                    courses.course_acronym
+                            from ratings
+                            inner join courses
+                                on ratings.course_id = courses.id
+                            inner join users
+                                on users.id = ratings.user_id
+                            GROUP BY ratings.course_id
+                            HAVING courses.course_acronym="${courseAcronym}"`).then((res) => {
+                                    return res;
+                                });
+};
 
-    connection.query('SELECT ')
+const specific_course_getter = async (courseAcronym) => {
+    return connection.query(`SELECT * FROM courses WHERE course_acronym = "${courseAcronym}"`).then((res) => {
+        return res;
+    });
+};
+
+const comments_getter = async (courseAcronym) => {
+    return connection.query(`SELECT * FROM comments INNER JOIN courses ON comments.course_id = courses.id INNER JOIN users ON comments.user_id = users.id HAVING courses.course_acronym = "${courseAcronym}"`).then((res) => {
+        return res;
+    });
+};
+
+
+app.get('/catalog/:fieldAc/:courseAc',async (req,res) => {
+    courseInfo = await specific_course_getter(req.params.courseAc);
+
+    courseRating = await ratings_getter(req.params.courseAc);
+
+    courseComments = await comments_getter(req.params.courseAc);
+    
+
+    console.log(courseInfo);
+    console.log(courseRating);
+    console.log(courseComments);
+
+    res.render('specificCourse',{courseInfo,courseRating,courseComments});  
 });
 
 
+app.get('/createUser',(req,res) => {
+    // console.log(req.body.query);
+    res.sendFile('createUser.html',options);
+});
 
+// nodemailer connection
+
+let nodemailer = require('nodemailer');
+
+
+
+let mailOptions;
+let rand;
+let link;
+
+
+app.post('/submitUser',(req,res) => {
+    smtpTransport = nodemailer.createTransport({
+        host: 'smtp.example.com',
+        port: 465,
+        secure: true, // secure:true for port 465, secure:false for port 587
+        auth: {
+            user: 'username@example.com',
+            pass: 'userpass'
+        }
+    });
+    
+    rand = Math.floor((Math.random() * 100) + 54);
+
+    link = "http://"+req.get('host')+"/verify?id="+rand;
+
+    mailOptions = {
+        from: 'WesCourse',
+        to: req.body.email,
+        subject: 'Please confirm your Email Account',
+        html: "Hello,<br> Please Click on the link to verify your email.<br><a href="+link+">Click here to verify</a>"
+    };
+
+    smtpTransport.sendMail(mailOptions,(err,res) => {
+        if(err) return console.log(err);
+        console.log("Message sent: " + response.message);
+    });
+
+});
+
+app.get('/verify',(req,res) => {
+    if ((req.protocol+"://"+req.get('host'))==("http://"+host)) {
+        console.log("Domain is matched. Information is from Authentic email");
+        if(req.query.id==rand) {
+            console.log("email is verified");
+            res.send("<h1>Email "+mailOptions.to+" is been Successfully verified");
+        } else {
+            console.log("email is not verified");
+            res.send("<h1>Bad Request</h1>");
+        }
+    } else {
+        res.send("<h1>Request is from unknown source");
+    }
+});
 
 
 
