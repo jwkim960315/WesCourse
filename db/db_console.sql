@@ -26,7 +26,9 @@ create table users (
   id int AUTO_INCREMENT PRIMARY KEY,
   username varchar(255) not null,
   email varchar(255) not null,
-  password varchar(80) not null
+  password varchar(80) not null,
+  verified BOOL not null,
+  created_at timestamp default current_timestamp
 );
 
 create table ratings (
