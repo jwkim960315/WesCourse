@@ -1,126 +1,67 @@
-var courseInfos1;
-var courseInfos2;
-var fs = require('fs');
-var _ = require('lodash');
-let {coursesVal,courseInfosVal} = require('./../db/data_manipulation.js');
+const jwt = require('jsonwebtoken');
+const nodemailer = require('nodemailer');
 
-// fs.readFile(__dirname+'/../db/json/courseInfos.json','utf-8',(err,data) => {
-//     courseInfos1 = JSON.parse(data);
-//     fs.readFile(__dirname+'/../db/json/courseInfosTest.json','utf-8',(err1,data1) => {
-//         courseInfos2 = JSON.parse(data1);
-//         console.log(courseInfos1.length);
-//         console.log(courseInfos2.length);
+// var payload = {
+//   "iss": "my_issurer",
+//   "aud": "World",
+//   "iat": 1400062400223,
+//   "typ": "/online/transactionstatus/v2",
+//   "request": {
+//     "myTransactionId": "[myTransactionId]",
+//     "merchantTransactionId": "[merchantTransactionId]",
+//     "status": "SUCCESS"
+//   }
+// };
+ 
+// var secret = 'TOPSECRETTTTT';
+ 
+// // encode 
+// jwt.encode(secret, payload, function (err, token) {
+//   if (err) {
+//     console.error(err.name, err.message);
+//   } else {
+//     console.log('TOKEN: ',token);
+ 
+//     // decode 
+//     jwt.decode(secret, token, function (err_, decodedPayload, decodedHeader) {
+//       if (err) {
+//         console.error(err.name, err.message);
+//       } else {
+//           console.log('*****************');
+//         console.log(decodedPayload, decodedHeader);
+//       }
+//     });
+//   }
+// });
+
+
+// jwt.sign({random:'string'},'SECRET',(err,res) => {
+//     console.log(res);
+//     jwt.verify(res,'SECRET',(err1,res1) => {
+//         console.log(res1);
 //     })
 // });
 
-var test = [["a","b","c","d","e","f","g","h","h"],["a","b","c","d","e","f","g","h","h"],["a","b","c","d","e","f","g","i","h"],["a","b","c","d","e","f","g","j","h"],["a","b","c","d","e","f","g","k","h"],["a","b","c","d","e","f","g","l","h"],["a","b","c","d","e","f","g","w","v"]];
-// var tmp = [];
 
+let transporter = nodemailer.createTransport({
+    service: "Gmail",
+    auth: {
+        user: 'jwkim0315@gmail.com',
+        pass: 
+    }
+});
 
+let link = "http://host/verify?id=12345";
 
-let addCrossList = lst => {
-    let tmp = [];
-    let tmp1 = [];
-    resArr = lst.map(arr => arr.slice());
-    lst.forEach((arr,i,itself) => {
-        itself.forEach((arr1,i1,itself1) => {
-            if (arr1[3] === arr[3]) {
-                tmp.push(arr1[8]);
-                tmp1.push(arr1[6]);
-            }
-        })
-        resArr[i][8] = tmp.join(';');
-        resArr[i][6] = tmp1.join(';');
-        tmp = [];
-        tmp1 = [];
-    })
-    return resArr;
-};
+transporter.sendMail({
+    from: 'jwkim0315@gmail.com',
+    to: 'jkim11@wesleyan.edu',
+    subject: 'Please confirm your Email Account',
+    html: "Hello,<br> Please Click on the link to verify your email.<br><a href="+link+">Click here to verify</a>"
+},(err,info) => {
+    if (err) {
+        return console.log(err);
+    }
+    console.log('Message %s sent: %s', info.messageId, info.response);
+})  ;
 
-let filter2dArr = lst => {
-    return lst.filter((arr,index,itself) =>  {
-        for (var i=0;i < itself.length;i++) {
-            if (itself[i][3] === arr[3]) {
-                if (i === index) {
-                    return true;
-                } else {
-                    return false;
-                }
-            } 
-        }
-        return false;
-    });
-};
-
-console.log(filter2dArr(addCrossList(courseInfosVal)));
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// var filter2dArr =  lst => {
-//     return lst.filter((arr,index,itself) =>  {
-//         for (var i=0;i < itself.length;i++) {
-//             if (itself[i][3] === arr[3]) {
-//                 if (i === index) {
-//                     return true;
-//                 } else {
-//                     return false;
-//                 }
-//             }
-//         }
-//         return false;
-//     });
-// };
-
-// var addCrossList = lst => {
-//     let result = [];
-//     lst.forEach((arr,index,itself) => {
-//         arrCopy = arr.slice();
-//         for (var i=0;i < itself.length; ++i) {
-//             if (itself[i][3] === arr[3]) {
-//                 if (itself[i][7] !== itself[i][8]) {
-//                     tmp.push(itself[i][7]);
-//                 }
-//             }
-//         }
-
-//         if (tmp.length !== 0) {
-//             arrCopy[8] = tmp.sort().join(';');
-//             result.push(arrCopy);
-//         } 
-
-//         tmp = [];
-        
-//     });
-//     return result;
-// };
-
-// console.log(filter2dArr(addCrossList(test)));
-// console.log(addCrossList(test));
-// filter2dArr(addCrossList(test));
-// console.log(filter2dArr(addCrossList(courseInfosVal)));
-
-
-// console.log(_.isEqual([1,2],[2,1]));

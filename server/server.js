@@ -101,16 +101,9 @@ const course_getter = async (courseName) => {
 
 app.get('/catalog/:name',async (req,res) => {
     courseName = req.params.name;
-    // if (courseName === 'jquery-3.2.1.min.js') return;
-    // console.log('***********************');
-    // console.log(courseName);
-
 
     acronyms = await course_getter(courseName);
     
-    // console.log(acronyms);
-    // console.log(acronyms[0]);
-    // console.log(acronyms[0].acronym);
     filteredCourses = courseInfos.filter((obj,i,arr) => {
         return obj.field_acronym === acronyms[0].acronym;
     });
@@ -167,75 +160,63 @@ app.get('/catalog/:fieldAc/:courseAc',async (req,res) => {
     courseRating = await ratings_getter(req.params.courseAc);
 
     courseComments = await comments_getter(req.params.courseAc);
-    
-
-    console.log(courseInfo);
-    console.log(courseRating);
-    console.log(courseComments);
 
     res.render('specificCourse',{courseInfo,courseRating,courseComments});  
 });
 
 
 app.get('/createUser',(req,res) => {
-    // console.log(req.body.query);
+    console.log(req.protocol);
+    console.log(req.get('host'));
     res.sendFile('createUser.html',options);
 });
 
-// nodemailer connection
 
-let nodemailer = require('nodemailer');
+// User Creating
+
+// nodemailer
+
+const nodemailer = require('nodemailer');
 
 
-
-let mailOptions;
-let rand;
-let link;
 
 
 app.post('/submitUser',(req,res) => {
-    smtpTransport = nodemailer.createTransport({
-        host: 'smtp.example.com',
-        port: 465,
-        secure: true, // secure:true for port 465, secure:false for port 587
-        auth: {
-            user: 'username@example.com',
-            pass: 'userpass'
-        }
-    });
+    // console.log(req.body.email.length);
     
-    rand = Math.floor((Math.random() * 100) + 54);
-
-    link = "http://"+req.get('host')+"/verify?id="+rand;
-
-    mailOptions = {
-        from: 'WesCourse',
-        to: req.body.email,
-        subject: 'Please confirm your Email Account',
-        html: "Hello,<br> Please Click on the link to verify your email.<br><a href="+link+">Click here to verify</a>"
-    };
-
-    smtpTransport.sendMail(mailOptions,(err,res) => {
-        if(err) return console.log(err);
-        console.log("Message sent: " + response.message);
-    });
-
-});
-
-app.get('/verify',(req,res) => {
-    if ((req.protocol+"://"+req.get('host'))==("http://"+host)) {
-        console.log("Domain is matched. Information is from Authentic email");
-        if(req.query.id==rand) {
-            console.log("email is verified");
-            res.send("<h1>Email "+mailOptions.to+" is been Successfully verified");
-        } else {
-            console.log("email is not verified");
-            res.send("<h1>Bad Request</h1>");
-        }
+    if (req.body.email.slice(-12) !== 'wesleyan.edu' || req.body.username.length >= 255 || req.body.password.length >= 80) {
+        res.render('submitUser',{success: false});
     } else {
-        res.send("<h1>Request is from unknown source");
+        
+
+
+
+
+
     }
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -244,3 +225,66 @@ app.get('/verify',(req,res) => {
 app.listen(port,() => {
     console.log(`Server is running at ${port}`);
 });
+
+
+
+// nodemailer connection
+
+
+// let nodemailer = require('nodemailer');
+
+
+// let mailOptions;
+// let rand;
+// let link;
+
+
+// app.post('/submitUser',(req,res) => {
+//     smtpTransport = nodemailer.createTransport({
+//         host: 'smtp.gmail.com',
+//         port: 465,
+//         secure: true, // secure:true for port 465, secure:false for port 587
+//         auth: {
+//             user: 'user@myDomain.com',
+//             pass: 'pass@pass'
+//         }
+//     });
+    
+//     console.log('*******************');
+    
+//     rand = Math.floor((Math.random() * 100) + 54);
+
+//     link = "http://"+req.get('host')+"/verify?id="+rand;
+
+//     mailOptions = {
+//         from: 'WesCourse',
+//         to: req.body.email,
+//         subject: 'Please confirm your Email Account',
+//         html: "Hello,<br> Please Click on the link to verify your email.<br><a href="+link+">Click here to verify</a>"
+//     };
+
+//     smtpTransport.sendMail(mailOptions,(err,res) => {
+//         if(err) return console.log(err);
+//         console.log("Message sent: " + response.message);
+//     });
+
+// });
+
+// app.get('/verify',(req,res) => {
+//     if ((req.protocol+"://"+req.get('host'))==("http://"+host)) {
+//         console.log("Domain is matched. Information is from Authentic email");
+//         if(req.query.id==rand) {
+//             console.log("email is verified");
+//             res.send("<h1>Email "+mailOptions.to+" is been Successfully verified");
+//         } else {
+//             console.log("email is not verified");
+//             res.send("<h1>Bad Request</h1>");
+//         }
+//     } else {
+//         res.send("<h1>Request is from unknown source");
+//     }
+// });
+
+
+
+
