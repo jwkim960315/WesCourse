@@ -7,6 +7,8 @@ const ejs = require('ejs');
 const path = require('path');
 const fs = require('fs');
 const html = require('html');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
 
 const port = process.env.port || 3000;
 
@@ -33,6 +35,8 @@ let filteredCourseInfos;
 let tmpCategory;
 let tmpCourseNames = [];
 let renderData = {};
+let hashPass;
+let token;
 
 // Helper Functions
 
@@ -54,6 +58,28 @@ let catalogDataManipulator = data => {
     return renderData;
 };
 
+let authenticate = (req,res,next) => {
+    let reqToken = req.header('x-auth');
+    // console.log(reqToken);
+    
+    if (reqToken !== token) {
+        res.status(401).send();
+    }
+    next();
+};
+
+let generateToken = (userId) => {
+    return jwt.sign({id: userId},'SECRET');
+};
+
+let saltHashPass = (password) => {
+    bcrypt.genSalt(10,(err,salt) => {
+        bcrypt.hash(password,salt,(err1,hash) => {
+            hashPass = hash;
+        })
+    })
+    return hashPass;
+};
 
 
 // Database Connection
@@ -79,13 +105,14 @@ app.get('/',(req,res) => {
         root: __dirname + '/../views/'
     };
 
+    console.log(req.header('x-auth'));
+
     res.sendFile('index.html',options);
 });
 
 
 app.get('/catalog',(req,res) => {
     connection.query('SELECT category,name FROM fields ORDER BY 1,2').then(data => {
-        // console.log('catalog running');
         data = catalogDataManipulator(data);
         res.send(data);
     });
@@ -166,8 +193,6 @@ app.get('/catalog/:fieldAc/:courseAc',async (req,res) => {
 
 
 app.get('/createUser',(req,res) => {
-    console.log(req.protocol);
-    console.log(req.get('host'));
     res.sendFile('createUser.html',options);
 });
 
@@ -178,30 +203,120 @@ app.get('/createUser',(req,res) => {
 
 const nodemailer = require('nodemailer');
 
+let host;
 
+app.post('/submitUser',async (req,res) => {
 
+    host = req.get('host');
 
-app.post('/submitUser',(req,res) => {
-    // console.log(req.body.email.length);
-    
+    verEmail = req.body.email;
+    verUsername = req.body.username;
+    verPassword = req.body.password;
+
     if (req.body.email.slice(-12) !== 'wesleyan.edu' || req.body.username.length >= 255 || req.body.password.length >= 80) {
         res.render('submitUser',{success: false});
     } else {
+        jwt.verify('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXNzd29yZCI6Inl1c2VvdW5nMSIsImlhdCI6MTQ5NzQ5NjkwMH0.TtTIpFBotfxL1-pQX2wCS2XRofnyB4v4FNdaIH19QMI','SECRET',(err,result) => {
+            console.log(typeof result.password);
+
+            transporter = nodemailer.createTransport({
+                service: "Gmail",
+                auth: {
+                    user: 'jwkim0315@gmail.com',
+                    pass: result.password
+                }
+            });
+
+            rand = Math.floor((Math.random() * 100) + 54);
+
+            link = "http://"+req.get('host')+"/verify?id="+rand;
+
+            console.log(verEmail);
+
+            mailOptions = {
+                from: 'jwkim0315@gmail.com',
+                to: verEmail,
+                subject: 'Please confirm your Email Account',
+                html: "Hello,<br> Please Click on the link to verify your email.<br><a href="+link+">Click here to verify</a>"
+            }
+
+            transporter.sendMail(mailOptions,(err,info) => {
+                if (err) {
+                    return console.log(err);
+                }
+                console.log('Message %s sent: %s', info.messageId, info.response);
+                res.render('submitUser',{success: true});
+            });
         
 
-
-
+        });
 
 
     }
 });
 
 
+app.get('/verify',(req,res) => {
+    console.log(req.get('host'));
+    console.log(req.protocal);
+    if ((req.protocol+"://"+req.get('host'))==("http://"+host)) {
+        console.log("Domain is matched. Information is from Authentic email");
+        console.log(req.query.id);
+        console.log(rand);
+        if (req.query.id == rand) {
+            console.log("email is verified");
+            bcrypt.genSalt(10,(err,salt) => {
+                bcrypt.hash(verPassword,salt,(err1,hash) => {
+                    verPassword = hash;
+
+                    connection.query(`INSERT INTO users (username,email,password,verified) VALUES ("${verUsername}","${verEmail}","${verPassword}",true)`).then((success) => {
+                        connection.query(`SELECT * from users where email="${verEmail}" and password="${verPassword}"`).then((obj) => {
+                            token = generateToken(obj.id);
+                            console.log(token);
+                            verUsername = obj.username;
+                            verEmail = obj.email;
+                            verCreatedAt = obj.created_at;
+                            res.header('x-auth',token).send(`<h1>Email ${mailOptions.to} has been Successfully verified
+                                                             <a href="/">HOME PAGE</a>`);
+                        });
+                    });
+
+                });
+            });
+            
+            
+        } else {
+            console.log("email is not verified");
+            res.send("<h1>Bad Request</h1>");
+        }
+    } else {
+        res.send("<h1>Request is from unknown source</h1>");
+    }
+});
 
 
+app.post('/loggingIn',(req,res) => {
+    let verPassword = saltHashPass(req.body.password);
+    
+    connection.query(`SELECT * from users where email="${req.body.email}" and password="${verPassword}"`).then((result) => {
+        if (!result) {
+            return res.send('<h3>Login Failed: User Unidentified</h3>');
+        }
+
+        verUsername = result.username;
+        verEmail = result.email;
+        verCreatedAt = result.created_at;
+
+        token = generateToken(result.id);
+        res.header('x-auth',token).redirect('/');
+
+    })
+})
 
 
-
+app.post('/logout',(req,res) => {
+    res.header('x-auth',null).send('<h3>Successfully logged out</h3>');
+});
 
 
 
@@ -270,20 +385,7 @@ app.listen(port,() => {
 
 // });
 
-// app.get('/verify',(req,res) => {
-//     if ((req.protocol+"://"+req.get('host'))==("http://"+host)) {
-//         console.log("Domain is matched. Information is from Authentic email");
-//         if(req.query.id==rand) {
-//             console.log("email is verified");
-//             res.send("<h1>Email "+mailOptions.to+" is been Successfully verified");
-//         } else {
-//             console.log("email is not verified");
-//             res.send("<h1>Bad Request</h1>");
-//         }
-//     } else {
-//         res.send("<h1>Request is from unknown source");
-//     }
-// });
+
 
 
 

@@ -43,25 +43,25 @@ const nodemailer = require('nodemailer');
 // });
 
 
-let transporter = nodemailer.createTransport({
-    service: "Gmail",
-    auth: {
-        user: 'jwkim0315@gmail.com',
-        pass: 
-    }
-});
+// let transporter = nodemailer.createTransport({
+//     service: "Gmail",
+//     auth: {
+//         user: 'jwkim0315@gmail.com',
+//         pass: 
+//     }
+// });
 
-let link = "http://host/verify?id=12345";
+// let link = "http://host/verify?id=12345";
 
-transporter.sendMail({
-    from: 'jwkim0315@gmail.com',
-    to: 'jkim11@wesleyan.edu',
-    subject: 'Please confirm your Email Account',
-    html: "Hello,<br> Please Click on the link to verify your email.<br><a href="+link+">Click here to verify</a>"
-},(err,info) => {
-    if (err) {
-        return console.log(err);
-    }
-    console.log('Message %s sent: %s', info.messageId, info.response);
-})  ;
+// transporter.sendMail({
+//     from: 'jwkim0315@gmail.com',
+//     to: 'jkim11@wesleyan.edu',
+//     subject: 'Please confirm your Email Account',
+//     html: "Hello,<br> Please Click on the link to verify your email.<br><a href="+link+">Click here to verify</a>"
+// },(err,info) => {
+//     if (err) {
+//         return console.log(err);
+//     }
+//     console.log('Message %s sent: %s', info.messageId, info.response);
+// })  ;
 

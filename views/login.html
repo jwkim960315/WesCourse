@@ -17,26 +17,29 @@
 
     <body>
 
-        <div class="container">
-            <% if (!success) { %>
-                <p>You must meet the following criteria:</p>
-                <ul>
-                    <li>Username Max: 255 characters</li>
-                    <li>Email has to be a Wesleyan Email</li>
-                    <li>Password Max: 80 characters</li>
-                </ul>
-            <% } else { %>
-                <h3>Verification Email Sent!</h3>
-                <h5>Please check your email and verify!</h5>
-            <% } %> 
+        <div class="container" style="margin:auto;">
+            <form action="/loggingIn" method="POST">
+                <div class="form-group row">
+                    <label for="inputEmail3" class="col-sm-2 col-form-label">Email</label>
+                    <div class="col-sm-10">
+                        <input type="email" class="form-control" name="email" id="inputEmail3" placeholder="Email">
+                    </div>
+                </div>
+                    <div class="form-group row">
+                        <label for="inputPassword3" class="col-sm-2 col-form-label">Password</label>
+                        <div class="col-sm-10">
+                            <input type="password" class="form-control" name="password" id="inputPassword3" placeholder="Password">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-12" style="text-align: center;">
+                        <button type="submit" class="btn btn-primary">Sign in</button>
+                    </div>
+                </div>
+            </form>
         </div>
 
-        <script>
-
-            
-
-
-        </script>
 
     </body>
 
