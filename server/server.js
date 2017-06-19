@@ -10,6 +10,10 @@ const html = require('html');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 
+var passport = require('passport')
+  , LocalStrategy = require('passport-local').Strategy
+  , session = require('express-session');
+
 const port = process.env.port || 3000;
 
 var app = express();
@@ -20,6 +24,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(methodOverride('X-HTTP-Method-Override'));
 // app.use(express.static(path.join(__dirname, '/../public')));
 app.set('view engine','ejs');
+app.use(session({ secret: 'a random password!'}));
+app.use(passport.initialize());
+app.use(passport.session());
 
 
 // Important Variables
@@ -82,6 +89,8 @@ let saltHashPass = (password) => {
 };
 
 
+
+
 // Database Connection
 
 let connection;
@@ -95,6 +104,76 @@ mysql.createConnection({
     connection = conn;
 });
 
+// Passport Configuration
+// passport.use(new LocalStrategy(
+//   function(username, password, done) {
+//     User.findOne({ username: username }, function (err, user) {
+//       if (err) { return done(err); }
+//       if (!user) {
+//         return done(null, false, { message: 'Incorrect username.' });
+//       }
+//       if (!user.validPassword(password)) {
+//         return done(null, false, { message: 'Incorrect password.' });
+//       }
+//       return done(null, user);
+//     });
+//   }
+// ));
+
+passport.use(new LocalStrategy({
+        usernameField: 'email',
+        passwordField: 'password',
+        // passReqToCallback: true
+    },
+    function (email,password,done) {
+                console.log(email);
+                console.log(password);
+                connection.query(`SELECT * FROM users where email="${email}"`).then((data,err) => {
+                    console.log(data);
+                    if (err) {
+                        return done(err);
+                    };
+                    // console.log('pass 1');
+
+                    if (data.length === 0) {
+                        return done(null,false, { message: 'Incorrect username.'});
+                    };
+                    // console.log('pass 2');
+
+                    bcrypt.compare(password,data[0].password,(err,result) => {
+                        console.log(result);
+                        if (result) {
+                            // console.log('pass 3'); 
+                            return done(null,data[0]);
+                        }
+                        
+
+                        return done(null,false,{ message: 'Incorrect password.'});
+                    });
+
+                    
+                });
+
+                
+
+            // });
+        // });
+        
+    }
+));
+
+passport.serializeUser((user, done) => {
+    done(null,user.id);
+});
+
+passport.deserializeUser((id, done) => {
+    connection.query(`SELECT * FROM users WHERE id="${id}"`).then((data,err) => {
+        done(err,data[0]);
+    })
+})
+
+
+
 
 // Routes
 
@@ -105,17 +184,24 @@ app.get('/',(req,res) => {
         root: __dirname + '/../views/'
     };
 
-    console.log(req.header('x-auth'));
+    if (req.user) {
+        return res.render('index',{userId: req.user.id});
+    };
 
-    res.sendFile('index.html',options);
+    res.render('index',{userId: null});
+
+    
 });
 
 
 app.get('/catalog',(req,res) => {
-    connection.query('SELECT category,name FROM fields ORDER BY 1,2').then(data => {
-        data = catalogDataManipulator(data);
-        res.send(data);
-    });
+    // if (req.user) {
+        connection.query('SELECT category,name FROM fields ORDER BY 1,2').then(data => {
+            data = catalogDataManipulator(data);
+            res.send(data);
+        });
+    // }
+    
 });
 
 
@@ -143,7 +229,7 @@ app.get('/catalog/:name',async (req,res) => {
         return obj.term_name.includes('spring');
     });
     res.render('specificField',{filteredCourses,fallCourses,springCourses});
-    return;
+    // return;
 });
 
 
@@ -187,6 +273,10 @@ app.get('/catalog/:fieldAc/:courseAc',async (req,res) => {
     courseRating = await ratings_getter(req.params.courseAc);
 
     courseComments = await comments_getter(req.params.courseAc);
+
+    console.log(courseInfo);
+    console.log(courseRating);
+    console.log(courseComments);
 
     res.render('specificCourse',{courseInfo,courseRating,courseComments});  
 });
@@ -268,17 +358,15 @@ app.get('/verify',(req,res) => {
             bcrypt.genSalt(10,(err,salt) => {
                 bcrypt.hash(verPassword,salt,(err1,hash) => {
                     verPassword = hash;
+                    console.log(hash);
 
-                    connection.query(`INSERT INTO users (username,email,password,verified) VALUES ("${verUsername}","${verEmail}","${verPassword}",true)`).then((success) => {
-                        connection.query(`SELECT * from users where email="${verEmail}" and password="${verPassword}"`).then((obj) => {
-                            token = generateToken(obj.id);
-                            console.log(token);
-                            verUsername = obj.username;
-                            verEmail = obj.email;
-                            verCreatedAt = obj.created_at;
-                            res.header('x-auth',token).send(`<h1>Email ${mailOptions.to} has been Successfully verified
-                                                             <a href="/">HOME PAGE</a>`);
-                        });
+                    connection.query(`INSERT INTO users (username,email,password,salt,verified) VALUES ("${verUsername}","${verEmail}","${verPassword}","${salt}",true)`).then((success) => {
+                        console.log(success);
+                        // });
+                        res.send(`<h1>Email ${mailOptions.to} has been Successfully verified
+                                                             <a href="/login">LOGIN PAGE</a>`);
+
+                        
                     });
 
                 });
@@ -295,31 +383,42 @@ app.get('/verify',(req,res) => {
 });
 
 
-app.post('/loggingIn',(req,res) => {
-    let verPassword = saltHashPass(req.body.password);
-    
-    connection.query(`SELECT * from users where email="${req.body.email}" and password="${verPassword}"`).then((result) => {
-        if (!result) {
-            return res.send('<h3>Login Failed: User Unidentified</h3>');
-        }
-
-        verUsername = result.username;
-        verEmail = result.email;
-        verCreatedAt = result.created_at;
-
-        token = generateToken(result.id);
-        res.header('x-auth',token).redirect('/');
-
-    })
-})
 
 
-app.post('/logout',(req,res) => {
-    res.header('x-auth',null).send('<h3>Successfully logged out</h3>');
+
+app.get('/login' ,(req,res) => {
+    res.sendFile('login.html',options);
 });
 
 
+app.post('/loggingIn',
+    passport.authenticate('local', {
+        successRedirect: '/',
+        failureRedirect: '/login'
+    })
+);
 
+
+app.get('/logout',(req,res) => {
+    req.logout();
+    res.redirect('/');
+});
+
+
+app.get('/search',(req,res) => {
+    // connection.query(`SELECT * FROM courses WHERE course_name like "%${req.body.searchParam}%" OR
+    //                                               section like "%${req.body.searchParam}%" OR
+    //                                               professors like "%${req.body.searchParam}%" OR
+    //                                               course_acronym like "%${req.body.searchParam}%" OR
+    //                                               class_date like "%${req.body.searchParam}%" OR
+    //                                               term like "%${req.body.searchParam}%" OR
+    //                                               term_name like "%${req.body.searchParam}%" OR
+    //                                               field_acronym like "%${req.body.searchParam}%" OR
+    //                                               cross_list like "%${req.body.searchParam}%" OR`)
+    //     .then(data => {
+            res.render('search');
+        // });
+});
 
 
 
@@ -342,48 +441,6 @@ app.listen(port,() => {
 });
 
 
-
-// nodemailer connection
-
-
-// let nodemailer = require('nodemailer');
-
-
-// let mailOptions;
-// let rand;
-// let link;
-
-
-// app.post('/submitUser',(req,res) => {
-//     smtpTransport = nodemailer.createTransport({
-//         host: 'smtp.gmail.com',
-//         port: 465,
-//         secure: true, // secure:true for port 465, secure:false for port 587
-//         auth: {
-//             user: 'user@myDomain.com',
-//             pass: 'pass@pass'
-//         }
-//     });
-    
-//     console.log('*******************');
-    
-//     rand = Math.floor((Math.random() * 100) + 54);
-
-//     link = "http://"+req.get('host')+"/verify?id="+rand;
-
-//     mailOptions = {
-//         from: 'WesCourse',
-//         to: req.body.email,
-//         subject: 'Please confirm your Email Account',
-//         html: "Hello,<br> Please Click on the link to verify your email.<br><a href="+link+">Click here to verify</a>"
-//     };
-
-//     smtpTransport.sendMail(mailOptions,(err,res) => {
-//         if(err) return console.log(err);
-//         console.log("Message sent: " + response.message);
-//     });
-
-// });
 
 
 
