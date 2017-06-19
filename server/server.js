@@ -27,6 +27,7 @@ app.set('view engine','ejs');
 app.use(session({ secret: 'a random password!'}));
 app.use(passport.initialize());
 app.use(passport.session());
+// app.use(express.static('public'));
 
 
 // Important Variables
@@ -278,7 +279,7 @@ app.get('/catalog/:fieldAc/:courseAc',async (req,res) => {
     console.log(courseRating);
     console.log(courseComments);
 
-    res.render('specificCourse',{courseInfo,courseRating,courseComments});  
+    res.render('specificCourse',{courseInfo,courseRating: courseRating[0],courseComments});  
 });
 
 
@@ -360,7 +361,7 @@ app.get('/verify',(req,res) => {
                     verPassword = hash;
                     console.log(hash);
 
-                    connection.query(`INSERT INTO users (username,email,password,salt,verified) VALUES ("${verUsername}","${verEmail}","${verPassword}","${salt}",true)`).then((success) => {
+                    connection.query(`INSERT INTO users (username,email,password) VALUES ("${verUsername}","${verEmail}","${verPassword}")`).then((success) => {
                         console.log(success);
                         // });
                         res.send(`<h1>Email ${mailOptions.to} has been Successfully verified
