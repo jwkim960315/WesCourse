@@ -16,19 +16,6 @@
         <script src=https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.bundle.min.js></script>
     </head>
 
-        <link href="path/to/css/star-rating.css" media="all" rel="stylesheet" type="text/css" />
-
-        <!-- optionally if you need to use a theme, then include the theme CSS file as mentioned below -->
-        <link href="path/to/themes/krajee-svg/theme.css" media="all" rel="stylesheet" type="text/css" />
-
-        <script src="path/to/js/star-rating.js" type="text/javascript"></script>
-
-        <!-- optionally if you need to use a theme, then include the theme JS file as mentioned below -->
-        <script src="path/to/themes/krajee-svg/theme.js"></script>
-
-        <!-- optionally if you need translation for your language then include locale file as mentioned below -->
-        <script src="path/to/js/locales/<lang>.js"></script>
-
     <body>
         <div class="container" style="width: 100%;">
             <table>
@@ -52,8 +39,6 @@
 
 
             <div class="comments">
-                <label for="input-2" class="control-label">Rate This</label>
-                <input id="input-2" name="input-2" class="rating rating-loading" data-min="0" data-max="5" data-step="0.1">
             </div>
             
 
@@ -103,7 +88,8 @@
                             }],
                             yAxes: [{
                                 ticks: {
-                                    beginAtZero: true
+                                    beginAtZero: true,
+                                    max : 5.0
                                 }
                             }]
                         }

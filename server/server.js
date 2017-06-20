@@ -22,7 +22,7 @@ var app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(methodOverride('X-HTTP-Method-Override'));
-// app.use(express.static(path.join(__dirname, '/../public')));
+app.use(express.static(path.join(__dirname, '/../')));
 app.set('view engine','ejs');
 app.use(session({ secret: 'a random password!'}));
 app.use(passport.initialize());
@@ -196,13 +196,11 @@ app.get('/',(req,res) => {
 
 
 app.get('/catalog',(req,res) => {
-    // if (req.user) {
-        connection.query('SELECT category,name FROM fields ORDER BY 1,2').then(data => {
-            data = catalogDataManipulator(data);
-            res.send(data);
-        });
-    // }
-    
+
+    connection.query('SELECT category,name FROM fields ORDER BY 1,2').then(data => {
+        data = catalogDataManipulator(data);
+        res.send(data);
+    });
 });
 
 
@@ -275,10 +273,6 @@ app.get('/catalog/:fieldAc/:courseAc',async (req,res) => {
 
     courseComments = await comments_getter(req.params.courseAc);
 
-    console.log(courseInfo);
-    console.log(courseRating);
-    console.log(courseComments);
-
     res.render('specificCourse',{courseInfo,courseRating: courseRating[0],courseComments});  
 });
 
@@ -348,22 +342,15 @@ app.post('/submitUser',async (req,res) => {
 
 
 app.get('/verify',(req,res) => {
-    console.log(req.get('host'));
-    console.log(req.protocal);
     if ((req.protocol+"://"+req.get('host'))==("http://"+host)) {
         console.log("Domain is matched. Information is from Authentic email");
-        console.log(req.query.id);
-        console.log(rand);
         if (req.query.id == rand) {
             console.log("email is verified");
             bcrypt.genSalt(10,(err,salt) => {
                 bcrypt.hash(verPassword,salt,(err1,hash) => {
                     verPassword = hash;
-                    console.log(hash);
-
                     connection.query(`INSERT INTO users (username,email,password) VALUES ("${verUsername}","${verEmail}","${verPassword}")`).then((success) => {
-                        console.log(success);
-                        // });
+                        // console.log(success);
                         res.send(`<h1>Email ${mailOptions.to} has been Successfully verified
                                                              <a href="/login">LOGIN PAGE</a>`);
 
@@ -407,18 +394,33 @@ app.get('/logout',(req,res) => {
 
 
 app.get('/search',(req,res) => {
-    // connection.query(`SELECT * FROM courses WHERE course_name like "%${req.body.searchParam}%" OR
-    //                                               section like "%${req.body.searchParam}%" OR
-    //                                               professors like "%${req.body.searchParam}%" OR
-    //                                               course_acronym like "%${req.body.searchParam}%" OR
-    //                                               class_date like "%${req.body.searchParam}%" OR
-    //                                               term like "%${req.body.searchParam}%" OR
-    //                                               term_name like "%${req.body.searchParam}%" OR
-    //                                               field_acronym like "%${req.body.searchParam}%" OR
-    //                                               cross_list like "%${req.body.searchParam}%" OR`)
-    //     .then(data => {
-            res.render('search');
-        // });
+    res.render('search',{data: -1});
+});
+
+app.get('/searching/:searchParam',(req,res) => {
+    connection.query(`SELECT * FROM courses WHERE course_name like "%${req.params.searchParam}%" OR
+                                                  professors like "%${req.params.searchParam}%" OR
+                                                  course_acronym like "%${req.params.searchParam}%" OR
+                                                  field_acronym like "%${req.params.searchParam}%"
+                     ORDER BY field_acronym`)
+        .then(data => {
+            res.send(data);
+        });
+});
+
+app.post('/search/query',(req,res) => {
+    connection.query(`SELECT * FROM courses WHERE course_name like "%${req.body.searchParam}%" OR
+                                                  professors like "%${req.body.searchParam}%" OR
+                                                  course_acronym like "%${req.body.searchParam}%" OR
+                                                  field_acronym like "%${req.body.searchParam}%"
+                     ORDER BY course_acronym`)
+        .then(data => {
+            data = JSON.parse(JSON.stringify(data));
+            // console.log(data);
+
+            
+            res.render('search.ejs',{data});
+        });
 });
 
 

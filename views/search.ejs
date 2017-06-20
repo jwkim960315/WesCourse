@@ -5,6 +5,7 @@
         <meta name="'viewport" content="width=device-width, initial-scale=1, user-scalable=no">
         <title>WesCourse</title>
 
+        <!-- Font Awesome -->
         <script src="https://use.fontawesome.com/b6a42b064c.js"></script>
         
 
@@ -13,6 +14,11 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+
+        <link rel="stylesheet" type="text/css" href="/semantic/dist/semantic.min.css">
+        <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+        <script src="/semantic/dist/semantic.min.js"></script>
     </head>
 
     <body>
@@ -37,9 +43,74 @@
                 </ul>
                 </nav>
 
+                <form method="POST" action="/search/query" class="ui form">
+                    <div class="fields" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%,50%);">
+                        <div class="ui category search">
+                            <div class="ui icon input">
+                                <i class="search icon"></i>
+                                <input class="prompt six wide field" type="text" name="searchParam" placeholder="Search any keywords..."> 
+                            </div>
+                            <button class="ui button" type="submit">Search</button>
+                            <div class="results"></div>
+                        </div>
+                    </div>
+                </form>
+
+                <div class="something">
+                    <% for (var i=0; i < data.length; ++i ) { %>
+                        <div> <%= data[i].course_acronym %> </div>
+                    <% } %>
+                </div>
+
         </div>
         
-        
+        <script>
+
+
+            $('.ui.search')
+                .search({
+                    type: 'category',
+                    apiSettings: {
+                        onResponse: function(res) {
+                            var
+                                response = {
+                                    results : {}
+                                },
+                                counter = 0
+
+
+                            $.each(res, function(index, item) {
+                                
+                                category = item.field_acronym;
+
+                                if (response.results[category] === undefined) {
+                                    maxResults = 2;
+                                    response.results[category] = {
+                                        name: category,
+                                        results: []
+                                    };
+                                };
+
+
+                                if (maxResults >= 0) {
+
+                                    response.results[category].results.push({
+                                        title: item.course_acronym,
+                                        url: `/catalog/${item.field_acronym}/${item.course_acronym}`,
+                                        description: item.professors
+                                    });
+                                };
+
+                                maxResults -= 1;
+                            });
+
+                            return response;
+                        },
+                        url: '/searching/{query}'
+                        
+                    }
+                })
+        </script>
 
     </body>
 
