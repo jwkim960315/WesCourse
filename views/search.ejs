@@ -76,11 +76,16 @@
                                 response = {
                                     results : {}
                                 },
-                                counter = 0
+                                counter = 0,
+                                max = 10;
 
 
                             $.each(res, function(index, item) {
                                 
+                                if (index >= max) {
+                                    return false;
+                                }
+
                                 category = item.field_acronym;
 
                                 if (response.results[category] === undefined) {
