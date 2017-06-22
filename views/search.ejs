@@ -31,7 +31,7 @@
                             <i class="search icon"></i>
                             <input class="prompt six wide field" type="text" name="searchParam" placeholder="Search any keywords..."> 
                         </div>
-                        <button class="ui button" type="submit">Search</button>
+                        <button class="ui button red" type="submit">Search</button>
                         <div class="results"></div>
                     </div>
                 </div>
@@ -64,7 +64,7 @@
             </table>
             
 
-            <!--<div class="container">-->
+
             <nav aria-label="Page navigation example">
                 
                 <ul class="pagination justify-content-center">
@@ -80,7 +80,7 @@
                             </li>
                         <% } %>
                         <% for (var i=(currentPageTotalNum[0].currentPageTotalNum*currentSecNum[0].currentSecNum >= currentPageNum[0].currentPageNum) ? (currentSecNum[0].currentSecNum-1)*5+1 : currentPageNum[0].currentPageNum ; i <= currentPageTotalNum[0].currentPageTotalNum+5*(currentSecNum[0].currentSecNum-1); ++i) { %>
-                            <li class="page-item" style="display: inline-block;"><a class="page-link" href="/search/query/<%= currentSecNum[0].currentSecNum %>/<%= i %>/<%= searchParam[0].searchParam %>"><%= i %></a></li>
+                            <li class="page-item paginated-number"  style="display: inline-block;"><a class="page-link" href="/search/query/<%= currentSecNum[0].currentSecNum %>/<%= i %>/<%= searchParam[0].searchParam %>"><%= i %></a></li>
                         <% } %>
                         <% if (currentSecNum[0].currentSecNum !== totalSecNum) { %> 
                             <li class="page-item" style="display: inline-block;">
@@ -94,7 +94,7 @@
                 </ul>
                 
             </nav>
-            <!--</div>-->
+            
         <% } %>
 
         
@@ -151,8 +151,15 @@
                     }
                 });
             
-
-                $('')
+                <% if (currentPageNum[0].currentPageNum !== undefined) { %>
+                $('.paginated-number').each(function(index) {
+                    if ("<%= currentPageNum[0].currentPageNum %>" === $(this).text()) {
+                        $(this).addClass('active');
+                    };
+                });
+                <% } %>
+                
+                
 
 
             

@@ -23,6 +23,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(methodOverride('X-HTTP-Method-Override'));
 app.use(express.static(path.join(__dirname, '/../')));
+
+console.log(path.join(__dirname,'/../public'));
 app.set('view engine','ejs');
 app.use(session({ secret: 'a random password!'}));
 app.use(passport.initialize());
@@ -127,10 +129,10 @@ passport.use(new LocalStrategy({
         // passReqToCallback: true
     },
     function (email,password,done) {
-                console.log(email);
-                console.log(password);
+                // console.log(email);
+                // console.log(password);
                 connection.query(`SELECT * FROM users where email="${email}"`).then((data,err) => {
-                    console.log(data);
+                    // console.log(data);
                     if (err) {
                         return done(err);
                     };
@@ -142,7 +144,7 @@ passport.use(new LocalStrategy({
                     // console.log('pass 2');
 
                     bcrypt.compare(password,data[0].password,(err,result) => {
-                        console.log(result);
+                        // console.log(result);
                         if (result) {
                             // console.log('pass 3'); 
                             return done(null,data[0]);
@@ -168,7 +170,7 @@ passport.serializeUser((user, done) => {
 });
 
 passport.deserializeUser((id, done) => {
-    connection.query(`SELECT * FROM users WHERE id="${id}"`).then((data,err) => {
+    connection.query(`SELECT id,username FROM users WHERE id="${id}"`).then((data,err) => {
         done(err,data[0]);
     })
 })
@@ -238,9 +240,9 @@ const ratings_getter = async (courseAcronym) => {
                                     avg(effort) as EffortRequired,
                                     avg(ratings.professors) as ProfessorsRating,
                                     CASE
-                                    WHEN avg(recommend)>=.5 then "Yes"
-                                    ELSE "No"
-                                    END as Recommend,
+                                        WHEN avg(recommend)>=.5 THEN "Yes"
+                                        ELSE "No"
+                                        END as Recommend,
                                     courses.course_acronym
                             from ratings
                             inner join courses
@@ -260,21 +262,120 @@ const specific_course_getter = async (courseAcronym) => {
 };
 
 const comments_getter = async (courseAcronym) => {
-    return connection.query(`SELECT * FROM comments INNER JOIN courses ON comments.course_id = courses.id INNER JOIN users ON comments.user_id = users.id HAVING courses.course_acronym = "${courseAcronym}"`).then((res) => {
+    return connection.query(`SELECT CASE 
+                                        WHEN ratings.anonymous=true THEN "Anonymous"
+                                        ELSE username
+                                    END as username,
+                                    comment,
+                                    ratings.created_at,
+                                    ratings.difficulty,
+                                    ratings.organization,
+                                    ratings.effort,
+                                    ratings.professors,
+                                    CASE
+                                        WHEN ratings.recommend=true THEN "Yes"
+                                        ELSE "No"
+                                    END as recommend
+                             FROM ratings INNER JOIN courses ON ratings.course_id = courses.id INNER JOIN users ON ratings.user_id = users.id WHERE courses.course_acronym="${courseAcronym}"`).then((res) => {
         return res;
     });
 };
 
 
 app.get('/catalog/:fieldAc/:courseAc',async (req,res) => {
-    courseInfo = await specific_course_getter(req.params.courseAc);
+    courseInfo = JSON.parse(JSON.stringify(await specific_course_getter(req.params.courseAc)));
 
     courseRating = await ratings_getter(req.params.courseAc);
 
-    courseComments = await comments_getter(req.params.courseAc);
+    courseComments = JSON.parse(JSON.stringify(await comments_getter(req.params.courseAc)));
 
-    res.render('specificCourse',{courseInfo,courseRating: courseRating[0],courseComments});  
+    // console.log(courseComments[1])
+
+    
+
+    res.render('specificCourse',{courseInfo,courseRating: courseRating[0], courseComments});  
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+app.post('/comment/submit/:fieldAc/:courseAc/:courseId',(req,res) => {
+    
+    
+
+    if (!req.user) {
+        return res.redirect('/login');
+    };
+
+
+    let difficulty = req.body.difficulty,
+        organization = req.body.organization,
+        effort = req.body.effort,
+        professors = req.body.professors,
+        anonymous = req.body.optionsRadios1,
+        recommend = req.body.optionsRadios2,
+        comment = req.body.comment,
+        userId = req.user.id,
+        username = req.user.username,
+        courseId = req.params.courseId,
+        courseAc = req.params.courseAc,
+        fieldAc = req.params.fieldAc;
+    
+    // console.log('recommend: ',recommend);
+    // console.log('Anonymous: ',anonymous);
+    
+    
+
+
+    if (difficulty === "" || organization === "" || effort === "" || professors === "" || recommend === "") {
+        return res.render('specificCourse.ejs',{courseRating: undefined});
+    };
+
+    if (comment.trim() === "") {
+        comment = "None";
+    };
+
+    recommend = (recommend ==="yes") ? 1 : 0;
+    anonymous = (anonymous === "yes") ? 1 : 0;
+    
+    connection.query(`INSERT INTO ratings (difficulty,organization,effort,professors,recommend,comment,anonymous,course_id,user_id) VALUES (${difficulty},${organization},${effort},${professors},${recommend},"${comment}",${anonymous},${courseId},${userId})`).then((success) => {
+        res.redirect(`/catalog/${fieldAc}/${courseAc}`);
+    });
+
+
+    
+
+
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 app.get('/createUser',(req,res) => {
@@ -375,7 +476,7 @@ app.get('/verify',(req,res) => {
 
 
 app.get('/login' ,(req,res) => {
-    res.sendFile('login.html',options);
+    res.render('login');
 });
 
 
@@ -394,7 +495,7 @@ app.get('/logout',(req,res) => {
 
 
 app.get('/search',(req,res) => {
-    res.render('search',{data: undefined});
+    res.render('search',{data: undefined, currentPageNum: [{currentPageNum: undefined}]});
 });
 
 app.get('/searching/:searchParam',(req,res) => {
@@ -425,6 +526,10 @@ app.post('/search/query/:sectionNum/:pageNum',(req,res) => {
                      ORDER BY course_acronym
                      LIMIT ${offset},10`)
         .then(data => {
+
+            if (data.length === 0) {
+                return res.render('search',{data: -1});
+            };
 
             connection.query(`SELECT count(*) as count FROM courses WHERE course_name like "%${req.body.searchParam}%" OR
                                                                  professors like "%${req.body.searchParam}%" OR
