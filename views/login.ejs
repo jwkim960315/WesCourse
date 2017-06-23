@@ -16,7 +16,9 @@
     </head>
 
     <body>
-
+        <% if (!success[0].success) { %>
+            <h3><%= invalidMessage[0].invalidMessage %></h3>
+        <% } %>
         <div class="container" style="margin:auto;">
             <form action="/loggingIn" method="POST">
                 <div class="form-group row">
@@ -39,7 +41,10 @@
                 </div>
             </form>
         </div>
+    
 
+
+    
 
     </body>
 

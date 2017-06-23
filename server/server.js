@@ -38,6 +38,8 @@ const courses = JSON.parse(fs.readFileSync(__dirname+'/../db/json/coursesTest.js
 const courseInfos = JSON.parse(fs.readFileSync(__dirname+'/../db/json/courseInfosTest.json'));
 let filteredCourseInfos;
 
+const {previousUrlSaver} = require(__dirname+'/../middleware/middleware'); 
+
 
 
 // Temporary Variables
@@ -191,6 +193,7 @@ app.get('/',(req,res) => {
         return res.render('index',{userId: req.user.id});
     };
 
+
     res.render('index',{userId: null});
 
     
@@ -289,9 +292,11 @@ app.get('/catalog/:fieldAc/:courseAc',async (req,res) => {
 
     courseComments = JSON.parse(JSON.stringify(await comments_getter(req.params.courseAc)));
 
-    // console.log(courseComments[1])
-
     
+
+    // previousUrlSaver(req,res);
+
+    // console.log(res.header('prevUrl'));
 
     res.render('specificCourse',{courseInfo,courseRating: courseRating[0], courseComments});  
 });
@@ -299,7 +304,16 @@ app.get('/catalog/:fieldAc/:courseAc',async (req,res) => {
 
 
 
+app.get('/checkLogin',(req,res) => {
+    // console.log('req sent here!');
+    // console.log(req.user);
+    if (req.user === undefined) {
+        console.log('it is undefined');
+        return res.send(false);
+    }
 
+    res.send(true);
+})
 
 
 
@@ -333,8 +347,6 @@ app.post('/comment/submit/:fieldAc/:courseAc/:courseId',(req,res) => {
         courseAc = req.params.courseAc,
         fieldAc = req.params.fieldAc;
     
-    // console.log('recommend: ',recommend);
-    // console.log('Anonymous: ',anonymous);
     
     
 
@@ -475,17 +487,44 @@ app.get('/verify',(req,res) => {
 
 
 
-app.get('/login' ,(req,res) => {
-    res.render('login');
+app.get('/login',(req,res) => {
+    // res = previousUrlSaver(req,res);
+    // console.log(res.locals);
+    // console.log(req.header('Referer'));
+    // console.log(req.protocol + '://' + req.get('host'));
+    req.session.returnTo = req.header('Referer') || req.protocol + '://' + req.get('host');
+    // console.log(req.session.returnTo);
+    res.render('login',{success: [{success:true}], invalidMessage: [{invalidMessage:"Invalid Username and/or Password"}]});
 });
 
 
-app.post('/loggingIn',
-    passport.authenticate('local', {
-        successRedirect: '/',
-        failureRedirect: '/login'
-    })
-);
+// app.post('/loggingIn',
+//     passport.authenticate('local', {
+//         successRedirect: req.header('Referer'),
+//         failureRedirect: '/login'
+//     })
+// );
+
+app.post('/loggingIn',(req,res,next) => {
+    passport.authenticate('local',(err, user, info) => {
+        if (err) {
+            return next(err);
+        };
+
+        if (!user) {
+            return res.render('login',{success: [{success:false}], invalidMessage: [{invalidMessage:"Invalid Username and/or Password"}]});
+        };
+
+        req.logIn(user, (err) => {
+            if (err) {
+                return next(err);
+            };
+            res.redirect(req.session.returnTo);
+            delete req.session.returnTo;
+            return;
+        })
+    }) (req,res,next)
+});
 
 
 app.get('/logout',(req,res) => {
@@ -658,11 +697,11 @@ app.get('/search/query/:sectionNum/:pageNum/:searchParam',(req,res) => {
                         // console.log("Not last Page: "+currentPageTotalNum);
                     };
                     
-                    console.log(currentPageTotalNum);
+                    // console.log(currentPageTotalNum);
 
-                    console.log('*********************');
+                    // console.log('*********************');
 
-                    console.log(currentSecNum);
+                    // console.log(currentSecNum);
 
                
 
@@ -684,10 +723,147 @@ app.get('/search/query/:sectionNum/:pageNum/:searchParam',(req,res) => {
 
 
 
+app.get('/profile',(req,res) => {
+    res.render('profile');
+});
+
+app.get('/profile/changePass',(req,res) => {
+    res.render('changePass');
+});
+
+app.post('/profile/changePassSubmit',(req,res) => {
+    connection.query(`SELECT email,password FROM users WHERE id="${req.user.id}"`).then((info) => {
+        if (info[0].password !== req.body.password) {
+            return res.render('changePass',{invalidMessage: [{invalidMessage: "Incorrect Password"}]});
+        };
+
+        verId = req.user.id;
+
+        host = req.get('host');
+
+        verPassword = req.body.password;
+
+        jwt.verify('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXNzd29yZCI6Inl1c2VvdW5nMSIsImlhdCI6MTQ5NzQ5NjkwMH0.TtTIpFBotfxL1-pQX2wCS2XRofnyB4v4FNdaIH19QMI','SECRET',(err,result) => {
+            
+
+            transporter = nodemailer.createTransport({
+                service: "Gmail",
+                auth: {
+                    user: 'jwkim0315@gmail.com',
+                    pass: result.password
+                }
+            });
+
+            rand = Math.floor((Math.random() * 100) + 54);
+
+            link = "http://"+req.get('host')+"/verifyNewPass?id="+rand;
+
+            
+
+            mailOptions = {
+                from: 'jwkim0315@gmail.com',
+                to: info[0].email,
+                subject: 'Please confirm your Email Account',
+                html: "Hello,<br> Please Click on the link to verify your email.<br><a href="+link+">Click here to verify</a>"
+            }
+
+            transporter.sendMail(mailOptions,(err,info) => {
+                if (err) {
+                    return console.log(err);
+                }
+                console.log('Message %s sent: %s', info.messageId, info.response);
+                res.render('submitUser',{success: true});
+            });
+        });
+    });
+});
+
+
+app.get('/verifyNewPass',(req,res) => {
+    if ((req.protocol+"://"+req.get('host'))==("http://"+host)) {
+        console.log("Domain is matched. Information is from Authentic email");
+        if (req.query.id == rand) {
+            console.log("email is verified");
+            res.render('newPass');
+        } else {
+            console.log("email is not verified");
+            res.send("<h1>Bad Request</h1>");
+        }
+    } else {
+        res.send("<h1>Request is from unknown source</h1>");
+    }
+});
+
+
+app.post('/newPass',(req,res) => {
+    if (req.body.password !== req.body.confirmPass) {
+        return res.render('newPass',{invalidMessage: [{invalidMessage: "Password must match Confirm Password"}]});
+    };
+
+    bcrypt.genSalt(10,(err,salt) => {
+        bcrypt.hash(verPassword,salt,(err1,hash) => {
+            verPassword = hash;
+            connection.query(`UPDATE users SET password="${verPassword}" WHERE id="${verId}`).then((success) => {
+                res.render('newPass',{success: [{success: true}]});
+            });
+
+        });
+    });
+
+    
+});
 
 
 
 
+app.get('/forgotPass',(req,res) => {
+    res.render('forgotPass');
+});
+
+app.post('/forgotPassSubmit',(req,res) => {
+
+    if (req.body.email.slice(-12) !== 'wesleyan.edu') {
+        return res.render('forgotPass',{success: [{success: false}]});
+    };
+    
+    verEmail = req.body.email;
+
+    host = req.get('host');
+
+    verPassword = req.body.password;
+
+    jwt.verify('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXNzd29yZCI6Inl1c2VvdW5nMSIsImlhdCI6MTQ5NzQ5NjkwMH0.TtTIpFBotfxL1-pQX2wCS2XRofnyB4v4FNdaIH19QMI','SECRET',(err,result) => {
+
+        transporter = nodemailer.createTransport({
+            service: "Gmail",
+            auth: {
+                user: 'jwkim0315@gmail.com',
+                pass: result.password
+            }
+        });
+
+        rand = Math.floor((Math.random() * 100) + 54);
+
+        link = "http://"+req.get('host')+"/verifyNewPass?id="+rand;
+
+        
+
+        mailOptions = {
+            from: 'jwkim0315@gmail.com',
+            to: info[0].email,
+            subject: 'Please confirm your Email Account',
+            html: "Hello,<br> Please Click on the link to verify your email.<br><a href="+link+">Click here to verify</a>"
+        }
+
+        transporter.sendMail(mailOptions,(err,info) => {
+            if (err) {
+                return console.log(err);
+            }
+            console.log('Message %s sent: %s', info.messageId, info.response);
+            res.render('submitUser',{success: true});
+        });
+    });
+});
 
 
 

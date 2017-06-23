@@ -8,9 +8,12 @@
         <script src="https://use.fontawesome.com/b6a42b064c.js"></script>
         
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+        <!--<script src="/public/jquery-3.2.1.min.js"></script>-->
+
+        <script src="https://code.jquery.com/jquery-3.2.1.js" integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE=" crossorigin="anonymous"></script>
 
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
-        <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
+        <!--<script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>-->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
 
@@ -109,22 +112,22 @@
 
                             <label for="difficulty" style="margin-right:3%;">
                                 Difficulty
-                                <input id="input-id-1" name="difficulty" type="text" class="rating p-2" style="display:inline-block;" data-size="xs">
+                                <input id="input-id-1" name="difficulty" type="text" class="rating p-2" style="display:inline-block;" data-size="xs" required>
                             </label>
                             
                             <label for="organization" style="margin-right:3%;">
                                 Organization
-                                <input id="input-id-2" name="organization" type="text" class="rating p-2" style="display:inline-block;" data-size="xs">
+                                <input id="input-id-2" name="organization" type="text" class="rating p-2" style="display:inline-block;" data-size="xs" required>
                             </label>
 
                             <label for="effort" style="margin-right:3%;">
                                 Effort Required
-                                <input id="input-id-3" name="effort" type="text" class="rating p-2" style="display:inline-block;" data-size="xs">
+                                <input id="input-id-3" name="effort" type="text" class="rating p-2" style="display:inline-block;" data-size="xs" required>
                             </label>
 
                             <label for="professors">
                                 Professor(s)
-                                <input id="input-id-4" name="professors" type="text" class="rating p-2" style="display:inline-block;" data-size="xs">
+                                <input id="input-id-4" name="professors" type="text" class="rating p-2" style="display:inline-block;" data-size="xs" required>
                             </label>
 
                             <fieldset class="form-group recommend">
@@ -205,25 +208,27 @@
             function clearValidity1(){
                 console.log('here');
                 document.getElementById('radio-option1').setCustomValidity('');
-            }
+            };
 
             function clearValidity2(){
                 document.getElementById('radio-option3').setCustomValidity('');
-            }
+            };
 
-            // $(document).ready(function() {
-            //     // $('.rating-stars').on('click',function() {
-            //         $('.rating-stars').each(function(index,elem) {
-            //             console.log(elem.value);
-            //             if (!elem.value) {
-            //                 console.log('fdsfsdafasdfasd');
-            //                 // elem.setAttribute('required');
-            //                 elem.setAttribute('oninvalid',"setCustomValidity('You must rate this category')");
-            //                 return elem.setAttribute('oninput',"setCustomValidity('')");
-            //             }
-            //         });
-            //     // })
-            // })
+            $(document).ready(function() {
+                $('input, .rating-stars, textarea').on('click',function() {
+                    console.log('here');
+                    $.ajax({
+                        url: '/checkLogin',
+                        success: function(isLoggedIn) {
+                            if (!isLoggedIn) {
+                                alert('You must login to evaluate this course');
+                                window.location.href = '/login';
+                            }
+                        }
+                    })
+                })
+            })
+
             
             $('button[type="submit"]').on('click',function() {
                 $('.rating-stars').each(function(index,elem) {
