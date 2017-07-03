@@ -743,7 +743,7 @@ app.post('/profile/changePassSubmit',(req,res) => {
 
         verPassword = req.body.password;
 
-        jwt.verify('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXNzd29yZCI6Inl1c2VvdW5nMSIsImlhdCI6MTQ5NzQ5NjkwMH0.TtTIpFBotfxL1-pQX2wCS2XRofnyB4v4FNdaIH19QMI','SECRET',(err,result) => {
+        jwt.verify('','SECRET',(err,result) => {
             
 
             transporter = nodemailer.createTransport({

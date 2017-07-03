@@ -152,11 +152,11 @@
                 });
             
                 <% if (currentPageNum[0].currentPageNum !== undefined) { %>
-                $('.paginated-number').each(function(index) {
-                    if ("<%= currentPageNum[0].currentPageNum %>" === $(this).text()) {
-                        $(this).addClass('active');
-                    };
-                });
+                    $('.paginated-number').each(function(index) {
+                        if ("<%= currentPageNum[0].currentPageNum %>" === $(this).text()) {
+                            $(this).addClass('active');
+                        };
+                    });
                 <% } %>
                 
                 
