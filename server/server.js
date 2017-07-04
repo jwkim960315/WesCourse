@@ -190,11 +190,11 @@ app.get('/',(req,res) => {
     };
 
     if (req.user) {
-        return res.render('index',{userId: req.user.id});
+        return res.render('home',{userId: req.user.id});
     };
 
 
-    res.render('index',{userId: null});
+    res.render('home',{userId: null});
 
     
 });

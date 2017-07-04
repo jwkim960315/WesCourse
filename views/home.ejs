@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    	<meta charset="utf-8">
+    	<meta name="'viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    	
+    	<title>WesCourse</title>
+
+    	<link rel="stylesheet" type="text/css" href="views/css/home.css">
+
+    	<!-- Bootstrap CSS -->
+    	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+
+    	<!-- Font Awesome -->
+    	<script src="https://use.fontawesome.com/b6a42b064c.js"></script>
+
+    	<!-- Google Fonts -->
+    	<link href="https://fonts.googleapis.com/css?family=Anton|Cormorant+Garamond|Indie+Flower" rel="stylesheet">
+
+    	<!-- Semantic UI CSS -->
+    	<link rel="stylesheet" type="text/css" href="/semantic/dist/semantic.min.css">
+
+
+    </head>
+
+    <body class="body">
+
+    	<!-- NavBar -->
+    	<nav class="navbar navbar-toggleable-md navbar-light navbar-inverse bg-inverse fixed-top">
+		  <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarContents" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+		    <span class="navbar-toggler-icon"></span>
+		  </button>
+		  <a class="navbar-brand" href="http://www.wesleyan.edu/">
+		  	<!-- <div class="container"> -->
+		  		<p id="wes">Wesleyan</p>
+		  		<p id="uni">University</p>
+		  	<!-- </div> -->
+		  </a>
+
+		  <div class="collapse navbar-collapse" id="navbarContents">
+		    <ul class="navbar-nav mr-auto">
+		      <li class="nav-item">
+		        <a class="nav-link" href="/">Home<span class="sr-only">(current)</span></a>
+		      </li>
+		      <li class="nav-item">
+		        <a class="nav-link" href="/catalog">Catalog</a>
+		      </li>
+		      <li class="nav-item">
+		        <a class="nav-link" href="/about">About</a>
+		      </li>
+		    </ul>
+            <ul class="navbar-nav justify-content-end">
+                <li class="nav-item">
+                    <a class="nav-link" href="/login">Login</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/logout">LogOut</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/createUser">Create An Account</a>
+                </li>
+            </ul>
+
+            <form method="POST" action="/search/query/1/1" class="ui form navbar-searchbar">
+                <div class="fields">
+                    <div class="ui category search">
+                        <div class="ui icon input">
+                            <i class="search icon"></i>
+                            <input class="prompt six wide field" type="text" name="searchParam" placeholder="Search any keywords..."> 
+                        </div>
+                        <button class="ui button red" type="submit">Search</button>
+                        <div class="results"></div>
+                    </div>
+                </div>
+            </form>
+		  </div>
+		</nav>
+
+
+
+
+
+
+
+
+
+    	<!-- Header -->
+    	<div class="jumbotron jumbotron-fluid">
+		  <h3 class="display-3">WesCourse</h3>
+          <div class="container">
+            <img class="mx-auto d-block" src="https://upload.wikimedia.org/wikipedia/en/thumb/3/31/Wesleyan_University_Shield.svg/917px-Wesleyan_University_Shield.svg.png"/>    
+          </div>
+		</div>
+
+
+		<!-- Search Bar -->
+        <!-- <div class="ui centered grid">
+            <div class="row"> -->
+                <div class="ui twelve column centered grid">
+            		<form method="POST" action="/search/query/1/1" class="ui form main-searchbar">
+                        <div class="fields">
+                            <div class="ui category search">
+                                <div class="ui icon input">
+                                    <i class="search icon"></i>
+                                    <input class="prompt six wide field" type="text" name="searchParam" placeholder="Search any keywords..."> 
+                                </div>
+                                <button class="ui button red" type="submit">Search</button>
+                                <div class="results"></div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            <!-- </div>
+        </div> -->
+
+
+
+
+
+        <!-- JQuery -->
+        <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+
+		<!-- Semantics UI JavaScript -->
+		<script src="/semantic/dist/semantic.min.js"></script>	    
+
+    	<!-- Bootstrap 4 JavaScript -->
+    	<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+
+        <!-- Event Handlers -->
+        <script>
+            // $(document).ready(function() {
+            //     $('.jumbotron h3').fadeIn(1000,function() {
+            //         $('.container').fadeIn(1000,function() {
+            //             $('.main-searchbar').fadeIn(1000);    
+            //         })
+                    
+            //     });
+            // })
+        </script>
+    </body>
+</html>

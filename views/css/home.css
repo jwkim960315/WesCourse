@@ -1,0 +1,82 @@
+.body {
+	background: rgba(153,0,0,1);
+}
+
+.jumbotron {
+	background-color: black !important;
+	margin-top: 60px !important;
+}
+
+li a {
+	color: white !important;
+	padding-top: 20px !important;
+	padding-bottom: 20px !important;
+	font-weight: bold;
+	font-size: 1.1em;
+}
+
+li a:hover {
+	color: rgba(255,255,255,.5) !important;
+	border-bottom: 1px solid rgba(153,0,0,1);
+}
+
+.justify-content-end {
+	padding-right: 15px;
+}
+
+.main-searchbar {
+	margin-top: 5%;
+}
+
+.main-searchbar .input {
+	width: 700px;
+}
+
+.navbar-searchbar {
+	padding-top: 10px;
+}
+
+.jumbotron h3 {
+	color: white;
+	width: 20%;
+	margin: 0 auto;
+	text-align: center;
+	border-bottom: 2px solid rgba(153,0,0,1);
+	padding-bottom: 10px;
+	font-family: 'Anton', sans-serif;
+}
+
+.container {
+	margin: 0 auto;
+}
+
+img {
+	height: 24vh;
+	width: 13vw;
+	margin-top: 4vh;
+}
+
+.navbar-brand {
+	font-family: 'Cormorant Garamond', serif;
+	text-align: center;
+}
+
+.navbar-brand:hover {
+	color: rgba(255,255,255,.5) !important;
+}
+
+#wes {
+	padding-bottom: -5px;
+}
+
+#uni {
+	margin-top: -30px;
+	margin-bottom:-5px;
+	padding-top: 10px;
+	padding-bottom: 5px;
+	font-size: .7em;
+}
+
+
+
+
