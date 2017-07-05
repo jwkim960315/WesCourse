@@ -1,14 +1,10 @@
-html {
-	height: 100%;
-}
-
 body {
 	background: rgba(153,0,0,1) !important;
-	min-height: 100%;
 }
 
 .jumbotron {
 	background-color: black !important;
+	background: rgba(153,0,0,1) !important;
 	margin-top: 60px !important;
 }
 
@@ -37,39 +33,10 @@ li a:hover {
 
 .main-searchbar {
 	margin-top: 5%;
-	width: 100%;
-}
-
-.main-searchbar .grid,.main-searchbar .fields,.main-searchbar .input,.main-searchbar .top-category, {
-	width: 100% !important;
-	display: block !important;
-	margin-left: auto !important;
-	margin-right: auto !important;
-}
-
-.main-searchbar .results {
-	width: 60% !important;
-	/*margin: 0 auto;*/
-	/*margin-left: 16.8%; !important;*/
-	text-align: left;
-}
-
-.main-searchbar .results .result {
-	/*margin: 0 auto !important;*/
-	text-align: left;
 }
 
 .main-searchbar .input {
-	width: 60% !important;
-	/*margin: 0 auto;*/
-}
-
-.main-searchbar .category {
-	/*display:block !important;*/
-	width: 100% !important;
-	/*text-align: center;*/
-	/*margin-left: auto !important;*/
-	/*margin-right: auto !important;*/
+	width: 700px;
 }
 
 .navbar-searchbar {
@@ -90,11 +57,6 @@ li a:hover {
 	margin: 0 auto;
 }
 
-img {
-	height: 200px;
-	width: 200px;
-	margin-top: 4vh;
-}
 
 .navbar-brand {
 	font-family: 'Cormorant Garamond', serif;
@@ -122,5 +84,58 @@ img {
 }
 
 
+.catalog-header {
+	margin-top: 150px;
+	text-align: center;
+	font-family: 'Anton', sans-serif;
+	font-size: 80px;
+	color: white;
+}
+
+.categories button {
+	color: rgba(153,0,0,1);
+	border: 1px solid white;
+	background: white;
+	font-family: 'Merriweather', serif;
+	/*font-family: "Ubuntu", sans-serif !important;*/
+}
 
 
+.categories button:hover {
+	background: rgba(153,0,0,1) !important;
+	border: 1px solid white !important;
+	color: white !important;
+}
+
+.row {
+	overflow-wrap: break-word !important;
+	word-wrap: break-word !important;
+	hyphens: auto;
+	white-space: nowrap !important;
+}
+
+.category-names,.row a {
+	font-family: "Josefin Sans", sans-serif;
+	
+	white-space: nowrap !important;
+}
+
+.row a {
+	max-width: 10px;
+	font-size: 17px;
+}
+
+.row a:hover {
+	color: rgba(153,0,0,1) !important;
+}
+
+
+
+
+
+/*.categories button:clicked {
+	background: rgba(105,105,105,1) !important;
+}*/
+/*.collapse .card-block {
+	background-color: rgba(105,105,105,1);
+}*/

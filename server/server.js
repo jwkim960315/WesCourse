@@ -204,7 +204,9 @@ app.get('/catalog',(req,res) => {
 
     connection.query('SELECT category,name FROM fields ORDER BY 1,2').then(data => {
         data = catalogDataManipulator(data);
-        res.send(data);
+        console.log(data["CERTIFICATES"]);
+        // res.send([{data}]);
+        res.render('catalog',{data});
     });
 });
 

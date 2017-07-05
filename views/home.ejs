@@ -15,7 +15,7 @@
     	<script src="https://use.fontawesome.com/b6a42b064c.js"></script>
 
     	<!-- Google Fonts -->
-    	<link href="https://fonts.googleapis.com/css?family=Anton|Cormorant+Garamond|Indie+Flower" rel="stylesheet">
+    	<link href="https://fonts.googleapis.com/css?family=Anton|Bree+Serif|Cormorant+Garamond|Indie+Flower|Josefin+Sans" rel="stylesheet">
 
     	<!-- Semantic UI CSS -->
     	<link rel="stylesheet" type="text/css" href="/semantic/dist/semantic.min.css">
@@ -23,7 +23,7 @@
 
     </head>
 
-    <body class="body">
+    <body>
 
     	<!-- NavBar -->
     	<nav class="navbar navbar-toggleable-md navbar-light navbar-inverse bg-inverse fixed-top">
@@ -84,6 +84,7 @@
 
 
 
+
     	<!-- Header -->
     	<div class="jumbotron jumbotron-fluid">
 		  <h3 class="display-3">WesCourse</h3>
@@ -94,24 +95,36 @@
 
 
 		<!-- Search Bar -->
-        <!-- <div class="ui centered grid">
-            <div class="row"> -->
-                <div class="ui twelve column centered grid">
-            		<form method="POST" action="/search/query/1/1" class="ui form main-searchbar">
-                        <div class="fields">
-                            <div class="ui category search">
-                                <div class="ui icon input">
-                                    <i class="search icon"></i>
-                                    <input class="prompt six wide field" type="text" name="searchParam" placeholder="Search any keywords..."> 
-                                </div>
-                                <button class="ui button red" type="submit">Search</button>
-                                <div class="results"></div>
+        <div class="ui sixteen column centered grid">
+            <!-- <div class="two column"></div> -->
+            <div class="twelve column row"></div>
+                <form method="POST" action="/search/query/1/1" class="ui form main-searchbar">
+                    <div class="fields">
+                        <div class="ui category search top-category">
+                            <div class="ui icon input">
+                                <i class="search icon"></i>
+                                <input class="prompt six wide field" type="text" name="searchParam" placeholder="Search any keywords..."> 
                             </div>
+                            <button class="ui button red" type="submit">Search</button>
+                            <!-- <div class="ui sixteen column grid"> -->
+                                <div class="two column"></div>
+                                <!-- <div class="twelve column row"> -->
+                                    <div class="results twelve column"></div>
+                                <!-- </div> -->
+                                <div class="two column"></div>
+                            <!-- </div> -->
+                                                
+                                
                         </div>
-                    </form>
-                </div>
-            <!-- </div>
-        </div> -->
+                    </div>
+                </form>
+            </div>
+            <div class="two column row"></div>
+    		
+        </div>
+
+        
+        
 
 
 
@@ -129,14 +142,58 @@
 
         <!-- Event Handlers -->
         <script>
-            // $(document).ready(function() {
-            //     $('.jumbotron h3').fadeIn(1000,function() {
-            //         $('.container').fadeIn(1000,function() {
-            //             $('.main-searchbar').fadeIn(1000);    
-            //         })
-                    
-            //     });
-            // })
+            $('.ui.search')
+                .search({
+                    type: 'category',
+                    apiSettings: {
+                        onResponse: function(res) {
+                            var
+                                response = {
+                                    results : {}
+                                },
+                                counter = 0,
+                                max = 10;
+
+
+                            $.each(res, function(index, item) {
+                                
+                                if (index >= max) {
+                                    return false;
+                                }
+
+                                category = item.field_acronym;
+
+                                if (response.results[category] === undefined) {
+                                    maxResults = 2;
+                                    response.results[category] = {
+                                        name: category,
+                                        results: []
+                                    };
+                                };
+
+
+                                if (maxResults >= 0) {
+
+                                    response.results[category].results.push({
+                                        title: item.course_acronym,
+                                        url: `/catalog/${item.field_acronym}/${item.course_acronym}`,
+                                        description: item.professors
+                                    });
+                                };
+
+                                maxResults -= 1;
+                            });
+
+                            return response;
+                        },
+                        url: "/searching/{query}"
+                    }
+                });
+
+
+
         </script>
     </body>
+
+    
 </html>
