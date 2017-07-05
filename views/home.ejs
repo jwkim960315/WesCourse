@@ -118,67 +118,42 @@
 
         <!-- Event Handlers -->
         <script>
-            // $(document).ready(function(){
-            //     $('input.typeahead').typeahead({
-            //         name: 'typeahead',
-            //         remote: '/searching?keyword=%QUERY',
-            //         limit: 10
-            //     },{
-            //         name: 'search-dataset',
-            //         source: function(query,syncResults,asyncResults) {
-            //             console.log(query);
-            //             $.ajax({
-            //                 url: `/searching`,
-            //                 data: {query},
-            //                 success: function(data) {
-            //                     return asyncResults(data);
-            //                 }
-            //             })
-            //         }
-            //     }
-            //     );
-            // });
+            $('.search-keyword').on('input', function() {
+                let keyword = $('.search-keyword').val();
+                $.ajax({
+                    url: `/searching`,
+                    data: {keyword},
+                    success: function(data) {
+                        console.log(data);
+                        if (!data) {
+                            return $('div.list-group').html("");
+                        };
 
+                        if (data === "-1") {
+                            return $('div.list-group').html(`<div class="category list-group-item">
+                                                                <p>No Matching Results Found</p>
+                                                             </div>`)
+                        };
 
+                        template = "";
 
-            // let searchBarUpdate = function() {
-                $('.search-keyword').on('input', function() {
-                    let keyword = $('.search-keyword').val();
-                    // console.log(keyword);
-                    $.ajax({
-                        url: `/searching`,
-                        data: {keyword},
-                        success: function(data) {
-                            console.log(data);
-                            if (!data) {
-                                return $('div.list-group').html("");
-                            };
+                        for (var i=0; i < Object.keys(data).length; i++) {
+                            template += `<div class="category list-group-item">
+                                            <p>${Object.keys(data)[i]}</p>
+                                        </div>`;
+                            data[Object.keys(data)[i]].forEach((obj,index,arr) => {
+                                template += `<a class="list-group-item action" href="/catalog/${obj.field_acronym}/${obj.course_acronym}">
+                                                <p>${obj.course_acronym}</p>
+                                                <p>${obj.section}</p>
+                                                <p>${obj.professors}</p>
+                                            </a>`;
+                            });
+                        };
 
-                            template = "";
-
-                            for (var i=0; i < Object.keys(data).length; i++) {
-                                template += `<div class="category list-group-item">
-                                                <p>${Object.keys(data)[i]}</p>
-                                            </div>`;
-                                data[Object.keys(data)[i]].forEach((obj,index,arr) => {
-                                    template += `<a class="list-group-item action" href="/catalog/${obj.field_acronym}/${obj.course_acronym}">
-                                                    <p>${obj.course_acronym}</p>
-                                                    <p>${obj.section}</p>
-                                                    <p>${obj.professors}</p>
-                                                </a>`;
-                                });
-                            };
-
-                            $('div.list-group').html(template);
-                        }
-                    })
-
-
-
+                        $('div.list-group').html(template);
+                    }
                 })
-                
-            // }
-
+            })
         </script>
     </body>
 

@@ -565,14 +565,9 @@ app.get('/searching',(req,res) => {
                                                   field_acronym like "%${req.query.keyword}%"
                      ORDER BY field_acronym`)
         .then(data => {
-            if (!data) {
-                return res.send(undefined);
-            };
-
             data = searchingDataHandler(JSON.parse(JSON.stringify(data)));
             res.send(data);
-            // connection.end();
-        }).catch((e) => res.send(undefined));
+        }).catch((e) => res.send("-1"));
 });
 
 app.post('/search/query/:sectionNum/:pageNum',(req,res) => {
