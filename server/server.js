@@ -93,7 +93,22 @@ let saltHashPass = (password) => {
     return hashPass;
 };
 
+let searchingDataHandler = (data) => {
+    let tmpLst = [data[0]];
+    let res = {}
+    res[data[0].field_acronym] = tmpLst;
+    data.forEach((obj,index,arr) => {
+        if (Object.keys(res).slice(-1)[0] === obj.field_acronym) {
+            res[obj.field_acronym].push(obj);
+        } else {
+            res[obj.field_acronym] = [obj];
+        }
+    });
+    // console.log(res);
+    return res;  
 
+    
+};
 
 
 // Database Connection
@@ -539,15 +554,25 @@ app.get('/search',(req,res) => {
     res.render('search',{data: undefined, currentPageNum: [{currentPageNum: undefined}]});
 });
 
-app.get('/searching/:searchParam',(req,res) => {
-    connection.query(`SELECT * FROM courses WHERE course_name like "%${req.params.searchParam}%" OR
-                                                  professors like "%${req.params.searchParam}%" OR
-                                                  course_acronym like "%${req.params.searchParam}%" OR
-                                                  field_acronym like "%${req.params.searchParam}%"
+app.get('/searching',(req,res) => {
+    console.log(req.query.keyword);
+    if (!req.query.keyword) {
+        return res.send(undefined);
+    }
+    connection.query(`SELECT * FROM courses WHERE course_name like "%${req.query.keyword}%" OR
+                                                  professors like "%${req.query.keyword}%" OR
+                                                  course_acronym like "%${req.query.keyword}%" OR
+                                                  field_acronym like "%${req.query.keyword}%"
                      ORDER BY field_acronym`)
         .then(data => {
+            if (!data) {
+                return res.send(undefined);
+            };
+
+            data = searchingDataHandler(JSON.parse(JSON.stringify(data)));
             res.send(data);
-        });
+            // connection.end();
+        }).catch((e) => res.send(undefined));
 });
 
 app.post('/search/query/:sectionNum/:pageNum',(req,res) => {

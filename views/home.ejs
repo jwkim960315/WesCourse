@@ -21,6 +21,8 @@
     	<link rel="stylesheet" type="text/css" href="/semantic/dist/semantic.min.css">
 
 
+
+
     </head>
 
     <body>
@@ -61,18 +63,7 @@
                 </li>
             </ul>
 
-            <form method="POST" action="/search/query/1/1" class="ui form navbar-searchbar">
-                <div class="fields">
-                    <div class="ui category search">
-                        <div class="ui icon input">
-                            <i class="search icon"></i>
-                            <input class="prompt six wide field" type="text" name="searchParam" placeholder="Search any keywords..."> 
-                        </div>
-                        <button class="ui button red" type="submit">Search</button>
-                        <div class="results"></div>
-                    </div>
-                </div>
-            </form>
+            
 		  </div>
 		</nav>
 
@@ -95,33 +86,15 @@
 
 
 		<!-- Search Bar -->
-        <div class="ui sixteen column centered grid">
-            <!-- <div class="two column"></div> -->
-            <div class="twelve column row"></div>
-                <form method="POST" action="/search/query/1/1" class="ui form main-searchbar">
-                    <div class="fields">
-                        <div class="ui category search top-category">
-                            <div class="ui icon input">
-                                <i class="search icon"></i>
-                                <input class="prompt six wide field" type="text" name="searchParam" placeholder="Search any keywords..."> 
-                            </div>
-                            <button class="ui button red" type="submit">Search</button>
-                            <!-- <div class="ui sixteen column grid"> -->
-                                <div class="two column"></div>
-                                <!-- <div class="twelve column row"> -->
-                                    <div class="results twelve column"></div>
-                                <!-- </div> -->
-                                <div class="two column"></div>
-                            <!-- </div> -->
-                                                
-                                
-                        </div>
-                    </div>
-                </form>
-            </div>
-            <div class="two column row"></div>
-    		
+        <div class="container main-searchbar">
+            <form class="form-inline justify-content-center" method="POST" action="/search/query/1/1">
+              <label class="sr-only" for="search-keyword"></label>
+              <input type="text" class="form-control search-keyword typeahead tt-query" spellcheck="false" autocomplete="on" name="typeahead" id="search-keyword" placeholder="Search any keywords...">
+              <button type="submit" class="btn btn-danger">Search</button>
+            </form>
         </div>
+
+        <div class="list-group"></div>
 
         
         
@@ -140,57 +113,71 @@
     	<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
 
+        <!-- Typeahead JavaScript -->
+        <script src="./public/typeahead.min.js" type="text/javascript"></script>
+
         <!-- Event Handlers -->
         <script>
-            $('.ui.search')
-                .search({
-                    type: 'category',
-                    apiSettings: {
-                        onResponse: function(res) {
-                            var
-                                response = {
-                                    results : {}
-                                },
-                                counter = 0,
-                                max = 10;
+            // $(document).ready(function(){
+            //     $('input.typeahead').typeahead({
+            //         name: 'typeahead',
+            //         remote: '/searching?keyword=%QUERY',
+            //         limit: 10
+            //     },{
+            //         name: 'search-dataset',
+            //         source: function(query,syncResults,asyncResults) {
+            //             console.log(query);
+            //             $.ajax({
+            //                 url: `/searching`,
+            //                 data: {query},
+            //                 success: function(data) {
+            //                     return asyncResults(data);
+            //                 }
+            //             })
+            //         }
+            //     }
+            //     );
+            // });
 
 
-                            $.each(res, function(index, item) {
-                                
-                                if (index >= max) {
-                                    return false;
-                                }
 
-                                category = item.field_acronym;
+            // let searchBarUpdate = function() {
+                $('.search-keyword').on('input', function() {
+                    let keyword = $('.search-keyword').val();
+                    // console.log(keyword);
+                    $.ajax({
+                        url: `/searching`,
+                        data: {keyword},
+                        success: function(data) {
+                            console.log(data);
+                            if (!data) {
+                                return $('div.list-group').html("");
+                            };
 
-                                if (response.results[category] === undefined) {
-                                    maxResults = 2;
-                                    response.results[category] = {
-                                        name: category,
-                                        results: []
-                                    };
-                                };
+                            template = "";
 
+                            for (var i=0; i < Object.keys(data).length; i++) {
+                                template += `<div class="category list-group-item">
+                                                <p>${Object.keys(data)[i]}</p>
+                                            </div>`;
+                                data[Object.keys(data)[i]].forEach((obj,index,arr) => {
+                                    template += `<a class="list-group-item action" href="/catalog/${obj.field_acronym}/${obj.course_acronym}">
+                                                    <p>${obj.course_acronym}</p>
+                                                    <p>${obj.section}</p>
+                                                    <p>${obj.professors}</p>
+                                                </a>`;
+                                });
+                            };
 
-                                if (maxResults >= 0) {
-
-                                    response.results[category].results.push({
-                                        title: item.course_acronym,
-                                        url: `/catalog/${item.field_acronym}/${item.course_acronym}`,
-                                        description: item.professors
-                                    });
-                                };
-
-                                maxResults -= 1;
-                            });
-
-                            return response;
-                        },
-                        url: "/searching/{query}"
-                    }
-                });
+                            $('div.list-group').html(template);
+                        }
+                    })
 
 
+
+                })
+                
+            // }
 
         </script>
     </body>
