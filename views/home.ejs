@@ -86,7 +86,7 @@
 
 
 		<!-- Search Bar -->
-        <div class="main-searchbar">
+        <!-- <div class="main-searchbar"> -->
             <form class="form-inline" method="POST" action="/search/query/1/1">
                 <!-- <div class="inline-group"> -->
                   <label class="sr-only" for="search-keyword"></label>
@@ -102,14 +102,14 @@
                   <!-- </div> -->
             </form>
             
-        </div>
+        <!-- </div> -->
 
-        <div class="courses-group">
-            <div class="list-group inside-courses-group"></div>
-        </div>
+        
 
         <!-- <div class="outer-container"> -->
-             
+            <div class="courses-group">
+                <div class="list-group inside-courses-group"></div>
+            </div>
         <!-- </div> -->
         
         
@@ -222,27 +222,29 @@
             $(document).ready(function() {
                 
                 
-                width = $('input#search-keyword').outerWidth();
+                width = $('input#search-keyword').width();
 
-                main_searchbar_width = $('.main-searchbar').outerWidth();
-                form_width = $('button[type="submit"]').outerWidth()+width;
-                console.log(main_searchbar_width);
-                console.log(form_width);
+                // main_searchbar_width = $('.form-inline').width();
+                // form_width = $('button[type="submit"]').outerWidth()+width;
+                // console.log(main_searchbar_width);
+                // console.log(form_width);
 
-                push_width = main_searchbar_width/2 - form_width/2;
+                // push_width = main_searchbar_width/2 - form_width/2;
 
 
-                $('.courses-group').css('margin-left',push_width+'px');
-                $('.form-inline').css('margin-left',push_width+'px');
-                // $('.inside-courses-group').css('margin-left',push_width+'px');
-
-                console.log($('.courses-group').css('margin-left'));
-                console.log($('.form-inline').css('margin-left'));
-                // console.log()
+                // $('.courses-group').css('margin-left',push_width+'px');
+                // $('.form-inline').css('margin-left',push_width+'px');
                 
-                // console.log(width);
-                $('.courses-group').outerWidth(width);
-                // console.log()
+
+                // console.log($('.courses-group').css('margin-left'));
+                // console.log($('.form-inline').css('margin-left'));
+                
+                
+                
+                $('.courses-group').width(width);
+                console.log($('.courses-group').outerWidth());
+                // $('.inside-courses-group').outerWidth(width);
+                
                 
 
 
@@ -251,24 +253,21 @@
 
 
             $(window).resize(function() {
-                    width = $('input#search-keyword').outerWidth();
+                    width = $('input#search-keyword').width();
                     // console.log(width);
 
-                    main_searchbar_width = $('.main-searchbar').outerWidth();
-                    form_width = $('button[type="submit"]').outerWidth()+width;
-                    console.log(main_searchbar_width);
-                    console.log(form_width);
+                    // main_searchbar_width = $('.form-inline').width();
+                    // form_width = $('button[type="submit"]').outerWidth()+width;
+                    
 
-                    push_width = main_searchbar_width/2 - form_width/2;
+                    // push_width = main_searchbar_width/2 - form_width/2;
 
 
-                    $('.courses-group').css('margin-left',push_width+'px');
-                    $('.form-inline').css('margin-left',push_width+'px');
-                    // $('.inside-courses-group').css('margin-left',push_width+'px');
-
-                    console.log($('.courses-group').css('margin-left'));
-                    console.log($('.form-inline').css('margin-left'));
-                    $('.courses-group').outerWidth(width);
+                    // $('.courses-group').css('margin-left',push_width+'px');
+                    // $('.form-inline').css('margin-left',push_width+'px');
+                    
+                    $('.courses-group').width(width);
+                    // $('.inside-courses-group').outerWidth(width);
                 });
             
 
