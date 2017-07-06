@@ -15,7 +15,7 @@
     	<script src="https://use.fontawesome.com/b6a42b064c.js"></script>
 
     	<!-- Google Fonts -->
-    	<link href="https://fonts.googleapis.com/css?family=Anton|Bree+Serif|Cormorant+Garamond|Indie+Flower|Josefin+Sans" rel="stylesheet">
+    	<link href="https://fonts.googleapis.com/css?family=Bree+Serif|Anton|Cormorant+Garamond|Indie+Flower|Merriweather|Ubuntu|Josefin+Sans" rel="stylesheet">
 
     	<!-- Semantic UI CSS -->
     	<link rel="stylesheet" type="text/css" href="/semantic/dist/semantic.min.css">
@@ -86,15 +86,33 @@
 
 
 		<!-- Search Bar -->
-        <div class="container main-searchbar">
-            <form class="form-inline justify-content-center" method="POST" action="/search/query/1/1">
-              <label class="sr-only" for="search-keyword"></label>
-              <input type="text" class="form-control search-keyword typeahead tt-query" spellcheck="false" autocomplete="on" name="typeahead" id="search-keyword" placeholder="Search any keywords...">
-              <button type="submit" class="btn btn-danger">Search</button>
+        <div class="main-searchbar">
+            <form class="form-inline" method="POST" action="/search/query/1/1">
+                <!-- <div class="inline-group"> -->
+                  <label class="sr-only" for="search-keyword"></label>
+                  <!-- <div class="inline-group"> -->
+                    <!-- <div class="input-field"> -->
+                    <input type="text" class="form-control search-keyword" spellcheck="false" autocomplete="off" name="searchParam" id="search-keyword" placeholder="Search any keywords...">
+                    <!-- <div class="col-1"> -->
+                <!-- </div> -->
+                <!-- <div class="submit-field"> -->
+                    <button type="submit" class="btn btn-danger">Search</button>    
+                    <!-- </div> -->
+                  <!-- </div> -->
+                  <!-- </div> -->
             </form>
+            
         </div>
 
-        <div class="list-group"></div>
+        <div class="courses-group">
+            <div class="list-group inside-courses-group"></div>
+        </div>
+
+        <!-- <div class="outer-container"> -->
+             
+        <!-- </div> -->
+        
+        
 
         
         
@@ -118,34 +136,73 @@
 
         <!-- Event Handlers -->
         <script>
+
+            // Search Bar Suggested Search Results Handler
             $('.search-keyword').on('input', function() {
                 let keyword = $('.search-keyword').val();
                 $.ajax({
                     url: `/searching`,
                     data: {keyword},
                     success: function(data) {
-                        console.log(data);
+
                         if (!data) {
                             return $('div.list-group').html("");
                         };
 
                         if (data === "-1") {
-                            return $('div.list-group').html(`<div class="category list-group-item">
+                            return $('div.list-group').html(`<div class="categories list-group-item">
                                                                 <p>No Matching Results Found</p>
-                                                             </div>`)
+                                                             </div>`);
                         };
 
                         template = "";
 
                         for (var i=0; i < Object.keys(data).length; i++) {
-                            template += `<div class="category list-group-item">
+                            template += `<div class="categories list-group-item">
                                             <p>${Object.keys(data)[i]}</p>
                                         </div>`;
                             data[Object.keys(data)[i]].forEach((obj,index,arr) => {
-                                template += `<a class="list-group-item action" href="/catalog/${obj.field_acronym}/${obj.course_acronym}">
-                                                <p>${obj.course_acronym}</p>
-                                                <p>${obj.section}</p>
-                                                <p>${obj.professors}</p>
+
+                                obj.professors = obj.professors.replace(/;/g,"<br/>");
+
+                                splittedLst = obj.term_name.split(";");
+                                
+
+                                if (splittedLst.length !== 1 && splittedLst[0] !== splittedLst[1]) {
+                                    obj.term_name = `${splittedLst[0]} & ${splittedLst[1]}`; 
+                                } else {
+                                    obj.term_name = splittedLst[0];
+                                };
+
+
+                                template += `<a class="list-group-item action courses" href="/catalog/${obj.field_acronym}/${obj.course_acronym}">
+                                                <div class="col-6">
+                                                    <div class="course-acronyms">
+                                                        <p>Course: ${obj.course_acronym}</p>
+                                                    </div>
+
+                                                    <div class="course-names">
+                                                        <p>${obj.course_name}</p>
+                                                    </div>
+
+                                                    <div class="sections">
+                                                        <p>Section: ${obj.section}</p>
+                                                    </div>
+
+                                                    <div class="term-names">
+                                                        <p>Term: ${obj.term_name}</p>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-6 professors">
+                                                    
+                                                        <p>Professor(s): </p>
+                                                        <p>${obj.professors}</p>
+                                                    
+                                                </div>
+                                                
+                                                
+
                                             </a>`;
                             });
                         };
@@ -153,7 +210,51 @@
                         $('div.list-group').html(template);
                     }
                 })
-            })
+            });
+
+
+            // Search Results Show & Hide Transition Handlers
+            $('')
+
+            // Width Align Handler
+            $(document).ready(function() {
+                
+                
+                width = $('input#search-keyword').outerWidth();
+
+                main_searchbar_width = $('.main-searchbar').outerWidth();
+                form_width = $('button[type="submit"]').outerWidth()+width;
+                console.log(main_searchbar_width);
+                console.log(form_width);
+
+                push_width = main_searchbar_width/2 - form_width/2;
+
+
+                $('.courses-group').css('margin-left',push_width+'px');
+                $('.form-inline').css('margin-left',push_width+'px');
+                // $('.inside-courses-group').css('margin-left',push_width+'px');
+
+                console.log($('.courses-group').css('margin-left'));
+                console.log($('.form-inline').css('margin-left'));
+                // console.log()
+                
+                // console.log(width);
+                $('.courses-group').outerWidth(width);
+                console.log()
+                
+
+
+                $(window).resize(function() {
+                    width = $('input#search-keyword').outerWidth();
+                    // console.log(width);
+                    $('.courses-group').outerWidth(width);
+                });
+            });
+            
+
+
+
+
         </script>
     </body>
 

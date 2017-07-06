@@ -93,7 +93,7 @@ li a:hover {
 }
 
 .categories button {
-	color: rgba(153,0,0,1);
+	color: #D62929;
 	border: 1px solid white;
 	background: white;
 	font-family: 'Merriweather', serif;
@@ -102,7 +102,7 @@ li a:hover {
 
 
 .categories button:hover {
-	background: rgba(153,0,0,1) !important;
+	background: #D62929 !important;
 	border: 1px solid white !important;
 	color: white !important;
 }

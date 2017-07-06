@@ -98,13 +98,14 @@ let searchingDataHandler = (data) => {
     let res = {}
     res[data[0].field_acronym] = tmpLst;
     data.forEach((obj,index,arr) => {
-        if (Object.keys(res).slice(-1)[0] === obj.field_acronym) {
+
+        if (Object.keys(res).slice(-1)[0] === obj.field_acronym && index !== 0) {
             res[obj.field_acronym].push(obj);
         } else {
             res[obj.field_acronym] = [obj];
         }
     });
-    // console.log(res);
+    
     return res;  
 
     
@@ -219,8 +220,6 @@ app.get('/catalog',(req,res) => {
 
     connection.query('SELECT category,name FROM fields ORDER BY 1,2').then(data => {
         data = catalogDataManipulator(data);
-        console.log(data["CERTIFICATES"]);
-        // res.send([{data}]);
         res.render('catalog',{data});
     });
 });
@@ -571,7 +570,8 @@ app.get('/searching',(req,res) => {
 });
 
 app.post('/search/query/:sectionNum/:pageNum',(req,res) => {
-    
+    console.log(req.params.pageNum);
+    console.log(req.body.searchParam);
     if (req.body.searchParam === "") {
         res.render('search.ejs',{data: -1});
     };
@@ -587,8 +587,9 @@ app.post('/search/query/:sectionNum/:pageNum',(req,res) => {
                      ORDER BY course_acronym
                      LIMIT ${offset},10`)
         .then(data => {
-
+            console.log(data);
             if (data.length === 0) {
+
                 return res.render('search',{data: -1});
             };
 
@@ -643,7 +644,7 @@ app.post('/search/query/:sectionNum/:pageNum',(req,res) => {
                     console.log('*********************');
 
                     console.log(currentSecNum);
-
+                    console.log()
                     res.render('search.ejs',{data, 
                                              totalSecNum, 
                                              currentSecNum:[{currentSecNum}], 

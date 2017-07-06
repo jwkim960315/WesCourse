@@ -1,10 +1,13 @@
+
+
 html {
 	height: 100%;
 }
 
 body {
 	background: rgba(153,0,0,1) !important;
-	min-height: 100%;
+	/*min-height: 100%;*/
+	/*padding-bottom: 1000px !important;*/
 }
 
 .jumbotron {
@@ -23,11 +26,8 @@ li a {
 
 li a:hover {
 	color: rgba(255,255,255,.5) !important;
-	/*border-bottom: 1px solid rgba(153,0,0,1);*/
-	/*background: rgba(20, 22, 23, 1);*/
 	border-radius: 5px;
 	box-shadow: 3px 3px 1px 1px rgba(31, 33, 34, 1) inset !important;
-	/* rgba(41, 43, 44, 1) */
 	padding-left: 10px !important;
 }
 
@@ -36,44 +36,7 @@ li a:hover {
 }
 
 .main-searchbar {
-	margin-top: 5%;
-	width: 100%;
-}
-
-.main-searchbar .grid,.main-searchbar .fields,.main-searchbar .input,.main-searchbar .top-category, {
-	width: 100% !important;
-	display: block !important;
-	margin-left: auto !important;
-	margin-right: auto !important;
-}
-
-.main-searchbar .results {
-	width: 60% !important;
-	/*margin: 0 auto;*/
-	/*margin-left: 16.8%; !important;*/
-	text-align: left;
-}
-
-.main-searchbar .results .result {
-	/*margin: 0 auto !important;*/
-	text-align: left;
-}
-
-.main-searchbar .input {
-	width: 60% !important;
-	/*margin: 0 auto;*/
-}
-
-.main-searchbar .category {
-	/*display:block !important;*/
-	width: 100% !important;
-	/*text-align: center;*/
-	/*margin-left: auto !important;*/
-	/*margin-right: auto !important;*/
-}
-
-.navbar-searchbar {
-	padding-top: 10px;
+	margin: 0 auto;
 }
 
 .jumbotron h3 {
@@ -86,9 +49,7 @@ li a:hover {
 	font-family: 'Anton', sans-serif;
 }
 
-.container {
-	margin: 0 auto;
-}
+
 
 img {
 	height: 200px;
@@ -100,13 +61,10 @@ img {
 	font-family: 'Cormorant Garamond', serif;
 	text-align: center;
 	padding-right: 5px;
-	/*border-right: 3px solid red;*/
 }
 
 .navbar-brand:hover {
 	color: rgba(255,255,255,.5) !important;
-	/*box-shadow: 3px 3px 1px 1px rgba(31, 33, 34, 1) inset !important;*/
-	/*padding-left: 5px !important;*/
 }
 
 #wes {
@@ -115,7 +73,7 @@ img {
 
 #uni {
 	margin-top: -30px;
-	margin-bottom:-5px;
+	margin-bottom: -5px;
 	padding-top: 10px;
 	padding-bottom: 5px;
 	font-size: .7em;
@@ -123,4 +81,86 @@ img {
 
 
 
+
+.professors {
+	vertical-align: text-top;
+	text-align: right;
+	padding-bottom: 3%;
+}
+
+.professors p {
+	display: inline-block;
+	vertical-align: text-top;
+}
+
+.courses-group {
+	max-height: 50% ;
+	overflow: hidden;
+	overflow-y: scroll;
+}
+
+
+.courses-group::-webkit-scrollbar-track {
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+	border-radius: 10px;
+	background-color: #F5F5F5;
+	-webkit-box-shadow: inset 0 0 6px rgba(153,0,0,1);
+	/*background-color: rgba(153,0,0,1);*/
+}
+
+.courses-group::-webkit-scrollbar {
+	/*width: 12px;*/
+	/*background-color: white;*/
+	background-color: rgba(153,0,0,1);
+
+}
+
+.courses-group::-webkit-scrollbar-thumb {
+	border-radius: 10px;
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+	background-color: #D62929;
+	/*background-color: white;*/
+	
+}
+
+
+.inside-courses-group a {
+	color: black;
+	font-family: "Josefin Sans", sans-serif;
+	font-weight: bold;
+}
+
+.inside-courses-group a:hover {
+	color: red;
+}
+
+.inside-courses-group .categories {
+	font-family: 'Merriweather', serif;
+	font-weight: bold;
+	font-size: 15px;
+	color: white;
+	background-color: #D62929;
+}
+
+button[type="submit"] {
+	background-color: white;
+	color: #D62929;
+	float:left;
+}
+
+
+
+button[type="submit"]:hover {
+	background-color: #D62929;
+	color: white;
+
+}
+
+input#search-keyword {
+	width: 60%;
+}
+
+.inside-courses-group form {
+	/*margin: 0 auto !important;*/
+}
 
