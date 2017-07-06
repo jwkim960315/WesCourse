@@ -554,7 +554,7 @@ app.get('/search',(req,res) => {
 });
 
 app.get('/searching',(req,res) => {
-    console.log(req.query.keyword);
+    // console.log(req.query.keyword);
     if (!req.query.keyword) {
         return res.send(undefined);
     }
@@ -562,7 +562,8 @@ app.get('/searching',(req,res) => {
                                                   professors like "%${req.query.keyword}%" OR
                                                   course_acronym like "%${req.query.keyword}%" OR
                                                   field_acronym like "%${req.query.keyword}%"
-                     ORDER BY field_acronym`)
+                     ORDER BY field_acronym
+                     LIMIT 10`)
         .then(data => {
             data = searchingDataHandler(JSON.parse(JSON.stringify(data)));
             res.send(data);
