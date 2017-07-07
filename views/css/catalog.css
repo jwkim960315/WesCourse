@@ -108,10 +108,10 @@ li a:hover {
 }
 
 .row {
-	overflow-wrap: break-word !important;
-	word-wrap: break-word !important;
+	/*overflow-wrap: break-word !important;*/
+	/*word-wrap: break-word !important;*/
 	hyphens: auto;
-	white-space: nowrap !important;
+	/*white-space: nowrap !important;*/
 }
 
 .category-names,.row a {

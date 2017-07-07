@@ -9,6 +9,7 @@ const fs = require('fs');
 const html = require('html');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
+// const routes = require('routes');
 
 var passport = require('passport')
   , LocalStrategy = require('passport-local').Strategy
@@ -22,13 +23,14 @@ var app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(methodOverride('X-HTTP-Method-Override'));
-app.use(express.static(path.join(__dirname, '/../')));
+app.use(express.static(path.join(__dirname, '/../views')));
 
-console.log(path.join(__dirname,'/../public'));
+// console.log(path.join(__dirname,'/../public'));
 app.set('view engine','ejs');
 app.use(session({ secret: 'a random password!'}));
 app.use(passport.initialize());
 app.use(passport.session());
+// app.use(routes.index);
 // app.use(express.static('public'));
 
 
@@ -197,6 +199,9 @@ passport.deserializeUser((id, done) => {
 
 
 // Routes
+
+// app.get('/',routes.index);
+
 
 let options;
 
@@ -550,14 +555,19 @@ app.get('/logout',(req,res) => {
 
 
 app.get('/search',(req,res) => {
-    res.render('search',{data: undefined, currentPageNum: [{currentPageNum: undefined}]});
+    res.render('search_test',{data: undefined, currentPageNum: [{currentPageNum: undefined}]});
 });
 
 app.get('/searching',(req,res) => {
     // console.log(req.query.keyword);
     if (!req.query.keyword) {
         return res.send(undefined);
-    }
+    };
+
+    if (req.query.keyword === "," || req.query.keyword === "." || req.query.keyword === ";") {
+        return res.send("-1");
+    };
+
     connection.query(`SELECT * FROM courses WHERE course_name like "%${req.query.keyword}%" OR
                                                   professors like "%${req.query.keyword}%" OR
                                                   course_acronym like "%${req.query.keyword}%" OR
@@ -565,16 +575,25 @@ app.get('/searching',(req,res) => {
                      ORDER BY field_acronym
                      LIMIT 10`)
         .then(data => {
-            data = searchingDataHandler(JSON.parse(JSON.stringify(data)));
-            res.send(data);
+            connection.query(`SELECT count(*) as count FROM courses WHERE course_name like "%${req.query.keyword}%" OR
+                                                                          professors like "%${req.query.keyword}%" OR
+                                                                          course_acronym like "%${req.query.keyword}%" OR
+                                                                          field_acronym like "%${req.query.keyword}%"`)
+                .then(dataLength => {
+                    
+                    dataLength = dataLength[0].count;
+                    data = searchingDataHandler(JSON.parse(JSON.stringify(data)));
+                    res.send({data,dataLength});
+                }).catch(e => res.send("-1"));
         }).catch((e) => res.send("-1"));
 });
 
 app.post('/search/query/:sectionNum/:pageNum',(req,res) => {
     console.log(req.params.pageNum);
     console.log(req.body.searchParam);
+    // console.log(req.body.keyword);
     if (req.body.searchParam === "") {
-        res.render('search.ejs',{data: -1});
+        res.render('search_test',{data: -1});
     };
 
     let offset = (req.params.pageNum-1)*10;
@@ -588,10 +607,10 @@ app.post('/search/query/:sectionNum/:pageNum',(req,res) => {
                      ORDER BY course_acronym
                      LIMIT ${offset},10`)
         .then(data => {
-            console.log(data);
+            // console.log(data);
             if (data.length === 0) {
 
-                return res.render('search',{data: -1});
+                return res.render('search_test',{data: -1});
             };
 
             connection.query(`SELECT count(*) as count FROM courses WHERE course_name like "%${req.body.searchParam}%" OR
@@ -632,10 +651,10 @@ app.post('/search/query/:sectionNum/:pageNum',(req,res) => {
 
                     if (currentSecNum == totalSecNum) {
                         currentPageTotalNum = Math.floor(totalCount%50/10)+1;
-                        console.log("last Page: "+currentPageTotalNum);
+                        // console.log("last Page: "+currentPageTotalNum);
                     } else {
                         currentPageTotalNum = 5;
-                        console.log("Not last Page: "+currentPageTotalNum);
+                        // console.log("Not last Page: "+currentPageTotalNum);
                     };
                     
                     console.log(currentPageTotalNum);
@@ -645,8 +664,7 @@ app.post('/search/query/:sectionNum/:pageNum',(req,res) => {
                     console.log('*********************');
 
                     console.log(currentSecNum);
-                    console.log()
-                    res.render('search.ejs',{data, 
+                    res.render('search_test',{data, 
                                              totalSecNum, 
                                              currentSecNum:[{currentSecNum}], 
                                              prevSecNum:[{prevSecNum}], 
@@ -674,6 +692,9 @@ app.get('/search/query/:sectionNum/:pageNum/:searchParam',(req,res) => {
                      ORDER BY course_acronym
                      LIMIT ${offset},10`)
         .then(data => {
+            if (data.length === 0) {
+                return res.render('search_test',{data: -1});
+            };
             connection.query(`SELECT count(*) as count FROM courses WHERE course_name like "%${req.params.searchParam}%" OR
                                                                  professors like "%${req.params.searchParam}%" OR
                                                                  course_acronym like "%${req.params.searchParam}%" OR
@@ -723,13 +744,25 @@ app.get('/search/query/:sectionNum/:pageNum/:searchParam',(req,res) => {
                     
                     // console.log(currentPageTotalNum);
 
-                    // console.log('*********************');
+                    console.log('*********************');
+
+                    console.log("totalSecNum: ",totalSecNum);
+                    console.log("currentSecNum: ",currentSecNum);
+                    console.log("prevSecNum: ",prevSecNum);
+                    console.log("nextSecNum: ",nextSecNum);
+                    console.log("currentPageTotalNum: ",currentPageTotalNum);
+                    console.log("req.params.searchParam: ",req.params.searchParam);
+                    console.log("totalCount: ",totalCount);
+                    console.log("req.params.pageNum: ",req.params.pageNum);
+
+                    console.log('*********************');
 
                     // console.log(currentSecNum);
 
+
                
 
-                    res.render('search.ejs',{data, 
+                    res.render('search_test.ejs',{data, 
                                              totalSecNum, 
                                              currentSecNum:[{currentSecNum}], 
                                              prevSecNum:[{prevSecNum}], 

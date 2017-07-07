@@ -1,12 +1,10 @@
 <!DOCTYPE html>
 <html>
-    <head>
-    	<meta charset="utf-8">
-    	<meta name="'viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    	
-    	<title>WesCourse</title>
+	<head>
+		<meta charset="utf-8">
+		<title>WesCourse</title>
 
-    	<link rel="stylesheet" type="text/css" href="/css/home.css">
+		
 
     	<!-- Bootstrap CSS -->
     	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
@@ -20,13 +18,12 @@
     	<!-- Semantic UI CSS -->
     	<link rel="stylesheet" type="text/css" href="/semantic/dist/semantic.min.css">
 
+    	<link rel="stylesheet" type="text/css" href="/css/search_test.css">
 
+	</head>
 
-
-    </head>
-
-    <body>
-
+	<body>
+		
     	<!-- NavBar -->
     	<nav class="navbar navbar-toggleable-md navbar-light navbar-inverse bg-inverse fixed-top">
 		  <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarContents" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -70,22 +67,8 @@
 		  </div>
 		</nav>
 
-
-
-
-
-
-
-
-
-
-    	<!-- Header -->
-    	<div class="jumbotron jumbotron-fluid">
-		  <h3 class="display-3">WesCourse</h3>
-          <div class="container">
-            <img class="mx-auto d-block" src="https://upload.wikimedia.org/wikipedia/en/thumb/3/31/Wesleyan_University_Shield.svg/917px-Wesleyan_University_Shield.svg.png"/>
-          </div>
-		</div>
+		<!-- Header -->
+		<h1 class="search-header">Search</h1>
 
 
 		<!-- Search Bar -->
@@ -104,22 +87,80 @@
             </div>
         </div>
 
-        
-
-        <!-- <div class="outer-container"> -->
+        <br/>
+        <!-- <div class="container"> -->
+        <% if (data === -1) { %>
+            <h3>
+                No Results found. Please go to the Catalog section.
+            </h3>
+        <% } else if (data !== undefined) { %>
+        	
+            <table class="table">
+                <tbody>
+                    
+                    <% for (var i=0; i < data.length; ++i) { %>
+                        <tr>
+                            <th>
+                                <a href="/catalog/<%= data[i].field_acronym %>/<%= data[i].course_acronym %>" style="color:black;"><strong><u><%= data[i].course_acronym %></u></strong></a>
+                                <h6 style="display:inline;"><strong><%= data[i].course_name %></strong></h6>
+                                <h6 style="float: right;"><strong>Class Time: <%= data[i].class_date %></strong></h6>
+                                <br>
+                                <h6><strong>Section: <%= data[i].section %></strong></h3>
+                                <h6><strong>Professors: <%= data[i].professors %></strong></h3>
+                            </th>
+                        </tr>
+                    <% } %>
+                    
+                </tbody>
+            </table>
+            <!-- </div> -->
             
-        <!-- </div> -->
-        
-        
-
-        
-        
 
 
+            <nav class="pagination-nav">
+                
+                <ul class="pagination justify-content-center">
+                    <div id="pages-container">
+                        <% startNextPageNum = currentSecNum[0].currentSecNum*5+1 %>
+                        <% startPrevPageNum = ( currentSecNum[0].currentSecNum-2)*5+1 %>
+                        <% if (currentSecNum[0].currentSecNum !== 1) { %>
+                            <li class="page-item" style="display: inline-block;">
+                                <a class="page-link" href="/search/query/<%= prevSecNum[0].prevSecNum %>/<%= startPrevPageNum %>/<%= searchParam[0].searchParam %>" aria-label="Previous" dataset=<%- prevSecNum[0].prevSecNum %>>
+                                    <span aria-hidden="true">&#171;</span>
+                                    <span class="sr-only">Previous</span>
+                                </a>
+                            </li>
+                        <% } %>
+                        <% for (var i=(currentSecNum[0].currentSecNum-1)*5+1; i <= (currentSecNum[0].currentSecNum-1)*5+currentPageTotalNum[0].currentPageTotalNum; i++) { %>
+                            <li class="page-item paginated-number"  style="display: inline-block;"><a class="page-link" href="/search/query/<%= currentSecNum[0].currentSecNum %>/<%= i %>/<%= searchParam[0].searchParam %>"><%= i %></a></li>
+                        <% } %>
+                        <% if (currentSecNum[0].currentSecNum !== totalSecNum) { %> 
+                            <li class="page-item" style="display: inline-block;">
+                                <a class="page-link" href="/search/query/<%= nextSecNum[0].nextSecNum %>/<%= startNextPageNum %>/<%= searchParam[0].searchParam %>" aria-label="Next" dataset=<%- nextSecNum[0].nextSecNum %>>
+                                    <span aria-hidden="true">&#187;</span>
+                                    <span class="sr-only">Next</span>
+                                </a>
+                            </li>
+                        <% } %>
+                    </div>
+                </ul>
+                
+            </nav>
+            
+        <% } %>
 
 
 
-        <!-- JQuery -->
+
+
+
+
+
+
+
+
+
+		<!-- JQuery -->
         <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
 
 		<!-- Semantics UI JavaScript -->
@@ -130,10 +171,14 @@
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
 
 
-        <!-- Event Handlers -->
-        <script>
 
-            // Search Bar Suggested Search Results Handler
+
+		<script>
+
+			
+
+
+			// Search Bar Suggested Search Results Handler
             $('.search-keyword').on('input', function() {
                 keyword = $('.search-keyword').val();
 
@@ -230,7 +275,7 @@
                         width = $('input#search-keyword').outerWidth();
                         $('.courses-group').outerWidth(width);
 
-                        $("html, body").animate({ scrollTop: $(document).height() }, 1000);
+                        // $("html, body").animate({ scrollTop: $(document).height() }, 1000);
                         
                         $('.courses-group').fadeIn(400);
                     }
@@ -377,8 +422,19 @@
 
             }
 
-        </script>
-    </body>
+            <% if (currentPageNum[0].currentPageNum !== undefined) { %>
+                $('.paginated-number').each(function(index) {
+                    if ("<%= currentPageNum[0].currentPageNum %>" === $(this).text()) {
+                        $(this).addClass('active');
+                    };
+                });
+            <% } %>
 
-    
+		</script>
+
+
+
+
+
+	</body>
 </html>

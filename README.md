@@ -10,5 +10,6 @@ A web application that displays & stores the ratings of the Wesleyan University 
     * express
     * mysql
     * ejs
+    * Hilitor
 * Mysql
-* Bootstrap
+* Bootstrap 4

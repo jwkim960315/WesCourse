@@ -6,7 +6,7 @@
     	
     	<title>WesCourse</title>
 
-    	<link rel="stylesheet" type="text/css" href="views/css/catalog.css">
+    	<link rel="stylesheet" type="text/css" href="/css/catalog.css">
 
     	<!-- Bootstrap CSS -->
     	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
@@ -47,6 +47,9 @@
 		      <li class="nav-item">
 		        <a class="nav-link" href="/about">About</a>
 		      </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/search">Search</a>
+              </li>
 		    </ul>
             <ul class="navbar-nav justify-content-end">
                 <li class="nav-item">
@@ -60,18 +63,6 @@
                 </li>
             </ul>
 
-            <form method="POST" action="/search/query/1/1" class="ui form navbar-searchbar">
-                <div class="fields">
-                    <div class="ui category search">
-                        <div class="ui icon input">
-                            <i class="search icon"></i>
-                            <input class="prompt six wide field" type="text" name="searchParam" placeholder="Search any keywords..."> 
-                        </div>
-                        <button class="ui button red" type="submit">Search</button>
-                        <div class="results"></div>
-                    </div>
-                </div>
-            </form>
 		  </div>
 		</nav>
 

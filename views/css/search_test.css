@@ -15,16 +15,15 @@ body {
 	margin-top: 60px !important;
 }
 
-li a {
+.nav-item a {
 	color: white !important;
 	padding-top: 20px !important;
 	padding-bottom: 20px !important;
 	font-weight: bold;
 	font-size: 1.1em;
-
 }
 
-li a:hover {
+.nav-item a:hover {
 	color: rgba(255,255,255,.5) !important;
 	border-radius: 5px;
 	box-shadow: 3px 3px 1px 1px rgba(31, 33, 34, 1) inset !important;
@@ -75,7 +74,13 @@ img {
 	font-size: .7em;
 }
 
-
+.search-header {
+	margin-top: 150px;
+	text-align: center;
+	font-family: 'Anton', sans-serif;
+	font-size: 80px;
+	color: white;
+}
 
 
 .professors {
@@ -133,6 +138,13 @@ img {
 	background-color: #D62929;
 }
 
+/*.courses-group {
+	max-height: 400px;
+	overflow-y: scroll;
+	position: relative;
+	margin: 0 auto;
+}*/
+
 button[type="submit"] {
 	background-color: white;
 	color: #D62929;
@@ -163,4 +175,40 @@ input#search-keyword {
 #view-all {
 	margin: 0 auto;
 	font-size: 15px;
+}
+
+tr {
+	background: white;
+	border-radius: 3px;
+}
+
+th * {
+	font-family: "Josefin", sans-serif;
+	font-size: 17px;
+	/*color: red !important;*/
+}
+
+table {
+	width: 90% !important;
+	border-radius: 3px !important;
+	margin: 0 auto;
+}
+
+.page-item a {
+	color: black;
+}
+
+.page-item a:hover {
+	background: rgba(153,0,0,1);
+	color: white;
+}
+
+.page-item.active .page-link {
+	background-color: #d9534f !important;
+	color: white !important;
+}
+
+.page-item.active .page-link:hover {
+	background-color: rgba(153,0,0,1) !important;
+	/*color: grey !important;*/
 }
