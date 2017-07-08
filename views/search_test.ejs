@@ -72,22 +72,26 @@
 
 
 		<!-- Search Bar -->
-        <div class="main-searchbar container">
-            <form class="form-inline" method="POST" action="/search/query/1/1">
-                <label class="sr-only" for="search-keyword"></label>
-                <input type="text" class="form-control search-keyword" spellcheck="false" autocomplete="off" name="searchParam" id="search-keyword" placeholder="Search any keywords...">
-                <button type="submit" class="btn btn-danger">Search</button>    
-            </form>
-            <div class="courses-group inline" id="courses-group">
-            <!-- <div class=""> -->
-                <div class="list-group inside-courses-group" id="inside-courses-group"></div>
-            <!-- </div> -->
-                <!-- <button type="submit" class="btn btn-danger">Search</button>  -->
-                <!-- <div class="empty">fdsfafsa</div> -->
-            </div>
-        </div>
+        <!-- <div class="main-searchbar container"> -->
+            <!-- <div class="wrap-group"> -->
+                <form class="form" method="POST" action="/search/query/1/1">
+                    <label class="sr-only" for="search-keyword"></label>
+                    <div class="input-group">
+                        <input type="text" class="form-control search-keyword" spellcheck="false" autocomplete="off" name="searchParam" id="search-keyword" placeholder="Search any keywords...">
+                        <span class="input-group-btn">
+                            <button type="submit" class="btn btn-danger">Search</button>    
+                        </span>
 
-        <br/>
+                    </div>
+                    
+                    
+                </form>
+                <div class="courses-group" id="courses-group">
+                    <div class="list-group inside-courses-group" id="inside-courses-group"></div>
+                </div>
+            <!-- </div> -->
+        <!-- </div> -->
+
         <!-- <div class="container"> -->
         <% if (data === -1) { %>
             <h3>
@@ -101,12 +105,12 @@
                     <% for (var i=0; i < data.length; ++i) { %>
                         <tr>
                             <th>
-                                <a href="/catalog/<%= data[i].field_acronym %>/<%= data[i].course_acronym %>" style="color:black;"><strong><u><%= data[i].course_acronym %></u></strong></a>
+                                <a href="/catalog/<%= data[i].field_acronym %>/<%= data[i].course_acronym %>"><strong><u><%= data[i].course_acronym %></u></strong></a>
                                 <h6 style="display:inline;"><strong><%= data[i].course_name %></strong></h6>
                                 <h6 style="float: right;"><strong>Class Time: <%= data[i].class_date %></strong></h6>
-                                <br>
-                                <h6><strong>Section: <%= data[i].section %></strong></h3>
-                                <h6><strong>Professors: <%= data[i].professors %></strong></h3>
+                                <!-- <br> -->
+                                <h6 style="margin-bottom: 0;"><strong>Section: <%= data[i].section %></strong></h6>
+                                <h6><strong>Professors: <%= data[i].professors %></strong></h6>
                             </th>
                         </tr>
                     <% } %>
@@ -174,7 +178,31 @@
 
 
 		<script>
+            // Search Input focusOut Event Handler
 
+            $('.courses-group').hover(function() {
+                $('.courses-group').data('clicked',true);  
+            } , function() {
+                $('.courses-group').data('clicked',false);
+            })
+
+            $('input[type="text"]').on({
+                focusin: function() {
+                    if ($(this).val() !== "") {
+                        $('.courses-group').fadeIn(400);
+                    };
+                },
+                focusout: function() {
+                    console.log($('.courses-group').data('clicked'));
+                    if (!$('.courses-group').data('clicked')) {
+                        $('.courses-group').hide();
+                    }
+                }
+            })
+
+            
+
+            
 			
 
 
@@ -260,7 +288,7 @@
                         };
 
                         if (data.dataLength > 10) {
-                            template += `<a href="search/query/1/1/${keyword}" class="list-group-item">
+                            template += `<a href="/search/query/1/1/${keyword}" class="list-group-item">
                                             <p id="view-all">View All Results</p>
                                          </a>`;
                         };
@@ -272,8 +300,8 @@
                         myHilitor.setMatchType("open");
                         myHilitor.apply(keyword);
 
-                        width = $('input#search-keyword').outerWidth();
-                        $('.courses-group').outerWidth(width);
+                        // width = $('input#search-keyword').outerWidth();
+                        // $('.courses-group').outerWidth(width);
 
                         // $("html, body").animate({ scrollTop: $(document).height() }, 1000);
                         
@@ -288,13 +316,16 @@
 
             // Width Align Handler
             $(document).ready(function() {  
-                $('.courses-group').hide("fast");
+                $('.courses-group').hide();
+                // width = $('input#search-keyword').outerWidth();
+                // $('table').width(width);
             });
 
 
             $(window).resize(function() {
-                width = $('input#search-keyword').outerWidth();
-                $('.courses-group').outerWidth(width);
+                // width = $('input#search-keyword').outerWidth();
+                // $('.courses-group').outerWidth(width);
+                // $('table').width(width);
             });
             
             window.onbeforeunload = function(){ window.scrollTo(0,0); }

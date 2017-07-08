@@ -6,8 +6,9 @@ html {
 
 body {
 	background: rgba(153,0,0,1) !important;
-	padding-bottom: 70% !important;
+	/*padding-bottom: 70% !important;*/	
 	position: relative;
+	/*margin: 0 auto !important;*/
 }
 
 .jumbotron {
@@ -148,29 +149,59 @@ img {
 button[type="submit"] {
 	background-color: white;
 	color: #D62929;
-	/*margin: 0 auto;*/
+	/*float:right;*/
 }
 
+.input-group-btn {
+	/*position: absolute;*/
+	/*z-index: 1 !important;*/
+	/*margin-left: 97.5%;*/
+}
 
 
 button[type="submit"]:hover {
 	background-color: #D62929;
 	color: white;
-
 }
 
-input#search-keyword {
+input#search-keyword:focus {
+	box-shadow: 1px 1px 6px red,1px 1px 6px red,1px 1px 6px red,1px 1px 6px red;
+	border-color: red !important;
+}
+
+/*.wrap-group {
+	position: absolute;
+	
+	z-index: 100 !important;
+}*/
+
+form {
+	margin: 0 auto;
 	width: 90%;
+	margin-top: 7%;
 }
 
 .courses-group {
+	margin: 0 auto !important;
 	max-height: 400px;
 	overflow-y: scroll;
+	/*float: right;*/
+	/*overflow: visible;*/
+	position: absolute;
+	width: 90%;
+	z-index: 10 !important;
+	margin-left: 5% !important;
+
 }
 
 .main-searchbar {
 	margin-top: 7%;
+	position: relative;
+	z-index: 10 !important;
+	margin: 0 auto !important;
 }
+
+
 
 #view-all {
 	margin: 0 auto;
@@ -182,17 +213,36 @@ tr {
 	border-radius: 3px;
 }
 
-th * {
-	font-family: "Josefin", sans-serif;
-	font-size: 17px;
-	/*color: red !important;*/
+th h6, th a {
+	font-family: "Josefin Sans", sans-serif !important;
+	font-size: 1.2rem;
+	color: black;
+}
+
+th a:hover {
+	color: red !important;
 }
 
 table {
-	width: 90% !important;
-	border-radius: 3px !important;
-	margin: 0 auto;
+	margin-top: 30px !important;
+	position: relative;
+	z-index: 1 !important;
+	overflow: hidden;
+    border-collapse:separate;
+    border: solid #ccc 1px;
+    border-radius: 3px;
+    width: 95% !important;
+    margin: 0 auto;
+
 }
+
+.inside-courses-group {
+	/*position: absolute;*/
+	z-index: 10 !important;
+	margin: 0 auto;
+	/*border-bottom: 1px solid black;*/
+}
+
 
 .page-item a {
 	color: black;
@@ -206,9 +256,11 @@ table {
 .page-item.active .page-link {
 	background-color: #d9534f !important;
 	color: white !important;
+	border: 1px solid white !important;
 }
 
 .page-item.active .page-link:hover {
 	background-color: rgba(153,0,0,1) !important;
-	/*color: grey !important;*/
+	
 }
+
