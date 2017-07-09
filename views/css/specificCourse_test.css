@@ -1,0 +1,82 @@
+html {
+    height: 100%;
+}
+
+body {
+    background: rgba(153,0,0,1) !important;
+    /*padding-bottom: 70% !important;*/ 
+    position: relative;
+    /*margin: 0 auto !important;*/
+}
+
+.jumbotron {
+    background-color: black !important;
+    margin-top: 60px !important;
+}
+
+.nav-item a {
+    color: white !important;
+    padding-top: 20px !important;
+    padding-bottom: 20px !important;
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+.nav-item a:hover {
+    color: rgba(255,255,255,.5) !important;
+    border-radius: 5px;
+    box-shadow: 3px 3px 1px 1px rgba(31, 33, 34, 1) inset !important;
+    padding-left: 10px !important;
+}
+
+.justify-content-end {
+    padding-right: 15px;
+}
+
+.jumbotron h3 {
+    color: white;
+    width: 300px;
+    margin: 0 auto;
+    text-align: center;
+    border-bottom: 4px solid rgba(153,0,0,1);
+    padding-bottom: 10px;
+    font-family: 'Anton', sans-serif;
+}
+
+
+
+img {
+    height: 200px;
+    width: 200px;
+    margin-top: 4vh;
+}
+
+.navbar-brand {
+    font-family: 'Cormorant Garamond', serif;
+    text-align: center;
+    padding-right: 5px;
+}
+
+.navbar-brand:hover {
+    color: rgba(255,255,255,.5) !important;
+}
+
+#wes {
+    padding-bottom: -5px;
+}
+
+#uni {
+    margin-top: -30px;
+    margin-bottom: -5px;
+    padding-top: 10px;
+    padding-bottom: 5px;
+    font-size: .7em;
+}
+
+.search-header {
+    margin-top: 150px;
+    text-align: center;
+    font-family: 'Anton', sans-serif;
+    font-size: 80px;
+    color: white;
+}

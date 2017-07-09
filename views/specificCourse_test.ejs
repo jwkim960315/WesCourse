@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>WesCourse</title>
+
+        
+
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+
+        <!-- Font Awesome -->
+        <script src="https://use.fontawesome.com/b6a42b064c.js"></script>
+
+        <!-- Google Fonts -->
+        <link href="https://fonts.googleapis.com/css?family=Bree+Serif|Anton|Cormorant+Garamond|Indie+Flower|Merriweather|Ubuntu|Josefin+Sans" rel="stylesheet">
+
+        <!-- Semantic UI CSS -->
+        <link rel="stylesheet" type="text/css" href="/semantic/dist/semantic.min.css">
+
+        <link rel="stylesheet" type="text/css" href="/css/specificCourse_test.css">
+    </head>
+    <body>
+        <!-- NavBar -->
+        <nav class="navbar navbar-toggleable-md navbar-light navbar-inverse bg-inverse fixed-top">
+          <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarContents" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div>
+          <a class="navbar-brand" href="http://www.wesleyan.edu/">
+                <p id="wes">Wesleyan</p>
+                <p id="uni">University</p>
+          </a>
+          </div>
+
+          <div class="collapse navbar-collapse" id="navbarContents">
+            <ul class="navbar-nav mr-auto">
+              <li class="nav-item">
+                <a class="nav-link" href="/">Home<span class="sr-only">(current)</span></a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/catalog">Catalog</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/about">About</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/search">Search</a>
+              </li>
+            </ul>
+            <ul class="navbar-nav justify-content-end">
+                <li class="nav-item">
+                    <a class="nav-link" href="/login">Login</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/logout">LogOut</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/createUser">Create An Account</a>
+                </li>
+            </ul>
+
+            
+          </div>
+        </nav>
+
+        <!-- Header -->
+        <div class="container" style="width: 100%;">
+            <table>
+                <tbody>
+                    <tr>
+                        <h6 style="float: right;">Class Time: <%= courseInfo[0].class_date %></h6>
+                        <h2><%= courseInfo[0].course_acronym %></h2>
+                        <h6><%= courseInfo[0].course_name %></h6>
+                        <h6>Section: <%= courseInfo[0].section %></h6>
+                        <h6>Professor(s): <%= courseInfo[0].professors %><h6>
+
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="chart-container" style="position:relative; margin:auto; height:60vh; width: 80%">
+                <canvas id="myChart" width="100" height="100"></canvas>
+            </div>
+
+            
+            <br/>
+
+            <div class="comments">
+                <div class="user-input">
+                    <form class="form card" method="POST" action="/comment/submit/<%= courseInfo[0].field_acronym %>/<%= courseInfo[0].course_acronym %>/<%= courseInfo[0].id %>">
+                        <div class="d-flex flex-row" style="display:inline;">
+                            <fieldset class="form-group anonymous" style="margin-right:5%;">
+                                <legend>Anonymous?</legend>
+                                <div class="form-check" style="display: inline-block;">
+                                    <div class="form-group">
+                                        <label class="form-check-label" for="radio-option1">
+                                        <input type="radio" class="form-check-input p-6" name="optionsRadios1" id="radio-option1" value="yes" required oninvalid="this.setCustomValidity('You must choose between these two options')" onclick="clearValidity1();">
+                                            Yes
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-check" style="display:inline-block;">
+                                    <div class="form-group">
+                                        <label class="form-check-label" for="radio-option2">
+                                        <input type="radio" class="form-check-input p-6" name="optionsRadios1" id="radio-option2" value="no" onclick="clearValidity1();">
+                                            No
+                                        </label>
+                                    </div>
+                                </div>
+                            </fieldset>
+
+                            <label for="difficulty" style="margin-right:3%;">
+                                Difficulty
+                                <input id="input-id-1" name="difficulty" type="text" class="rating p-2" style="display:inline-block;" data-size="xs" required>
+                            </label>
+                            
+                            <label for="organization" style="margin-right:3%;">
+                                Organization
+                                <input id="input-id-2" name="organization" type="text" class="rating p-2" style="display:inline-block;" data-size="xs" required>
+                            </label>
+
+                            <label for="effort" style="margin-right:3%;">
+                                Effort Required
+                                <input id="input-id-3" name="effort" type="text" class="rating p-2" style="display:inline-block;" data-size="xs" required>
+                            </label>
+
+                            <label for="professors">
+                                Professor(s)
+                                <input id="input-id-4" name="professors" type="text" class="rating p-2" style="display:inline-block;" data-size="xs" required>
+                            </label>
+
+                            <fieldset class="form-group recommend">
+                                <legend>Recommend?</legend>
+                                <div class="form-check" style="display: inline-block;">
+                                    <div class="form-group" >
+                                        <label class="form-check-label" for="radio-option3">
+                                        <input type="radio" class="form-check-input p-6" name="optionsRadios2" id="radio-option3" value="yes" required oninvalid="this.setCustomValidity('You must choose between these two options')" onclick="clearValidity2();">
+                                            Yes
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-check" style="display:inline-block;">
+                                    <div class="form-group">
+                                        <label class="form-check-label" for="radio-option4">
+                                        <input type="radio" class="form-check-input p-6" name="optionsRadios2" id="radio-option4" value="no" onclick="clearValidity2();">
+                                            No
+                                        </label>
+                                    </div>
+                                </div>
+                            </fieldset>
+                            
+                        </div>
+
+                        
+                        
+                        <div>
+                            <label class="form-label" for="inlineFormInput">Comment:</label>
+                            <textarea type="text" rows="5" class="form-control justify-content-start" id="inlineFormInput" placeholder="Write your comment here!" name="comment"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                        <br/>
+                    </form>
+
+                    <br>
+                    <% if (courseComments) { %>
+                        <% for (var i=0; i < courseComments.length; ++i) { %>
+                            <div class="rated-comment" id="comment<%= i %>">
+                                <div class="card">
+                                    <h3 class="card-header"><%= courseComments[i].username %></h3>
+                                    <label>Ratings:
+                                    <div class="card-block d-flex flex-row">
+                                        <h4 class="card-title p-2">Difficulty: <%= courseComments[i].difficulty %></h4>
+                                        <h4 class="card-title p-2">Organization: <%= courseComments[i].organization %></h4>
+                                        <h4 class="card-title p-2">Effort Required: <%= courseComments[i].effort %></h4>
+                                        <h4 class="card-title p-2">Professor(s): <%= courseComments[i].professors %></h4>
+                                        <h4 class="card-title p-2">Recommend?: <%= courseComments[i].recommend %></h4>
+                                    </div>
+                                    </label>
+                                    <!--<div>-->
+                                        <label>Comment:</label>
+                                        <p class="card-text"><%= courseComments[i].comment %></p>
+                                    <!--</div>-->
+                                </div>
+                            </div>
+                        <% } %>
+                    <% } %>
+                </div>
+                
+            <br>
+                
+                
+            </div>
+            
+
+
+            
+
+            
+            
+        </div>
+        <hr/>
+
+
+
+
+
+        <!-- JQuery -->
+        <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+
+        <!-- Semantics UI JavaScript -->
+        <script src="/semantic/dist/semantic.min.js"></script>      
+
+        <!-- Bootstrap 4 JavaScript -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+    </body>
+
+</html>

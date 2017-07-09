@@ -319,7 +319,7 @@ app.get('/catalog/:fieldAc/:courseAc',async (req,res) => {
 
     // console.log(res.header('prevUrl'));
 
-    res.render('specificCourse',{courseInfo,courseRating: courseRating[0], courseComments});  
+    res.render('specificCourse_test',{courseInfo,courseRating: courseRating[0], courseComments});  
 });
 
 
