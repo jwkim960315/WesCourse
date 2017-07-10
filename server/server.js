@@ -9,7 +9,7 @@ const fs = require('fs');
 const html = require('html');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-// const routes = require('routes');
+
 
 var passport = require('passport')
   , LocalStrategy = require('passport-local').Strategy
@@ -326,8 +326,7 @@ app.get('/catalog/:fieldAc/:courseAc',async (req,res) => {
 
 
 app.get('/checkLogin',(req,res) => {
-    // console.log('req sent here!');
-    // console.log(req.user);
+
     if (req.user === undefined) {
         console.log('it is undefined');
         return res.send(false);
@@ -373,7 +372,7 @@ app.post('/comment/submit/:fieldAc/:courseAc/:courseId',(req,res) => {
 
 
     if (difficulty === "" || organization === "" || effort === "" || professors === "" || recommend === "") {
-        return res.render('specificCourse.ejs',{courseRating: undefined});
+        return res.render('specificCourse_test.ejs',{courseRating: undefined});
     };
 
     if (comment.trim() === "") {

@@ -3,10 +3,8 @@ html {
 }
 
 body {
-    background: rgba(153,0,0,1) !important;
-    /*padding-bottom: 70% !important;*/ 
+    background: rgba(153,0,0,1) !important; 
     position: relative;
-    /*margin: 0 auto !important;*/
 }
 
 .jumbotron {
@@ -33,24 +31,6 @@ body {
     padding-right: 15px;
 }
 
-.jumbotron h3 {
-    color: white;
-    width: 300px;
-    margin: 0 auto;
-    text-align: center;
-    border-bottom: 4px solid rgba(153,0,0,1);
-    padding-bottom: 10px;
-    font-family: 'Anton', sans-serif;
-}
-
-
-
-img {
-    height: 200px;
-    width: 200px;
-    margin-top: 4vh;
-}
-
 .navbar-brand {
     font-family: 'Cormorant Garamond', serif;
     text-align: center;
@@ -73,10 +53,30 @@ img {
     font-size: .7em;
 }
 
-.search-header {
-    margin-top: 150px;
-    text-align: center;
+.course-header {
+    margin-top: 90px;
     font-family: 'Anton', sans-serif;
     font-size: 80px;
     color: white;
+}
+
+.jRate {
+    display: inline;
+}
+
+.rating-results {
+    border: none;
+    color: rgba(153,0,0,1);
+}
+
+.chart-container {
+    position:relative; 
+    margin: 0 auto;
+    margin-top: 5%;
+    margin-bottom: 5%;
+    height:60vh; 
+    background: white;
+    width: 90%;
+    padding: 10px;
+    border-radius: 5px !important;
 }

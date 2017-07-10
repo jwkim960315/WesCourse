@@ -139,23 +139,11 @@ img {
 	background-color: #D62929;
 }
 
-/*.courses-group {
-	max-height: 400px;
-	overflow-y: scroll;
-	position: relative;
-	margin: 0 auto;
-}*/
 
 button[type="submit"] {
 	background-color: white;
 	color: #D62929;
 	/*float:right;*/
-}
-
-.input-group-btn {
-	/*position: absolute;*/
-	/*z-index: 1 !important;*/
-	/*margin-left: 97.5%;*/
 }
 
 
@@ -169,11 +157,6 @@ input#search-keyword:focus {
 	border-color: red !important;
 }
 
-/*.wrap-group {
-	position: absolute;
-	
-	z-index: 100 !important;
-}*/
 
 form {
 	margin: 0 auto;
@@ -185,8 +168,6 @@ form {
 	margin: 0 auto !important;
 	max-height: 400px;
 	overflow-y: scroll;
-	/*float: right;*/
-	/*overflow: visible;*/
 	position: absolute;
 	width: 90%;
 	z-index: 10 !important;
@@ -237,10 +218,8 @@ table {
 }
 
 .inside-courses-group {
-	/*position: absolute;*/
 	z-index: 10 !important;
 	margin: 0 auto;
-	/*border-bottom: 1px solid black;*/
 }
 
 

@@ -6,7 +6,7 @@
     	
     	<title>WesCourse</title>
 
-    	<link rel="stylesheet" type="text/css" href="/css/home.css">
+    	<link rel="stylesheet" type="text/css" href="css/home.css">
 
     	<!-- Bootstrap CSS -->
     	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
@@ -18,7 +18,7 @@
     	<link href="https://fonts.googleapis.com/css?family=Bree+Serif|Anton|Cormorant+Garamond|Indie+Flower|Merriweather|Ubuntu|Josefin+Sans" rel="stylesheet">
 
     	<!-- Semantic UI CSS -->
-    	<link rel="stylesheet" type="text/css" href="/semantic/dist/semantic.min.css">
+    	<link rel="stylesheet" type="text/css" href="semantic/dist/semantic.min.css">
 
 
 
@@ -89,45 +89,30 @@
 
 
 		<!-- Search Bar -->
-        <div class="main-searchbar container">
-            <form class="form-inline" method="POST" action="/search/query/1/1">
-                <label class="sr-only" for="search-keyword"></label>
+        <form class="form" method="POST" action="/search/query/1/1">
+            <label class="sr-only" for="search-keyword"></label>
+            <div class="input-group">
                 <input type="text" class="form-control search-keyword" spellcheck="false" autocomplete="off" name="searchParam" id="search-keyword" placeholder="Search any keywords...">
-                <button type="submit" class="btn btn-danger">Search</button>    
-            </form>
-            <div class="courses-group inline" id="courses-group">
-            <!-- <div class=""> -->
-                <div class="list-group inside-courses-group" id="inside-courses-group"></div>
-            <!-- </div> -->
-                <!-- <button type="submit" class="btn btn-danger">Search</button>  -->
-                <!-- <div class="empty">fdsfafsa</div> -->
+                <span class="input-group-btn">
+                    <button type="submit" class="btn btn-danger">Search</button>    
+                </span>
             </div>
+        </form>
+        <div class="courses-group" id="courses-group">
+            <div class="list-group inside-courses-group" id="inside-courses-group"></div>
         </div>
 
-        
-
-        <!-- <div class="outer-container"> -->
-            
-        <!-- </div> -->
-        
-        
-
-        
-        
 
 
+      <!-- JQuery -->
+      <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
 
-
-
-        <!-- JQuery -->
-        <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
-
-		<!-- Semantics UI JavaScript -->
-		<script src="/semantic/dist/semantic.min.js"></script>	    
+  		<!-- Semantics UI JavaScript -->
+  		<script src="/semantic/dist/semantic.min.js"></script>	    
 
     	<!-- Bootstrap 4 JavaScript -->
     	<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
-		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+		  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
 
 
         <!-- Event Handlers -->
@@ -145,7 +130,6 @@
                     success: function(data) {
                         
                         if (!data) {
-                            // return $('div.list-group').html("");
                             return $('.courses-group').fadeOut(1);
                         };
 
@@ -160,7 +144,6 @@
 
                         template = "";
 
-                        // length = 0;
                         for (var i=0; i < Object.keys(data.data).length; i++) {
                             
                             template += `<div class="categories list-group-item">
@@ -227,8 +210,6 @@
                         myHilitor.setMatchType("open");
                         myHilitor.apply(keyword);
 
-                        width = $('input#search-keyword').outerWidth();
-                        $('.courses-group').outerWidth(width);
 
                         $("html, body").animate({ scrollTop: $(document).height() }, 1000);
                         
@@ -247,10 +228,6 @@
             });
 
 
-            $(window).resize(function() {
-                width = $('input#search-keyword').outerWidth();
-                $('.courses-group').outerWidth(width);
-            });
             
             window.onbeforeunload = function(){ window.scrollTo(0,0); }
 

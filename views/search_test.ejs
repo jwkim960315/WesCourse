@@ -72,27 +72,20 @@
 
 
 		<!-- Search Bar -->
-        <!-- <div class="main-searchbar container"> -->
-            <!-- <div class="wrap-group"> -->
-                <form class="form" method="POST" action="/search/query/1/1">
-                    <label class="sr-only" for="search-keyword"></label>
-                    <div class="input-group">
-                        <input type="text" class="form-control search-keyword" spellcheck="false" autocomplete="off" name="searchParam" id="search-keyword" placeholder="Search any keywords...">
-                        <span class="input-group-btn">
-                            <button type="submit" class="btn btn-danger">Search</button>    
-                        </span>
+        <form class="form" method="POST" action="/search/query/1/1">
+            <label class="sr-only" for="search-keyword"></label>
+            <div class="input-group">
+                <input type="text" class="form-control search-keyword" spellcheck="false" autocomplete="off" name="searchParam" id="search-keyword" placeholder="Search any keywords...">
+                <span class="input-group-btn">
+                    <button type="submit" class="btn btn-danger">Search</button>    
+                </span>
+            </div>
+        </form>
+        <div class="courses-group" id="courses-group">
+            <div class="list-group inside-courses-group" id="inside-courses-group"></div>
+        </div>
 
-                    </div>
-                    
-                    
-                </form>
-                <div class="courses-group" id="courses-group">
-                    <div class="list-group inside-courses-group" id="inside-courses-group"></div>
-                </div>
-            <!-- </div> -->
-        <!-- </div> -->
 
-        <!-- <div class="container"> -->
         <% if (data === -1) { %>
             <h3>
                 No Results found. Please go to the Catalog section.
@@ -117,7 +110,6 @@
                     
                 </tbody>
             </table>
-            <!-- </div> -->
             
 
 
@@ -178,13 +170,13 @@
 
 
 		<script>
-            // Search Input focusOut Event Handler
 
+            // Search Input focusOut Event Handler
             $('.courses-group').hover(function() {
-                $('.courses-group').data('clicked',true);  
+                $('.courses-group').data('clicked',true);
             } , function() {
                 $('.courses-group').data('clicked',false);
-            })
+            });
 
             $('input[type="text"]').on({
                 focusin: function() {
@@ -200,10 +192,6 @@
                 }
             })
 
-            
-
-            
-			
 
 
 			// Search Bar Suggested Search Results Handler
@@ -218,7 +206,6 @@
                     success: function(data) {
                         
                         if (!data) {
-                            // return $('div.list-group').html("");
                             return $('.courses-group').fadeOut(1);
                         };
 
@@ -233,7 +220,6 @@
 
                         template = "";
 
-                        // length = 0;
                         for (var i=0; i < Object.keys(data.data).length; i++) {
                             
                             template += `<div class="categories list-group-item">
@@ -293,17 +279,10 @@
                                          </a>`;
                         };
                         
-
                         $('div.list-group').html(template);
 
-                        
                         myHilitor.setMatchType("open");
                         myHilitor.apply(keyword);
-
-                        // width = $('input#search-keyword').outerWidth();
-                        // $('.courses-group').outerWidth(width);
-
-                        // $("html, body").animate({ scrollTop: $(document).height() }, 1000);
                         
                         $('.courses-group').fadeIn(400);
                     }
@@ -317,16 +296,10 @@
             // Width Align Handler
             $(document).ready(function() {  
                 $('.courses-group').hide();
-                // width = $('input#search-keyword').outerWidth();
-                // $('table').width(width);
             });
 
 
-            $(window).resize(function() {
-                // width = $('input#search-keyword').outerWidth();
-                // $('.courses-group').outerWidth(width);
-                // $('table').width(width);
-            });
+
             
             window.onbeforeunload = function(){ window.scrollTo(0,0); }
 
