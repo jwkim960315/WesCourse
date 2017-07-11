@@ -170,6 +170,10 @@ form.form.card {
 
 
 
+
+
+
+
 .anonymous-submit, .recommend-submit {
     display: inline-block;
     border: solid 3px #675f6b;
@@ -186,7 +190,7 @@ input[type=radio] {
 
 label.form-check-label {
   color: #9a929e;
-  display: inline-block;
+  /*display: inline-block;*/
   cursor: pointer;
   font-weight: bold;
   padding: 5px 20px;
@@ -212,12 +216,15 @@ label.form-check-label + input[type=radio] + label.form-check-label {
 .category-ratings {
     font-size: 18px;
     display: inline-block;
-    padding-left: 3% !important;
+    /*margin:;*/
+    margin: 0 auto !important;
+    float: right;
 }
 
 .category-ratings > div {
     display: inline-block;
-    margin-right: 30px !important;
+    margin: 0 auto !important;
+    margin-right: 10px !important;
 }
 
 .comment-submit {
@@ -250,3 +257,28 @@ label.form-check-label + input[type=radio] + label.form-check-label {
     background: #850000 !important;
     border: solid 3px #675f6b; 
 }
+
+
+
+
+
+
+
+
+div.rated-ratings .card {
+    background: -webkit-linear-gradient(bottom left,#2a2a2b,#3e3e40) !important; /* Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(top right,#2a2a2b,#3e3e40) !important; /* Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(top right,#2a2a2b,#3e3e40) !important; /* Firefox 3.6 to 15 */
+    background: linear-gradient(to top right,#2a2a2b,#3e3e40) !important;
+    color: white;
+}
+
+h3.card-header {
+    background: -webkit-linear-gradient(bottom left,#850000,#990000,#c12828,#990000,#850000) fixed !important; /* Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(top right,#850000,#990000,#c12828,#990000,#850000) fixed !important; /* Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(top right,#850000,#990000,#c12828,#990000,#850000) fixed !important; /* Firefox 3.6 to 15 */
+    background: linear-gradient(to top right,#850000,#990000,#c12828,#990000,#850000) fixed !important;
+    color: white;
+    border: 3px solid white;
+}
+

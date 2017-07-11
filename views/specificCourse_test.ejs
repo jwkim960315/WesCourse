@@ -4,34 +4,12 @@
         <meta charset="utf-8">
         <title>WesCourse</title>
 
-        
-        <!-- Font Awesome -->
-        <script src="https://use.fontawesome.com/b6a42b064c.js"></script>
-        
-        <!-- JQuery -->
-        <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
-        
-        <!-- jRate -->
-        <script src="/jRate/dist/jRate.min.js"></script>
-
-    
         <!-- Bootstrap 4 CSS -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
-
-        <!-- Bootstrap 4 JavaScript -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
-
-        <!-- Chart.js -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.bundle.min.js"></script>
-
         
         <!-- Semantic UI CSS -->
         <link rel="stylesheet" type="text/css" href="/semantic/dist/semantic.min.css" />
-
-
-        <!-- Semantic UI JavaScript -->
-        <script src="/semantic/dist/semantic.min.js"></script> 
+        
 
         <!-- Google Fonts -->
         <link href="https://fonts.googleapis.com/css?family=Bree+Serif|Anton|Cormorant+Garamond|Indie+Flower|Merriweather|Ubuntu|Josefin+Sans" rel="stylesheet">     
@@ -39,8 +17,7 @@
         <!-- Custom CSS -->
         <link rel="stylesheet" type="text/css" href="/css/specificCourse_test.css">
 
-        <!-- HighCharts -->
-        <script src="https://code.highcharts.com/highcharts.src.js"></script>
+        
     </head>
 
 
@@ -162,9 +139,11 @@
                                 </div>
                             </fieldset>
 
+
+                            <% tmp = ["difficulty","organization","effort","professors"] %>
+                            <% tmp1 = ["Difficulty","Organization","Effort Required","Professor(s)"] %>
                             <div class="category-ratings">
-                                <% tmp = ["difficulty","organization","effort","professors"] %>
-                                <% tmp1 = ["Difficulty","Organization","Effort Required","Professor(s)"] %>
+                                
                                 <% for (var i=0; i < tmp.length; i++) { %>
                                     <div class="<%= tmp1[i] %>">
                                         <p><%= tmp[i] %></p>
@@ -231,6 +210,25 @@
         <hr/>
 
         
+        <!-- Font Awesome -->
+        <script src="https://use.fontawesome.com/b6a42b064c.js"></script>
+        
+        <!-- JQuery -->
+        <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+        
+        <!-- Bootstrap 4 JavaScript -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+
+        <!-- jRate -->
+        <script src="/jRate/dist/jRate.min.js"></script>
+
+
+        <!-- Semantic UI JavaScript -->
+        <script src="/semantic/dist/semantic.min.js"></script> 
+
+        <!-- HighCharts -->
+        <script src="https://code.highcharts.com/highcharts.src.js"></script>
 
 
         <script>
