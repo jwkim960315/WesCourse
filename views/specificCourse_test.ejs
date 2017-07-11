@@ -39,7 +39,8 @@
         <!-- Custom CSS -->
         <link rel="stylesheet" type="text/css" href="/css/specificCourse_test.css">
 
-                
+        <!-- HighCharts -->
+        <script src="https://code.highcharts.com/highcharts.src.js"></script>
     </head>
 
 
@@ -88,18 +89,38 @@
         </nav>
 
         <!-- Header -->
-        <div class="container" style="width: 100%;">
-            <div class="course-header">
-                        <h6 style="float: right;">Class Time: <%= courseInfo[0].class_date %></h6>
-                        <h2><%= courseInfo[0].course_acronym %></h2>
-                        <h6><%= courseInfo[0].course_name %></h6>
-                        <h6>Section: <%= courseInfo[0].section %></h6>
-                        <h6>Professor(s): <%= courseInfo[0].professors %><h6>
-            </div>
+        <div class="course-header">
+            <h6 style="float: right;">Class Time: <%= courseInfo[0].class_date %></h6>
+            <h6><%= courseInfo[0].course_acronym %></h6>
+            <h6><%= courseInfo[0].course_name %></h6>
+            <h6>Section: <%= courseInfo[0].section %></h6>
+            <h6>Professor(s): <%= courseInfo[0].professors %><h6>
+        </div>
 
-            <div class="chart-container">
-                <canvas id="myChart" width="100" height="100"></canvas>
+        
+        <div class="container">
+
+        <!-- Overall & Recommend -->
+        <% if (recommendNum) { %>
+        <div class="overall-and-recommend d-flex justify-content-center container">
+            <div class="d-inline-flex p-6 overall d-flex flex-column">
+                <p class="title p-6">Overall Rating</p>
+                <p class="p-6 d-flex justify-content-center overall-rating"><%= courseOverall %></p>
+            </div> 
+            
+            <div class="recommend d-inline-flex p-6 d-flex flex-column">
+                <p class="title p-6">Recommend?</p>
+                <div class="up-and-down p-6 d-flex justify-content-center">
+                    <p class="d-inline-flex p-6 up"><i class="fa fa-thumbs-up text-success" aria-hidden="true"></i>: <%= recommendNum.yes %></p>
+                    <p class="d-inline-flex p-6 down"><i class="fa fa-thumbs-down text-danger" aria-hidden="true"></i>: <%= recommendNum.no %></p>
+                </div>
             </div>
+        </div>
+        <% } %>
+
+
+            <!-- HighCharts --> 
+            <div id="chart-container"></div>
 
             
             <br/>
@@ -108,100 +129,101 @@
                 <div class="user-input">
                     <form class="form card" method="POST" action="/comment/submit/<%= courseInfo[0].field_acronym %>/<%= courseInfo[0].course_acronym %>/<%= courseInfo[0].id %>">
                         <div class="">
-                            <fieldset class="form-group anonymous">
+                            <fieldset class="form-group anonymous-submit">
                                 <legend>Anonymous?</legend>
-                                <div class="form-check">
+                                <div class="form-check col">
                                     <div class="form-group">
-                                        <label class="form-check-label" for="radio-option1">
-                                        <input type="radio" class="form-check-input" name="optionsRadios1" id="radio-option1" value="yes" required>
-                                            Yes
-                                        </label>
+                                        
+                                        <input type="radio" class="form-check-input check" name="optionsRadios1" id="radio-option1" value="yes" required>
+                                        <label class="form-check-label" for="radio-option1">Yes</label>
                                     </div>
                                 </div>
-                                <div class="form-check">
+                                <div class="form-check col">
                                     <div class="form-group">
-                                        <label class="form-check-label" for="radio-option2">
-                                        <input type="radio" class="form-check-input" name="optionsRadios1" id="radio-option2" value="no">
-                                            No
-                                        </label>
+                                        <input type="radio" class="form-check-input check" name="optionsRadios1" id="radio-option2" value="no">
+                                        <label class="form-check-label" for="radio-option2">No</label>
                                     </div>
                                 </div>
                             </fieldset>
 
-                            
-                            <% tmp = ["Difficulty","Organization","Effort Required","Professor(s)"] %>
-                            <% for (var i=0; i < tmp.length; i++) { %>
-                               <p><%= tmp[i] %></p>
-                               <div class="jRate" id="jRate<%= i %>"></div>
-                               <input id="rating-result<%= i %>" class="rating-results" readonly>
-                            <% } %>
-
-
-
-
-                            <fieldset class="form-group recommend">
+                            <fieldset class="form-group recommend-submit">
                                 <legend>Recommend?</legend>
-                                <div class="form-check" style="display: inline-block;">
-                                    <div class="form-group" >
-                                        <label class="form-check-label" for="radio-option3">
-                                        <input type="radio" class="form-check-input p-6" name="optionsRadios2" id="radio-option3" value="yes" required>
-                                            Yes
-                                        </label>
+                                <div class="form-check col">
+                                    <div class="form-group">
+                                        <input type="radio" class="form-check-input p-6 check" name="optionsRadios2" id="radio-option3" value="yes" required>
+                                        <label class="form-check-label" for="radio-option3">Yes</label>
                                     </div>
                                 </div>
-                                <div class="form-check" style="display:inline-block;">
+                                <div class="form-check col">
                                     <div class="form-group">
-                                        <label class="form-check-label" for="radio-option4">
-                                        <input type="radio" class="form-check-input p-6" name="optionsRadios2" id="radio-option4" value="no">
-                                            No
-                                        </label>
+                                        <input type="radio" class="form-check-input p-6 check" name="optionsRadios2" id="radio-option4" value="no">
+                                        <label class="form-check-label" for="radio-option4">No</label>
                                     </div>
                                 </div>
                             </fieldset>
+
+                            <div class="category-ratings">
+                                <% tmp = ["difficulty","organization","effort","professors"] %>
+                                <% tmp1 = ["Difficulty","Organization","Effort Required","Professor(s)"] %>
+                                <% for (var i=0; i < tmp.length; i++) { %>
+                                    <div class="<%= tmp1[i] %>">
+                                        <p><%= tmp[i] %></p>
+                                        <div class="jRate check" id="jRate<%= i %>"></div>
+                                        <input id="rating-result<%= i %>" class="rating-results" name="<%= tmp[i] %>" readonly>
+                                    </div>
+                                <% } %>
+                            </div>
+                            
+
+
+
+
+                            
                             
                         </div>
 
                         
                         
-                        <div>
+                        <div class="comment-submit">
                             <label class="form-label" for="inlineFormInput">Comment:</label>
-                            <textarea type="text" rows="5" class="form-control justify-content-start" id="inlineFormInput" placeholder="Write your comment here!" name="comment"></textarea>
+                            <textarea type="text" rows="5" class="form-control justify-content-start check" id="inlineFormInput" placeholder="Write your comment here!" name="comment"></textarea>
                         </div>
-                        <button type="submit" class="btn btn-primary">Submit</button>
                         <br/>
+                        <button type="submit" class="btn btn-primary check">Submit</button>
+                        
                     </form>
 
-                    <br>
+                    <br/>
                     <% if (courseComments) { %>
                         <% for (var i=0; i < courseComments.length; ++i) { %>
-                            <div class="rated-comment" id="comment<%= i %>">
+                            <div class="rated-ratings" id="comment<%= i %>">
                                 <div class="card">
                                     <h3 class="card-header"><%= courseComments[i].username %></h3>
-                                    <label>Ratings:
-                                    <div class="card-block d-flex flex-row">
-                                        <h4 class="card-title p-2">Difficulty: <%= courseComments[i].difficulty %></h4>
-                                        <h4 class="card-title p-2">Organization: <%= courseComments[i].organization %></h4>
-                                        <h4 class="card-title p-2">Effort Required: <%= courseComments[i].effort %></h4>
-                                        <h4 class="card-title p-2">Professor(s): <%= courseComments[i].professors %></h4>
-                                        <h4 class="card-title p-2">Recommend?: <%= courseComments[i].recommend %></h4>
+                                    <label for="rated-ratings">Ratings:</label>
+                                    <div class="card-block d-flex flex-row" id="rated-ratings">
+                                        <h4 class="card-title p-2">Difficulty: <span><%= courseComments[i].difficulty %></span></h4>
+                                        <h4 class="card-title p-2">Organization: <span><%= courseComments[i].organization %></span></h4>
+                                        <h4 class="card-title p-2">Effort Required: <span><%= courseComments[i].effort %></span></h4>
+                                        <h4 class="card-title p-2">Professor(s): <span><%= courseComments[i].professors %></span></h4>
+                                        <h4 class="card-title p-2">Recommend?: <span><%= courseComments[i].recommend %></span></h4>
                                     </div>
-                                    </label>
-                                    <label>Comment:</label>
-                                    <p class="card-text"><%= courseComments[i].comment %></p>
+                                    <label for="rated-comment">Comment:</label>
+                                    <p class="card-text" id="rated-comment"><%= courseComments[i].comment %></p>
                                 </div>
                             </div>
+                            <br/>
                         <% } %>
                     <% } %>
                 </div>
                 
-            <br>
+            <br/>
                 
                 
             </div>
             
 
 
-            
+            <span>
 
             
             
@@ -213,8 +235,28 @@
 
         <script>
 
+        $(document).ready(function() {
+            $('.check').on('click',function(e) {
+                $.ajax({
+                    url: '/checkLogin',
+                    success: function(isLoggedIn) {
+                        if (!isLoggedIn) {
+                            $('input').val("");
+                            $('.form-check-input').prop('checked',false);
+                            alert('You must login to evaluate this course');
+                            window.location.href = '/login';
+                        }
+                    }
+                })
+            })
+
+
+        })
+
 
             $('#jRate0').jRate({
+                width: 30,
+                height: 30,
                 count: 5,
                 startColor: 'rgba(153,0,0,1)',
                 endColor: 'rgba(153,0,0,1)',
@@ -226,6 +268,8 @@
 
 
             $('#jRate1').jRate({
+                width: 30,
+                height: 30,
                 count: 5,
                 startColor: 'rgba(153,0,0,1)',
                 endColor: 'rgba(153,0,0,1)',
@@ -235,6 +279,8 @@
             });
 
             $('#jRate2').jRate({
+                width: 30,
+                height: 30,
                 count: 5,
                 startColor: 'rgba(153,0,0,1)',
                 endColor: 'rgba(153,0,0,1)',
@@ -244,6 +290,8 @@
             });
 
             $('#jRate3').jRate({
+                width: 30,
+                height: 30,
                 count: 5,
                 startColor: 'rgba(153,0,0,1)',
                 endColor: 'rgba(153,0,0,1)',
@@ -253,63 +301,265 @@
             });
 
 
-            
+            // HighCharts
+            $(function() {
+                <% if (!courseRating) { %>
+                    $('#chart-container').append('<p style="text-align:center;margin-top: 150px;margin-bottom:150px;color:white;">NO DATA. PLEASE EVALUATE THIS COURSE IF YOU HAVE TAKEN IT.</p>');
+                <% } else { %>
+                    <% var tmp = []; %>
+                    <% for (var i=0;i < Object.keys(courseRating).length-3; ++i) { %>
+                        <% tmp.push(courseRating[Object.keys(courseRating)[i]]) %>
+                    <% } %>
+
+                Highcharts.createElement('link', {
+                   href: 'https://fonts.googleapis.com/css?family=Unica+One',
+                   rel: 'stylesheet',
+                   type: 'text/css'
+                }, null, document.getElementsByTagName('head')[0]);
+
+                Highcharts.theme = {
+                   colors: ['#2b908f', '#90ee7e', '#f45b5b', '#7798BF', '#aaeeee', '#ff0066', '#eeaaee',
+                      '#55BF3B', '#DF5353', '#7798BF', '#aaeeee','#990000'],
+                   chart: {
+                      backgroundColor: {
+                         linearGradient: { x1: 0, y1: 0, x2: 1, y2: 1 },
+                         stops: [
+                            [0, '#2a2a2b'],
+                            [1, '#3e3e40']
+                         ]
+                      },
+                      style: {
+                         fontFamily: '\'Unica One\', sans-serif'
+                      },
+                      plotBorderColor: '#606063'
+                   },
+                   title: {
+                      style: {
+                         color: '#E0E0E3',
+                         textTransform: 'uppercase',
+                         fontSize: '30px'
+                      }
+                   },
+                   subtitle: {
+                      style: {
+                         color: '#E0E0E3',
+                         textTransform: 'uppercase'
+                      }
+                   },
+                   xAxis: {
+                      gridLineColor: '#707073',
+                      labels: {
+                         style: {
+                            color: '#E0E0E3',
+                            fontSize: '18px'
+                         }
+                      },
+                      lineColor: '#707073',
+                      minorGridLineColor: '#505053',
+                      tickColor: '#707073',
+                      title: {
+                         style: {
+                            color: '#A0A0A3'
+
+                         }
+                      }
+                   },
+                   yAxis: {
+                      gridLineColor: '#707073',
+                      labels: {
+                         style: {
+                            color: '#E0E0E3'
+
+                         }
+                      },
+                      lineColor: '#707073',
+                      minorGridLineColor: '#505053',
+                      tickColor: '#707073',
+                      tickWidth: 1,
+                      title: {
+                         style: {
+                            color: '#A0A0A3',
+                            fontSize: '18px'
+                         }
+                      },
+                      max: 5
+                   },
+                   tooltip: {
+                      backgroundColor: 'rgba(0, 0, 0, 0.85)',
+                      style: {
+                         color: '#F0F0F0'
+                      },
+                      formatter: function() {
+                        return `${this.x}: ${this.y}`;
+                      }
+                   },
+                   plotOptions: {
+
+                        
+                      series: {
+                         dataLabels: {
+                            color: '#B0B0B3'
+                         },
+                         marker: {
+                            lineColor: '#333'
+                         }
+                      },
+                      boxplot: {
+                         // fillColor: '#505053'
+                         fillColor: '#990000'
+                      },
+                      candlestick: {
+                         lineColor: 'white'
+                      },
+                      errorbar: {
+                         color: 'white'
+                      }
+                   },
+                   legend: {
+                      itemStyle: {
+                         color: '#E0E0E3'
+                      },
+                      itemHoverStyle: {
+                         color: '#FFF'
+                      },
+                      itemHiddenStyle: {
+                         color: '#606063'
+                      }
+                   },
+                   credits: {
+                      style: {
+                         color: '#666'
+                      }
+                   },
+                   labels: {
+                      style: {
+                         color: '#707073'
+                      }
+                   },
+
+                   drilldown: {
+                      activeAxisLabelStyle: {
+                         color: '#F0F0F3'
+                      },
+                      activeDataLabelStyle: {
+                         color: '#F0F0F3'
+                      }
+                   },
+
+                   navigation: {
+                      buttonOptions: {
+                         symbolStroke: '#DDDDDD',
+                         theme: {
+                            fill: '#505053'
+                         }
+                      }
+                   },
+
+                   // scroll charts
+                   rangeSelector: {
+                      buttonTheme: {
+                         fill: '#505053',
+                         stroke: '#000000',
+                         style: {
+                            color: '#CCC'
+                         },
+                         states: {
+                            hover: {
+                               fill: '#707073',
+                               stroke: '#000000',
+                               style: {
+                                  color: 'white'
+                               }
+                            },
+                            select: {
+                               fill: '#000003',
+                               stroke: '#000000',
+                               style: {
+                                  color: 'white'
+                               }
+                            }
+                         }
+                      },
+                      inputBoxBorderColor: '#505053',
+                      inputStyle: {
+                         backgroundColor: '#333',
+                         color: 'silver'
+                      },
+                      labelStyle: {
+                         color: 'silver'
+                      }
+                   },
+
+                   navigator: {
+                      handles: {
+                         backgroundColor: '#666',
+                         borderColor: '#AAA'
+                      },
+                      outlineColor: '#CCC',
+                      maskFill: 'rgba(255,255,255,0.1)',
+                      series: {
+                         color: '#7798BF',
+                         lineColor: '#A6C7ED'
+                      },
+                      xAxis: {
+                         gridLineColor: '#505053'
+                      }
+                   },
+
+                   scrollbar: {
+                      barBackgroundColor: '#808083',
+                      barBorderColor: '#808083',
+                      buttonArrowColor: '#CCC',
+                      buttonBackgroundColor: '#606063',
+                      buttonBorderColor: '#606063',
+                      rifleColor: '#FFF',
+                      trackBackgroundColor: '#404043',
+                      trackBorderColor: '#404043'
+                   },
+
+                   // special colors for some of the
+                   legendBackgroundColor: 'rgba(0, 0, 0, 0.5)',
+                   background2: '#505053',
+                   dataLabelsColor: '#B0B0B3',
+                   textColor: '#C0C0C0',
+                   contrastTextColor: '#F0F0F3',
+                   maskColor: 'rgba(255,255,255,0.3)'
+                };
+
+                // Apply the theme
+                Highcharts.setOptions(Highcharts.theme);
 
 
-            <% if (!courseRating) { %>
-                $('.chart-container').append('<p style="text-align:center;">NO DATA. PLEASE EVALUATE THIS COURSE IF YOU HAVE TAKEN IT.</p>');
-            <% } else { %>
-                <% var tmp = []; %>
-                <% for (var i=0;i < Object.keys(courseRating).length-2; ++i) { %>
-                    <% tmp.push(courseRating[Object.keys(courseRating)[i]]) %>
-                <% } %>
-                var ctx = document.getElementById("myChart");
-                var myChart = new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: ["Difficulty","Organization","Effort Required","Professor Rating"],
-                        datasets: [{
-                            label: 'Average Ratings',
-                            data: <%- JSON.stringify(tmp) %>,
-                            backgroundColor: [
-                                'rgba(153,0,0,1)',
-                                'rgba(153,0,0,1)',
-                                'rgba(153,0,0,1)',
-                                'rgba(153,0,0,1)'
-                            ],
-                            borderColor: [
-                                'red',
-                                'red',
-                                'red',
-                                'red'
-                            ],
-                            borderWidth: 1
-                        }]
+
+                var chart = Highcharts.chart('chart-container',{
+
+                    credits: {
+                        enabled: false
                     },
-                    options: {
-                        maintainAspectRatio: false,
-                        scales: {
-                            xAxes: [{
-                                barThickness: 120
-                            }],
-                            yAxes: [{
-                                ticks: {
-                                    beginAtZero: true,
-                                    max : 5.0
-                                }
-                            }]
+                    chart: {
+                        type: 'column'
+                    },
+                    colors: ['#990000'],
+                    title: {
+                        text: 'Course Ratings'
+                    },
+                    xAxis: {
+                        categories: ["Difficulty","Organization","Effort Required","Professor Rating"],
+                        fontSize: '20px'
+                    },
+                    yAxis: {
+                        title: {
+                            text: 'Avg Ratings'
                         }
-                    }
-                });
-            <% } %>
+                    },
+                    series: [{
 
-
-            for (var i=1; i < 5; ++i) {
-                $(`#input-id-${i}`).rating({
-                    step: .5,
-                    starCaptions: {.5: "0.5", 1: "1.0", 1.5: "1.5", 2.0: "2.0", 2.5: "2.5", 3.0: "3.0", 3.5: "3.5", 4.0: "4.0", 4.5: "4.5", 5.0: "5.0"}
+                        showInLegend: false,
+                        data: <%- JSON.stringify(tmp) %>
+                    }]
                 })
-            }
+                <% } %>
+            })
 
         </script>
     </body>

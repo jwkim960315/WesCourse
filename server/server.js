@@ -259,15 +259,16 @@ app.get('/catalog/:name',async (req,res) => {
 
 
 const ratings_getter = async (courseAcronym) => {
-    return connection.query(`SELECT avg(difficulty) as Difficulty,
-                                    avg(organization) as Organization,
-                                    avg(effort) as EffortRequired,
-                                    avg(ratings.professors) as ProfessorsRating,
+    return connection.query(`SELECT ROUND(avg(difficulty),2) as Difficulty,
+                                    ROUND(avg(organization),2) as Organization,
+                                    ROUND(avg(effort),2) as EffortRequired,
+                                    ROUND(avg(ratings.professors),2) as ProfessorsRating,
                                     CASE
                                         WHEN avg(recommend)>=.5 THEN "Yes"
                                         ELSE "No"
                                         END as Recommend,
-                                    courses.course_acronym
+                                    courses.course_acronym,
+                                    course_id
                             from ratings
                             inner join courses
                                 on ratings.course_id = courses.id
@@ -276,7 +277,7 @@ const ratings_getter = async (courseAcronym) => {
                             GROUP BY ratings.course_id
                             HAVING courses.course_acronym="${courseAcronym}"`).then((res) => {
                                     return res;
-                                });
+                                }).catch(e => undefined);
 };
 
 const specific_course_getter = async (courseAcronym) => {
@@ -302,7 +303,25 @@ const comments_getter = async (courseAcronym) => {
                                     END as recommend
                              FROM ratings INNER JOIN courses ON ratings.course_id = courses.id INNER JOIN users ON ratings.user_id = users.id WHERE courses.course_acronym="${courseAcronym}"`).then((res) => {
         return res;
-    });
+    }).catch(e => undefined);
+};
+
+const overall_avg_getter = data => {
+    if (!data) {
+        return undefined;
+    };
+    return ((data.Difficulty + data.Organization + data.EffortRequired + data.ProfessorsRating) / 4).toFixed(2);
+};
+
+const recommend_number_getter = async (course_id) => {
+    return connection.query(`SELECT CASE WHEN recommend=true THEN 1 ELSE 0 END AS yes,
+                                    CASE WHEN recommend=false THEN 1 ELSE 0 END AS no
+                             FROM ratings WHERE course_id=${course_id}`).then((res) => {
+                                console.log(res);
+        return res.reduce((init,obj,index,arr) => {
+            return {yes: init.yes + obj.yes, no: init.no + obj.no};
+        },{yes: 0, no: 0});
+    }).catch(e => undefined);
 };
 
 
@@ -312,14 +331,17 @@ app.get('/catalog/:fieldAc/:courseAc',async (req,res) => {
     courseRating = await ratings_getter(req.params.courseAc);
 
     courseComments = JSON.parse(JSON.stringify(await comments_getter(req.params.courseAc)));
+    
+
+    recommendNum = (courseRating.length === 0) ? undefined : JSON.parse(JSON.stringify(await recommend_number_getter(courseRating[0].course_id)));
+
+    courseOverall = overall_avg_getter(courseRating[0]);
+
+    console.log(recommendNum);
 
     
 
-    // previousUrlSaver(req,res);
-
-    // console.log(res.header('prevUrl'));
-
-    res.render('specificCourse_test',{courseInfo,courseRating: courseRating[0], courseComments});  
+    res.render('specificCourse_test',{courseInfo,courseRating: courseRating[0], courseComments, courseOverall, recommendNum});  
 });
 
 
@@ -366,7 +388,20 @@ app.post('/comment/submit/:fieldAc/:courseAc/:courseId',(req,res) => {
         courseId = req.params.courseId,
         courseAc = req.params.courseAc,
         fieldAc = req.params.fieldAc;
-    
+
+        console.log(difficulty);
+        console.log(organization);
+        console.log(effort);
+        console.log(professors);
+        console.log(anonymous);
+        console.log(recommend);
+        console.log(comment);
+        console.log(userId);
+        console.log(username);
+        console.log(courseId);
+        console.log(courseAc);
+        console.log(fieldAc);
+
     
     
 

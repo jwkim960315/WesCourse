@@ -1,10 +1,12 @@
 body {
-	background: rgba(153,0,0,1) !important;
+	background: -webkit-linear-gradient(bottom left,#850000,#990000,#c12828,#990000,#850000) fixed !important; /* Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(top right,#850000,#990000,#c12828,#990000,#850000) fixed !important; /* Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(top right,#850000,#990000,#c12828,#990000,#850000) fixed !important; /* Firefox 3.6 to 15 */
+    background: linear-gradient(to top right,#850000,#990000,#c12828,#990000,#850000) fixed !important;
 }
 
 .jumbotron {
-	background-color: black !important;
-	background: rgba(153,0,0,1) !important;
+	background: rgba(0,0,0,0) !important;
 	margin-top: 60px !important;
 }
 
@@ -19,11 +21,8 @@ li a {
 
 li a:hover {
 	color: rgba(255,255,255,.5) !important;
-	/*border-bottom: 1px solid rgba(153,0,0,1);*/
-	/*background: rgba(20, 22, 23, 1);*/
 	border-radius: 5px;
 	box-shadow: 3px 3px 1px 1px rgba(31, 33, 34, 1) inset !important;
-	/* rgba(41, 43, 44, 1) */
 	padding-left: 10px !important;
 }
 
@@ -55,6 +54,7 @@ li a:hover {
 
 .container {
 	margin: 0 auto;
+	background: none;
 }
 
 
