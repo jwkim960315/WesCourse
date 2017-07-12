@@ -105,60 +105,52 @@
             <div class="comments">
                 <div class="user-input">
                     <form class="form card" method="POST" action="/comment/submit/<%= courseInfo[0].field_acronym %>/<%= courseInfo[0].course_acronym %>/<%= courseInfo[0].id %>">
-                        <div class="">
-                            <fieldset class="form-group anonymous-submit">
+                        <div class="row click-submit">
+                            <fieldset class="form-group anonymous-submit col-xs-2">
                                 <legend>Anonymous?</legend>
                                 <div class="form-check col">
-                                    <div class="form-group">
-                                        
-                                        <input type="radio" class="form-check-input check" name="optionsRadios1" id="radio-option1" value="yes" required>
+                                    <div class="">
+                                        <input type="radio" class="form-check-input p-6 check" name="optionsRadios1" id="radio-option1" value="yes">
                                         <label class="form-check-label" for="radio-option1">Yes</label>
                                     </div>
                                 </div>
                                 <div class="form-check col">
-                                    <div class="form-group">
-                                        <input type="radio" class="form-check-input check" name="optionsRadios1" id="radio-option2" value="no">
+                                    <div class="">
+                                        <input type="radio" class="form-check-input p-6 check" name="optionsRadios1" id="radio-option2" value="no">
                                         <label class="form-check-label" for="radio-option2">No</label>
                                     </div>
                                 </div>
+                                <div class="form-check validation"></div>
                             </fieldset>
 
-                            <fieldset class="form-group recommend-submit">
+                            <fieldset class="form-group recommend-submit col-xs-2">
                                 <legend>Recommend?</legend>
                                 <div class="form-check col">
-                                    <div class="form-group">
-                                        <input type="radio" class="form-check-input p-6 check" name="optionsRadios2" id="radio-option3" value="yes" required>
+                                    <div class="">
+                                        <input type="radio" class="form-check-input p-6 check" name="optionsRadios2" id="radio-option3" value="yes">
                                         <label class="form-check-label" for="radio-option3">Yes</label>
                                     </div>
                                 </div>
                                 <div class="form-check col">
-                                    <div class="form-group">
+                                    <div class="">
                                         <input type="radio" class="form-check-input p-6 check" name="optionsRadios2" id="radio-option4" value="no">
                                         <label class="form-check-label" for="radio-option4">No</label>
                                     </div>
                                 </div>
+                                <div class="form-check validation"></div>
                             </fieldset>
 
 
                             <% tmp = ["difficulty","organization","effort","professors"] %>
                             <% tmp1 = ["Difficulty","Organization","Effort Required","Professor(s)"] %>
-                            <div class="category-ratings">
-                                
-                                <% for (var i=0; i < tmp.length; i++) { %>
-                                    <div class="<%= tmp1[i] %>">
-                                        <p><%= tmp[i] %></p>
-                                        <div class="jRate check" id="jRate<%= i %>"></div>
-                                        <input id="rating-result<%= i %>" class="rating-results" name="<%= tmp[i] %>" readonly>
-                                    </div>
-                                <% } %>
-                            </div>
-                            
-
-
-
-
-                            
-                            
+                            <% for (var i=0; i < tmp.length; i++) { %>
+                                <div class="<%= tmp1[i] %> col category-ratings">
+                                    <p><%= tmp1[i] %></p>
+                                    <div class="jRate check" id="jRate<%= i %>"></div>
+                                    <input id="rating-result<%= i %>" class="rating-results" name="<%= tmp[i] %>" readonly>
+                                    <div class="validation" id="validation<%= i %>"></div>
+                                </div>
+                            <% } %>
                         </div>
 
                         
@@ -178,16 +170,40 @@
                             <div class="rated-ratings" id="comment<%= i %>">
                                 <div class="card">
                                     <h3 class="card-header"><%= courseComments[i].username %></h3>
-                                    <label for="rated-ratings">Ratings:</label>
-                                    <div class="card-block d-flex flex-row" id="rated-ratings">
-                                        <h4 class="card-title p-2">Difficulty: <span><%= courseComments[i].difficulty %></span></h4>
-                                        <h4 class="card-title p-2">Organization: <span><%= courseComments[i].organization %></span></h4>
-                                        <h4 class="card-title p-2">Effort Required: <span><%= courseComments[i].effort %></span></h4>
-                                        <h4 class="card-title p-2">Professor(s): <span><%= courseComments[i].professors %></span></h4>
-                                        <h4 class="card-title p-2">Recommend?: <span><%= courseComments[i].recommend %></span></h4>
+                                    <label for="rated-ratings"></label>
+                                    <div class="card-block row" id="rated-ratings">
+                                        <div class="col-xs-2 col-2 rated-ratings-ratings">
+                                            <h3 class="card-header">Ratings</h3>
+                                            <hr/>
+                                            <div class="ratings-inside">
+                                                <h4 class="ratings-inside-difficulty">Difficulty: <span><%= courseComments[i].difficulty %></span></h4>
+                                                <h4 class="ratings-inside-organization">Organization: <span><%= courseComments[i].organization %></span></h4>
+                                                <h4 class="ratings-inside-effort">Effort Required: <span><%= courseComments[i].effort %></span></h4>
+                                                <h4 class="ratings-inside-professors">Professor(s): <span><%= courseComments[i].professors %></span></h4>
+                                                <h4 class="ratings-inside-recommend">Recommend?: <span>
+                                                  <% if (courseComments[i].recommend === "Yes") { %>
+                                                    <i class="fa fa-thumbs-up text-success" aria-hidden="true"></i>
+                                                  <% } else { %>
+                                                    <i class="fa fa-thumbs-down text-danger" aria-hidden="true"></i>
+                                                  <% } %>
+                                                  </span></h4>
+                                            </div>
+                                           
+                                        </div>
+                                        
+                                        <label for="rated-comment"></label>
+                                        <div class="col-xs-10 col-10 rated-ratings-comment">
+                                            <h3 class="card-header">Comment</h3>
+                                            <hr/>
+                                            <div class="comment-inside">
+                                                <pre><h4 class="card-text" id="rated-comment"><%= courseComments[i].comment %></h4></pre>
+                                            </div>
+                                            
+                                        </div>
+                                        
                                     </div>
-                                    <label for="rated-comment">Comment:</label>
-                                    <p class="card-text" id="rated-comment"><%= courseComments[i].comment %></p>
+
+                                    
                                 </div>
                             </div>
                             <br/>
@@ -230,26 +246,111 @@
         <!-- HighCharts -->
         <script src="https://code.highcharts.com/highcharts.src.js"></script>
 
+        <!-- jQuery Validate -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.16.0/jquery.validate.min.js"></script>
+
 
         <script>
 
-        $(document).ready(function() {
-            $('.check').on('click',function(e) {
-                $.ajax({
-                    url: '/checkLogin',
-                    success: function(isLoggedIn) {
-                        if (!isLoggedIn) {
-                            $('input').val("");
-                            $('.form-check-input').prop('checked',false);
-                            alert('You must login to evaluate this course');
-                            window.location.href = '/login';
-                        }
-                    }
-                })
+            $('form').validate({
+              rules: {
+                optionsRadios1: "required",
+                optionsRadios2: "required",
+                difficulty: "required",
+                organization: "required",
+                effort: "required",
+                professors: "required"
+              },
+              messages: {
+                optionsRadios1: "Please choose one of the options",
+                optionsRadios2: "Please choose one of the options",
+                difficulty: "Please rate this category",
+                organization: "Please rate this category",
+                effort: "Please rate this category",
+                professors: "Please rate this category"
+              },
+              errorPlacement: function(error, element) {
+                var placement = $(element).data('error');
+                if (placement) {
+                  $(placement).parent().append(error);
+                } else {
+                  if (element.hasClass('form-check-input')) {
+                      element.parent().parent().parent().children().last().append(error);
+                  } else {
+                      element.next().append(error);
+                  }
+                  
+                }
+              }
+            });
+
+            $(document).ready(function() {
+              score = parseFloat($('.overall-and-recommend .overall .overall-rating').text());
+              if (0 <= score && score < 2) {
+                $('.overall-and-recommend .overall .overall-rating').addClass('text-danger');
+              } else if (2 <= score && score < 3) {
+                $('.overall-and-recommend .overall .overall-rating').addClass('text-warning');
+              } else if (3 <= score && score < 4) {
+                $('.overall-and-recommend .overall .overall-rating').addClass('text-info');
+              } else if (4 <= score && score <= 5) {
+                $('.overall-and-recommend .overall .overall-rating').addClass('text-success');
+              };
+
+
+              $('#rated-ratings h4 span').each(function(index) {
+                // console.log($(this).text());
+                console.log(parseFloat($(this).text()))
+                score = parseFloat($(this).text());
+                if (0 <= score && score < 2) {
+                  $(this).addClass('text-danger');
+                } else if (2 <= score && score < 3) {
+                  $(this).addClass('text-warning');
+                } else if (3 <= score && score < 4) {
+                  $(this).addClass('text-info');
+                } else if (4 <= score && score <= 5) {
+                  $(this).addClass('text-success');
+                }
+              });
+
+
+            })
+            
+
+
+
+
+            $('.anonymous-submit input[type=radio]').click(function() {
+              $('.anonymous-submit').css({
+                'border-color': 'white',
+                'transition': 'border-color .4s ease'
+              });
+
+            });
+
+            $('.recommend-submit input[type=radio]').click(function() {
+              $('.recommend-submit').css({
+                'border-color': 'white',
+                'transition': 'border-color .4s ease'
+              });
             })
 
+            $(document).ready(function() {
+                $('.check').on('click',function(e) {
+                    $.ajax({
+                        url: '/checkLogin',
+                        success: function(isLoggedIn) {
+                            if (!isLoggedIn) {
+                                $('input').val("");
+                                $('.form-check-input').prop('checked',false);
+                                alert('You must login to evaluate this course');
+                                window.location.href = '/login';
+                            }
+                        }
+                    })
+                })
 
-        })
+
+            })
 
 
             $('#jRate0').jRate({
@@ -259,6 +360,7 @@
                 startColor: 'rgba(153,0,0,1)',
                 endColor: 'rgba(153,0,0,1)',
                 onSet: function(rating) {
+                    $('#validation0').html("");
                     $('#rating-result0').val(rating);
                 }
             });
@@ -272,6 +374,7 @@
                 startColor: 'rgba(153,0,0,1)',
                 endColor: 'rgba(153,0,0,1)',
                 onSet: function(rating) {
+                    $('#validation1').html("");
                     $('#rating-result1').val(rating);
                 }
             });
@@ -283,6 +386,7 @@
                 startColor: 'rgba(153,0,0,1)',
                 endColor: 'rgba(153,0,0,1)',
                 onSet: function(rating) {
+                    $('#validation2').html("");
                     $('#rating-result2').val(rating);
                 }
             });
@@ -294,6 +398,7 @@
                 startColor: 'rgba(153,0,0,1)',
                 endColor: 'rgba(153,0,0,1)',
                 onSet: function(rating) {
+                    $('#validation3').html("");
                     $('#rating-result3').val(rating);
                 }
             });
@@ -383,12 +488,13 @@
                       max: 5
                    },
                    tooltip: {
+                      useHTML: true,
                       backgroundColor: 'rgba(0, 0, 0, 0.85)',
                       style: {
                          color: '#F0F0F0'
                       },
                       formatter: function() {
-                        return `${this.x}: ${this.y}`;
+                        return `<p style="width: 200px !important;font-size: 20px;text-align:center">${this.x}: ${this.y}</p>`;
                       }
                    },
                    plotOptions: {

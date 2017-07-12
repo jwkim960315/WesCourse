@@ -55,6 +55,7 @@ li a:hover {
 .container {
 	margin: 0 auto;
 	background: none;
+	width:100%;
 }
 
 
@@ -129,13 +130,3 @@ li a:hover {
 	color: rgba(153,0,0,1) !important;
 }
 
-
-
-
-
-/*.categories button:clicked {
-	background: rgba(105,105,105,1) !important;
-}*/
-/*.collapse .card-block {
-	background-color: rgba(105,105,105,1);
-}*/

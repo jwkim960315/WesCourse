@@ -144,12 +144,12 @@ h4.card-title span {
     margin-right: 15%;
 }
 
-i.fa-thumbs-up {
+.up-and-down i.fa-thumbs-up {
     margin-right: 3px;
     padding-top: 3px;
 }
 
-i.fa-thumbs-down {
+.up-and-down i.fa-thumbs-down {
     margin-right: 3px;
     padding-top: 5px;
 }
@@ -164,7 +164,6 @@ form.form.card {
     background: -moz-linear-gradient(top right,#2a2a2b,#3e3e40) !important; /* Firefox 3.6 to 15 */
     background: linear-gradient(to top right,#2a2a2b,#3e3e40) !important;
     color: white;
-    border: 0 !important;
 }
 
 
@@ -179,27 +178,28 @@ form.form.card {
     border: solid 3px #675f6b;
     border-radius: 10px;
     margin: 20px;
+    margin-left: 0;
 }
 
 
 input[type=radio] {
   position: absolute;
   visibility: hidden;
-  display: none;
 }
 
 label.form-check-label {
   color: #9a929e;
-  /*display: inline-block;*/
   cursor: pointer;
   font-weight: bold;
   padding: 5px 20px;
+
 }
 
 input[type=radio]:checked + label.form-check-label {
-  color: white;
-  background: #c12828;
+  color: white !important;
+  background: #c12828 !important;
   border-radius: 5px;
+  border-color: white;
 }
 
 label.form-check-label + input[type=radio] + label.form-check-label {
@@ -210,22 +210,17 @@ label.form-check-label + input[type=radio] + label.form-check-label {
 
 
 
-
+.click-submit {
+    margin: 20px;
+}
 
 
 .category-ratings {
     font-size: 18px;
-    display: inline-block;
-    /*margin:;*/
-    margin: 0 auto !important;
-    float: right;
+    margin: 30px;
+    margin-left: 20px;
 }
 
-.category-ratings > div {
-    display: inline-block;
-    margin: 0 auto !important;
-    margin-right: 10px !important;
-}
 
 .comment-submit {
     font-size: 1.4rem;
@@ -273,12 +268,89 @@ div.rated-ratings .card {
     color: white;
 }
 
-h3.card-header {
+div.card > .card-header {
     background: -webkit-linear-gradient(bottom left,#850000,#990000,#c12828,#990000,#850000) fixed !important; /* Safari 5.1 to 6.0 */
     background: -o-linear-gradient(top right,#850000,#990000,#c12828,#990000,#850000) fixed !important; /* Opera 11.1 to 12.0 */
     background: -moz-linear-gradient(top right,#850000,#990000,#c12828,#990000,#850000) fixed !important; /* Firefox 3.6 to 15 */
     background: linear-gradient(to top right,#850000,#990000,#c12828,#990000,#850000) fixed !important;
-    color: white;
     border: 3px solid white;
 }
 
+div.rated-ratings-ratings h3.card-header, div.rated-ratings-comment h3.card-header {
+    background: none;
+    color: white;
+    border-bottom: none;
+}
+
+.card-block {
+    background: none;
+    margin: 1.25rem;
+    padding: 0;
+    border-radius: 10px;
+}
+
+.card-block hr {
+    background: white;
+    height: 1px;
+    margin: 1.25rem;
+}
+
+
+
+
+
+div.rated-ratings-ratings {
+    padding-right: 0 !important;
+    padding-left: 0 !important;
+    border: 3px solid #675f6b;
+    border-right: 0;
+    border-radius: 5px;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+div.rated-ratings-comment {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    border: 3px solid #675f6b;
+    border-left: 3px dashed #675f6b;
+    border-radius: 5px;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+div.rated-ratings-ratings h3.card-header {
+    border-right: 0 !important;
+}
+
+div.rated-ratings-ratings h3.card-header, div.rated-ratings-comment h3.card-header {
+    font-size: 1.1vw;
+}
+
+div.rated-ratings-ratings .ratings-inside, div.rated-ratings-comment .comment-inside {
+    padding: 20px;
+    padding-right: 0;
+}
+
+div.rated-ratings-ratings .ratings-inside span, div.rated-ratings-comment .comment-inside span {
+    font-size: 1.4vw;
+    margin-left: 5px;
+}
+
+div.rated-ratings-ratings .ratings-inside h4, div.rated-ratings-comment .comment-inside h4 {
+    font-size: 1vw;
+    color: white;
+}
+
+.overall-and-recommend .overall .overall-rating {
+    font-size: 1.4vw;
+}
+
+
+
+
+
+
+.validation {
+    color: red;
+}

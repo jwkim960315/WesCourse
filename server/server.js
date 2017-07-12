@@ -146,27 +146,19 @@ mysql.createConnection({
 passport.use(new LocalStrategy({
         usernameField: 'email',
         passwordField: 'password',
-        // passReqToCallback: true
     },
     function (email,password,done) {
-                // console.log(email);
-                // console.log(password);
                 connection.query(`SELECT * FROM users where email="${email}"`).then((data,err) => {
-                    // console.log(data);
                     if (err) {
                         return done(err);
                     };
-                    // console.log('pass 1');
 
                     if (data.length === 0) {
                         return done(null,false, { message: 'Incorrect username.'});
                     };
-                    // console.log('pass 2');
 
                     bcrypt.compare(password,data[0].password,(err,result) => {
-                        // console.log(result);
                         if (result) {
-                            // console.log('pass 3'); 
                             return done(null,data[0]);
                         }
                         
@@ -178,10 +170,6 @@ passport.use(new LocalStrategy({
                 });
 
                 
-
-            // });
-        // });
-        
     }
 ));
 
@@ -199,9 +187,6 @@ passport.deserializeUser((id, done) => {
 
 
 // Routes
-
-// app.get('/',routes.index);
-
 
 let options;
 
@@ -222,7 +207,6 @@ app.get('/',(req,res) => {
 
 
 app.get('/catalog',(req,res) => {
-
     connection.query('SELECT category,name FROM fields ORDER BY 1,2').then(data => {
         data = catalogDataManipulator(data);
         res.render('catalog',{data});
@@ -317,7 +301,6 @@ const recommend_number_getter = async (course_id) => {
     return connection.query(`SELECT CASE WHEN recommend=true THEN 1 ELSE 0 END AS yes,
                                     CASE WHEN recommend=false THEN 1 ELSE 0 END AS no
                              FROM ratings WHERE course_id=${course_id}`).then((res) => {
-                                console.log(res);
         return res.reduce((init,obj,index,arr) => {
             return {yes: init.yes + obj.yes, no: init.no + obj.no};
         },{yes: 0, no: 0});
@@ -332,14 +315,9 @@ app.get('/catalog/:fieldAc/:courseAc',async (req,res) => {
 
     courseComments = JSON.parse(JSON.stringify(await comments_getter(req.params.courseAc)));
     
-
     recommendNum = (courseRating.length === 0) ? undefined : JSON.parse(JSON.stringify(await recommend_number_getter(courseRating[0].course_id)));
 
     courseOverall = overall_avg_getter(courseRating[0]);
-
-    console.log(recommendNum);
-
-    
 
     res.render('specificCourse_test',{courseInfo,courseRating: courseRating[0], courseComments, courseOverall, recommendNum});  
 });
@@ -389,26 +367,20 @@ app.post('/comment/submit/:fieldAc/:courseAc/:courseId',(req,res) => {
         courseAc = req.params.courseAc,
         fieldAc = req.params.fieldAc;
 
-        console.log(difficulty);
-        console.log(organization);
-        console.log(effort);
-        console.log(professors);
+        // console.log(difficulty);
+        // console.log(organization);
+        // console.log(effort);
+        // console.log(professors);
         console.log(anonymous);
         console.log(recommend);
-        console.log(comment);
-        console.log(userId);
-        console.log(username);
-        console.log(courseId);
-        console.log(courseAc);
-        console.log(fieldAc);
+        // console.log(comment);
+        // console.log(userId);
+        // console.log(username);
+        // console.log(courseId);
+        // console.log(courseAc);
+        // console.log(fieldAc);
 
     
-    
-
-
-    if (difficulty === "" || organization === "" || effort === "" || professors === "" || recommend === "") {
-        return res.render('specificCourse_test.ejs',{courseRating: undefined});
-    };
 
     if (comment.trim() === "") {
         comment = "None";
