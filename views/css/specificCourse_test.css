@@ -351,6 +351,39 @@ div.rated-ratings-ratings .ratings-inside h4, div.rated-ratings-comment .comment
 
 
 
+
+
+
+
+
 .validation {
     color: red;
+}
+
+
+
+
+
+
+
+
+
+.page-item a {
+    color: black;
+}
+
+.page-item a:hover {
+    background: rgba(153,0,0,1);
+    color: white;
+}
+
+.page-item.active .page-link {
+    background-color: #d9534f !important;
+    color: white !important;
+    border: 1px solid white !important;
+}
+
+.page-item.active .page-link:hover {
+    background-color: rgba(153,0,0,1) !important;
+    
 }

@@ -1,0 +1,65 @@
+
+
+html {
+	height: 100%;
+}
+
+body {
+	background: -webkit-linear-gradient(bottom left,#850000,#990000,#c12828,#990000,#850000) fixed !important; /* Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(top right,#850000,#990000,#c12828,#990000,#850000) fixed !important; /* Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(top right,#850000,#990000,#c12828,#990000,#850000) fixed !important; /* Firefox 3.6 to 15 */
+    background: linear-gradient(to top right,#850000,#990000,#c12828,#990000,#850000) fixed !important;
+	/*padding-bottom: 70% !important;*/
+	position: relative;
+}
+
+.jumbotron {
+	background-color: black !important;
+	margin-top: 60px !important;
+}
+
+li a {
+	color: white !important;
+	padding-top: 20px !important;
+	padding-bottom: 20px !important;
+	font-weight: bold;
+	font-size: 1.1em;
+
+}
+
+li a:hover {
+	color: rgba(255,255,255,.5) !important;
+	border-radius: 5px;
+	box-shadow: 3px 3px 1px 1px rgba(31, 33, 34, 1) inset !important;
+	padding-left: 10px !important;
+}
+
+.justify-content-end {
+	padding-right: 15px;
+}
+
+.navbar-brand {
+	font-family: 'Cormorant Garamond', serif;
+	text-align: center;
+	padding-right: 5px;
+}
+
+.navbar-brand:hover {
+	color: rgba(255,255,255,.5) !important;
+}
+
+#wes {
+	padding-bottom: -5px;
+}
+
+#uni {
+	margin-top: -30px;
+	margin-bottom: -5px;
+	padding-top: 10px;
+	padding-bottom: 5px;
+	font-size: .7em;
+}
+
+
+
+

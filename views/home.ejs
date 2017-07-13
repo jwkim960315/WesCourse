@@ -29,46 +29,46 @@
 
     	<!-- NavBar -->
     	<nav class="navbar navbar-toggleable-md navbar-light navbar-inverse bg-inverse fixed-top">
-		  <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarContents" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+		    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarContents" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 		    <span class="navbar-toggler-icon"></span>
-		  </button>
-          <div>
-		  <a class="navbar-brand" href="http://www.wesleyan.edu/">
-		  		<p id="wes">Wesleyan</p>
-		  		<p id="uni">University</p>
-		  </a>
-          </div>
+		    </button>
+        <div>
+    		  <a class="navbar-brand" href="http://www.wesleyan.edu/">
+    		  		<p id="wes">Wesleyan</p>
+    		  		<p id="uni">University</p>
+    		  </a>
+        </div>
 
-		  <div class="collapse navbar-collapse" id="navbarContents">
-		    <ul class="navbar-nav mr-auto">
-		      <li class="nav-item">
-		        <a class="nav-link" href="/">Home<span class="sr-only">(current)</span></a>
-		      </li>
-		      <li class="nav-item">
-		        <a class="nav-link" href="/catalog">Catalog</a>
-		      </li>
-		      <li class="nav-item">
-		        <a class="nav-link" href="/about">About</a>
-		      </li>
-              <li class="nav-item">
-                <a class="nav-link" href="/search">Search</a>
-              </li>
-		    </ul>
-            <ul class="navbar-nav justify-content-end">
+  		  <div class="collapse navbar-collapse" id="navbarContents">
+  		    <ul class="navbar-nav mr-auto">
+  		      <li class="nav-item">
+  		        <a class="nav-link" href="/">Home<span class="sr-only">(current)</span></a>
+  		      </li>
+  		      <li class="nav-item">
+  		        <a class="nav-link" href="/catalog">Catalog</a>
+  		      </li>
+  		      <li class="nav-item">
+  		        <a class="nav-link" href="/about">About</a>
+  		      </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/login">Login</a>
+                  <a class="nav-link" href="/search">Search</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/logout">LogOut</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/createUser">Create An Account</a>
-                </li>
-            </ul>
+  		    </ul>
+              <ul class="navbar-nav justify-content-end">
+                  <li class="nav-item">
+                      <a class="nav-link" href="/login">Login</a>
+                  </li>
+                  <li class="nav-item">
+                      <a class="nav-link" href="/logout">LogOut</a>
+                  </li>
+                  <li class="nav-item">
+                      <a class="nav-link" href="/createUser">Create An Account</a>
+                  </li>
+              </ul>
 
-            
-		  </div>
-		</nav>
+              
+  		  </div>
+  		</nav>
 
 
 
@@ -78,22 +78,22 @@
           <div class="container">
             <img class="mx-auto d-block" src="https://upload.wikimedia.org/wikipedia/en/thumb/3/31/Wesleyan_University_Shield.svg/917px-Wesleyan_University_Shield.svg.png"/>
           </div>
-		</div>
+		  </div>
 
 
-		<!-- Search Bar -->
-        <form class="form" method="POST" action="/search/query/1/1">
-            <label class="sr-only" for="search-keyword"></label>
-            <div class="input-group">
-                <input type="text" class="form-control search-keyword" spellcheck="false" autocomplete="off" name="searchParam" id="search-keyword" placeholder="Search any keywords...">
-                <span class="input-group-btn">
-                    <button type="submit" class="btn btn-danger">Search</button>    
-                </span>
-            </div>
-        </form>
-        <div class="courses-group" id="courses-group">
-            <div class="list-group inside-courses-group" id="inside-courses-group"></div>
-        </div>
+  		<!-- Search Bar -->
+      <form class="form" method="POST" action="/search/query/1/1">
+          <label class="sr-only" for="search-keyword"></label>
+          <div class="input-group">
+              <input type="text" class="form-control search-keyword" spellcheck="false" autocomplete="off" name="searchParam" id="search-keyword" placeholder="Search any keywords...">
+              <span class="input-group-btn">
+                  <button type="submit" class="btn btn-danger">Search</button>    
+              </span>
+          </div>
+      </form>
+      <div class="courses-group" id="courses-group">
+          <div class="list-group inside-courses-group" id="inside-courses-group"></div>
+      </div>
 
 
 
@@ -158,7 +158,7 @@
                                 };
 
 
-                                template += `<a class="list-group-item action courses" href="/catalog/${obj.field_acronym}/${obj.course_acronym}">
+                                template += `<a class="list-group-item action courses" href="/catalog/${obj.field_acronym}/${obj.course_acronym}/1/1">
                                                 <div class="col-6">
                                                     <div class="course-acronyms">
                                                         <p>Course: ${obj.course_acronym}</p>

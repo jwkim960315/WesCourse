@@ -54,7 +54,7 @@ let token;
 
 // Helper Functions
 
-let catalogDataManipulator = data => {
+const catalogDataManipulator = data => {
     tmpCategory = data[0].category;
     for (let i=0;i < data.length;++i) {
         if (data[i].category === tmpCategory) {
@@ -72,7 +72,7 @@ let catalogDataManipulator = data => {
     return renderData;
 };
 
-let authenticate = (req,res,next) => {
+const authenticate = (req,res,next) => {
     let reqToken = req.header('x-auth');
     // console.log(reqToken);
     
@@ -82,11 +82,11 @@ let authenticate = (req,res,next) => {
     next();
 };
 
-let generateToken = (userId) => {
+const generateToken = (userId) => {
     return jwt.sign({id: userId},'SECRET');
 };
 
-let saltHashPass = (password) => {
+const saltHashPass = (password) => {
     bcrypt.genSalt(10,(err,salt) => {
         bcrypt.hash(password,salt,(err1,hash) => {
             hashPass = hash;
@@ -95,7 +95,7 @@ let saltHashPass = (password) => {
     return hashPass;
 };
 
-let searchingDataHandler = (data) => {
+const searchingDataHandler = (data) => {
     let tmpLst = [data[0]];
     let res = {}
     res[data[0].field_acronym] = tmpLst;
@@ -270,7 +270,7 @@ const specific_course_getter = async (courseAcronym) => {
     });
 };
 
-const comments_getter = async (courseAcronym) => {
+const comments_getter = async (courseAcronym,offset) => {
     return connection.query(`SELECT CASE 
                                         WHEN ratings.anonymous=true THEN "Anonymous"
                                         ELSE username
@@ -285,7 +285,13 @@ const comments_getter = async (courseAcronym) => {
                                         WHEN ratings.recommend=true THEN "Yes"
                                         ELSE "No"
                                     END as recommend
-                             FROM ratings INNER JOIN courses ON ratings.course_id = courses.id INNER JOIN users ON ratings.user_id = users.id WHERE courses.course_acronym="${courseAcronym}"`).then((res) => {
+                             FROM ratings 
+                             INNER JOIN courses 
+                                ON ratings.course_id = courses.id 
+                             INNER JOIN users 
+                                ON ratings.user_id = users.id 
+                             WHERE courses.course_acronym="${courseAcronym}"
+                             LIMIT ${offset},10`).then((res) => {
         return res;
     }).catch(e => undefined);
 };
@@ -300,7 +306,7 @@ const overall_avg_getter = data => {
 const recommend_number_getter = async (course_id) => {
     return connection.query(`SELECT CASE WHEN recommend=true THEN 1 ELSE 0 END AS yes,
                                     CASE WHEN recommend=false THEN 1 ELSE 0 END AS no
-                             FROM ratings WHERE course_id=${course_id}`).then((res) => {
+                             FROM ratings WHERE course_id=${course_id}`).then(res => {
         return res.reduce((init,obj,index,arr) => {
             return {yes: init.yes + obj.yes, no: init.no + obj.no};
         },{yes: 0, no: 0});
@@ -308,18 +314,106 @@ const recommend_number_getter = async (course_id) => {
 };
 
 
-app.get('/catalog/:fieldAc/:courseAc',async (req,res) => {
-    courseInfo = JSON.parse(JSON.stringify(await specific_course_getter(req.params.courseAc)));
+app.get('/catalog/:fieldAc/:courseAc/:sectionNum/:pageNum',async (req,res) => {
+
+    let offset = (req.params.pageNum-1)*10;
+
+    
+
+    courseComments = JSON.parse(JSON.stringify(await comments_getter(req.params.courseAc,offset)));
 
     courseRating = await ratings_getter(req.params.courseAc);
 
-    courseComments = JSON.parse(JSON.stringify(await comments_getter(req.params.courseAc)));
+    courseInfo = JSON.parse(JSON.stringify(await specific_course_getter(req.params.courseAc)));
     
     recommendNum = (courseRating.length === 0) ? undefined : JSON.parse(JSON.stringify(await recommend_number_getter(courseRating[0].course_id)));
 
     courseOverall = overall_avg_getter(courseRating[0]);
+    
 
-    res.render('specificCourse_test',{courseInfo,courseRating: courseRating[0], courseComments, courseOverall, recommendNum});  
+    
+
+    connection.query(`SELECT count(*) as count FROM ratings 
+                      WHERE course_id=${courseInfo[0].id}`)
+        .then((totalCount) => {
+            courseRating = JSON.parse(JSON.stringify(courseRating));
+            // console.log('*****');
+            // console.log(data);
+            // console.log('*****');
+            totalCount = totalCount[0].count;
+            let totalSecNum = Math.floor(totalCount/50);
+            
+
+            if (totalCount%50 !== 0) {
+                totalSecNum += 1;
+            };
+
+            // console.log(totalSecNum);
+
+            let prevSecExist = req.params.sectionNum !== 1 || req.params.sectionNum <= totalSecNum;
+
+            let nextSecExist = req.params.sectionNum !== totalSecNum;
+
+            let currentSecNum = parseInt(req.params.sectionNum);
+
+            let prevSecNum = currentSecNum-1;
+            let nextSecNum = currentSecNum+1;
+
+            // console.log(currentSecNum);
+            // console.log(totalSecNum);
+
+            // console.log(typeof currentSecNum);
+            // console.log(typeof totalSecNum);
+
+            // console.log(currentSecNum === totalSecNum);
+
+            let currentPageTotalNum;
+
+            if (currentSecNum == totalSecNum) {
+                currentPageTotalNum = Math.ceil(totalCount%50/10);
+                // console.log("last Page: "+currentPageTotalNum);
+            } else {
+                currentPageTotalNum = 5;
+                // console.log("Not last Page: "+currentPageTotalNum);
+            };
+            
+            // console.log(currentPageTotalNum);
+
+            console.log('*********************');
+
+            console.log("totalSecNum: ",totalSecNum);
+            console.log("currentSecNum: ",currentSecNum);
+            console.log("prevSecNum: ",prevSecNum);
+            console.log("nextSecNum: ",nextSecNum);
+            console.log("currentPageTotalNum: ",currentPageTotalNum);
+            console.log("totalCount: ",totalCount);
+            console.log("req.params.pageNum: ",req.params.pageNum);
+
+            console.log('*********************');
+
+            // console.log(currentSecNum);
+
+
+            res.render('specificCourse_test',{courseInfo,
+                                              courseRating: courseRating[0], 
+                                              courseComments, 
+                                              courseOverall, 
+                                              recommendNum,
+                                              totalSecNum,
+                                              currentSecNum:[{currentSecNum}], 
+                                              prevSecNum:[{prevSecNum}], 
+                                              nextSecNum:[{nextSecNum}], 
+                                              currentPageTotalNum: [{currentPageTotalNum}],
+                                              totalCount: [{totalCount}],
+                                              currentPageNum: [{currentPageNum: req.params.pageNum}],
+                                              fieldAc: [{fieldAc: req.params.fieldAc}],
+                                              courseAc: [{courseAc: req.params.courseAc}],
+                                              pageNum: [{pageNum: req.params.pageNum}]});
+
+
+        });
+
+      
 });
 
 
@@ -345,7 +439,7 @@ app.get('/checkLogin',(req,res) => {
 
 
 
-app.post('/comment/submit/:fieldAc/:courseAc/:courseId',(req,res) => {
+app.post('/comment/submit/:fieldAc/:courseAc/:courseId/:sectionNum/:pageNum',(req,res) => {
     
     
 
@@ -390,7 +484,7 @@ app.post('/comment/submit/:fieldAc/:courseAc/:courseId',(req,res) => {
     anonymous = (anonymous === "yes") ? 1 : 0;
     
     connection.query(`INSERT INTO ratings (difficulty,organization,effort,professors,recommend,comment,anonymous,course_id,user_id) VALUES (${difficulty},${organization},${effort},${professors},${recommend},"${comment}",${anonymous},${courseId},${userId})`).then((success) => {
-        res.redirect(`/catalog/${fieldAc}/${courseAc}`);
+        res.redirect(`/catalog/${fieldAc}/${courseAc}/${req.params.sectionNum}/${req.params.pageNum}`);
     });
 
 
@@ -418,7 +512,7 @@ app.post('/comment/submit/:fieldAc/:courseAc/:courseId',(req,res) => {
 
 
 app.get('/createUser',(req,res) => {
-    res.sendFile('createUser.html',options);
+    res.render('createUser',{});
 });
 
 
@@ -656,7 +750,7 @@ app.post('/search/query/:sectionNum/:pageNum',(req,res) => {
                     let currentPageTotalNum;
 
                     if (currentSecNum == totalSecNum) {
-                        currentPageTotalNum = Math.floor(totalCount%50/10)+1;
+                        currentPageTotalNum = Math.ceil(totalCount%50/10);
                         // console.log("last Page: "+currentPageTotalNum);
                     } else {
                         currentPageTotalNum = 5;
@@ -741,7 +835,7 @@ app.get('/search/query/:sectionNum/:pageNum/:searchParam',(req,res) => {
                     let currentPageTotalNum;
 
                     if (currentSecNum == totalSecNum) {
-                        currentPageTotalNum = Math.floor(totalCount%50/10)+1;
+                        currentPageTotalNum = Math.ceil(totalCount%50/10);
                         // console.log("last Page: "+currentPageTotalNum);
                     } else {
                         currentPageTotalNum = 5;
