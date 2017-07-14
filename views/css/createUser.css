@@ -9,7 +9,6 @@ body {
     background: -o-linear-gradient(top right,#850000,#990000,#c12828,#990000,#850000) fixed !important; /* Opera 11.1 to 12.0 */
     background: -moz-linear-gradient(top right,#850000,#990000,#c12828,#990000,#850000) fixed !important; /* Firefox 3.6 to 15 */
     background: linear-gradient(to top right,#850000,#990000,#c12828,#990000,#850000) fixed !important;
-	/*padding-bottom: 70% !important;*/
 	position: relative;
 }
 

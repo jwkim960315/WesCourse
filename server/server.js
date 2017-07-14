@@ -344,9 +344,9 @@ app.get('/catalog/:fieldAc/:courseAc/:sectionNum/:pageNum',async (req,res) => {
             let totalSecNum = Math.floor(totalCount/50);
             
 
-            if (totalCount%50 !== 0) {
+            // if (totalCount%50 !== 0) {
                 totalSecNum += 1;
-            };
+            // };
 
             // console.log(totalSecNum);
 
@@ -370,12 +370,10 @@ app.get('/catalog/:fieldAc/:courseAc/:sectionNum/:pageNum',async (req,res) => {
             let currentPageTotalNum;
 
             if (currentSecNum == totalSecNum) {
-                currentPageTotalNum = Math.ceil(totalCount%50/10);
-                // console.log("last Page: "+currentPageTotalNum);
+                currentPageTotalNum = (totalCount !== 0) ? Math.ceil(totalCount%50/10) : 1;
             } else {
                 currentPageTotalNum = 5;
-                // console.log("Not last Page: "+currentPageTotalNum);
-            };
+            }
             
             // console.log(currentPageTotalNum);
 
@@ -724,9 +722,9 @@ app.post('/search/query/:sectionNum/:pageNum',(req,res) => {
                     let totalSecNum = Math.floor(totalCount/50);
                     
 
-                    if (totalCount%50 !== 0) {
+                    // if (totalCount%50 !== 0) {
                         totalSecNum += 1;
-                    };
+                    // };
 
                     // console.log(totalSecNum);
 
@@ -750,16 +748,22 @@ app.post('/search/query/:sectionNum/:pageNum',(req,res) => {
                     let currentPageTotalNum;
 
                     if (currentSecNum == totalSecNum) {
-                        currentPageTotalNum = Math.ceil(totalCount%50/10);
-                        // console.log("last Page: "+currentPageTotalNum);
+                        currentPageTotalNum = (totalCount !== 0) ? Math.ceil(totalCount%50/10) : 1;
                     } else {
                         currentPageTotalNum = 5;
-                        // console.log("Not last Page: "+currentPageTotalNum);
-                    };
+                    }
                     
-                    console.log(currentPageTotalNum);
+                    // console.log(currentPageTotalNum);
 
-                    console.log(req.body.searchParam);
+                    console.log('*********************');
+
+                    console.log("totalSecNum: ",totalSecNum);
+                    console.log("currentSecNum: ",currentSecNum);
+                    console.log("prevSecNum: ",prevSecNum);
+                    console.log("nextSecNum: ",nextSecNum);
+                    console.log("currentPageTotalNum: ",currentPageTotalNum);
+                    console.log("totalCount: ",totalCount);
+                    console.log("req.params.pageNum: ",req.params.pageNum);
 
                     console.log('*********************');
 
@@ -802,16 +806,13 @@ app.get('/search/query/:sectionNum/:pageNum/:searchParam',(req,res) => {
                               ORDER BY course_acronym`)
                 .then((totalCount) => {
                     data = JSON.parse(JSON.stringify(data));
-                    // console.log('*****');
-                    // console.log(data);
-                    // console.log('*****');
                     totalCount = totalCount[0].count;
                     let totalSecNum = Math.floor(totalCount/50);
                     
 
-                    if (totalCount%50 !== 0) {
+                    // if (totalCount%50 !== 0) {
                         totalSecNum += 1;
-                    };
+                    // };
 
                     // console.log(totalSecNum);
 
@@ -835,12 +836,10 @@ app.get('/search/query/:sectionNum/:pageNum/:searchParam',(req,res) => {
                     let currentPageTotalNum;
 
                     if (currentSecNum == totalSecNum) {
-                        currentPageTotalNum = Math.ceil(totalCount%50/10);
-                        // console.log("last Page: "+currentPageTotalNum);
+                        currentPageTotalNum = (totalCount !== 0) ? Math.ceil(totalCount%50/10) : 1;
                     } else {
                         currentPageTotalNum = 5;
-                        // console.log("Not last Page: "+currentPageTotalNum);
-                    };
+                    }
                     
                     // console.log(currentPageTotalNum);
 
@@ -851,13 +850,10 @@ app.get('/search/query/:sectionNum/:pageNum/:searchParam',(req,res) => {
                     console.log("prevSecNum: ",prevSecNum);
                     console.log("nextSecNum: ",nextSecNum);
                     console.log("currentPageTotalNum: ",currentPageTotalNum);
-                    console.log("req.params.searchParam: ",req.params.searchParam);
                     console.log("totalCount: ",totalCount);
                     console.log("req.params.pageNum: ",req.params.pageNum);
 
                     console.log('*********************');
-
-                    // console.log(currentSecNum);
 
 
                
