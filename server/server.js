@@ -24,6 +24,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(methodOverride('X-HTTP-Method-Override'));
 app.use(express.static(path.join(__dirname, '/../views')));
+console.log(__dirname);
 
 // console.log(path.join(__dirname,'/../public'));
 app.set('view engine','ejs');
