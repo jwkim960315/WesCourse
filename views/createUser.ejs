@@ -171,8 +171,30 @@
           }
         });
 
+        // Username Unique Validator
+        // $('#inputUsername1').input(function() {
+        //   $.ajax({
+        //       url: '/checkUsername',
+        //       method: 'POST'
+        //       data: {
+        //         username: $('#inputUsername1').val();
+        //       },
+        //       success: function(isUnique) {
+        //           if (isUnique) {
+        //             $('')
+        //           }
+        //       }
+        //     })
+        // })
 
-        //Validator
+
+        //Validator Rule Creators
+        jQuery.validator.addMethod('username-check',function(value,element) {
+
+            
+        });
+
+        // Main Validators
         $('form.createUser').validate({
           rules: {
             email: 'required',

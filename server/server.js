@@ -1019,7 +1019,9 @@ app.post('/forgotPassSubmit',(req,res) => {
     });
 });
 
-
+app.post('/checkUsername',(req,res) => {
+    
+})
 
 
 
