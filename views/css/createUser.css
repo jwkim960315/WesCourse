@@ -18,10 +18,10 @@ body {
 
 .jumbotron {
 	background-color: black !important;
-	margin-top: 60px !important;
+	/*margin-top: 60px !important;*/
 }
 
-li a {
+nav li a {
 	color: white !important;
 	padding-top: 20px !important;
 	padding-bottom: 20px !important;
@@ -30,7 +30,7 @@ li a {
 
 }
 
-li a:hover {
+nav li a:hover {
 	color: rgba(255,255,255,.5) !important;
 	border-radius: 5px;
 	box-shadow: 3px 3px 1px 1px rgba(31, 33, 34, 1) inset !important;
@@ -64,7 +64,7 @@ li a:hover {
 }
 
 
-body {
+/*body {
   width: 100%;
   height: 100%;
   display: block;
@@ -73,7 +73,7 @@ body {
 
 body::after {
   content: "";
-  /*background: url("http://newsletter.blogs.wesleyan.edu/files/2012/11/DSC_4361.jpg") no-repeat fixed;*/
+  background: url("http://newsletter.blogs.wesleyan.edu/files/2012/11/DSC_4361.jpg") no-repeat fixed;
   background-size: 100% 100%;
   opacity: 0.5;
   top: 0;
@@ -82,23 +82,87 @@ body::after {
   right: 0;
   position: absolute;
   z-index: -1;   
-}
+}*/
 
 
 
 
 
 .enter-box {
-    background: -webkit-linear-gradient(bottom left,#2a2a2b,#3e3e40); /* Safari 5.1 to 6.0 */
-    background: -o-linear-gradient(top right,#2a2a2b,#3e3e40); /* Opera 11.1 to 12.0 */
-    background: -moz-linear-gradient(top right,#2a2a2b,#3e3e40); /* Firefox 3.6 to 15 */
-    background: linear-gradient(to top right,#2a2a2b,#3e3e40);
-    position: absolute;
-    top: 50%;
-    transform: translateY(-70%);
-    width: 50% !important;
-    border-radius: 5px !important;
-    color: white;
+    /*position: absolute;*/
+    /*top: 50%;*/
+    /*transform: translateY(-70%);*/
+    width: 40% !important;
+    
+    color: black;
+    /*text-align: center;*/
+    margin-top: 14%;
+    /*margin-left: 50%;*/
+    background: white;
+    /*background-clip: content-box;*/
+    font-family: 'Merriweather', serif;
+    border-radius: .25rem;
+    padding: 20px;
+    border: 10px solid rgb(221,221,221);
 }
 
 
+
+.enter-box form {
+	background-color: white;
+}
+
+.enter-box form button {
+	background: #c12828;
+    
+    border: 3px solid rgb(221,221,221);
+}
+
+.enter-box form button:hover {
+	border: 3px solid rgb(180,180,180);
+	background: #850000 !important;
+}
+
+ul.nav.nav-tabs {
+	background: none;
+	margin-bottom: 0;
+}
+
+div.tab-content-outside {
+	border: 1px solid rgb(221,221,221);
+	border-top: none;
+	margin-top: 0;
+}
+
+.enter-box form input:focus {
+	border-color: red;
+}
+
+ul.nav.nav-tabs li a {
+	color: black;
+}
+
+ul.nav.nav-tabs li a:hover {
+	color: red;
+}
+
+ul.nav.nav-tabs li a.active {
+	color: red;
+}
+
+label.col-form-label {
+	font-weight: bold;
+}
+
+div.d-flex.justify-content-center.buttons {
+	padding-top: 10px !important;
+	padding-bottom: 10px !important;
+}
+
+.enter-box form {
+	padding-top: 18px;
+}
+
+label.error {
+	color: red;
+}

@@ -614,7 +614,7 @@ app.get('/login',(req,res) => {
     // console.log(req.protocol + '://' + req.get('host'));
     req.session.returnTo = req.header('Referer') || req.protocol + '://' + req.get('host');
     // console.log(req.session.returnTo);
-    res.render('login',{success: [{success:true}], invalidMessage: [{invalidMessage:"Invalid Username and/or Password"}]});
+    res.render('createUser',{success: [{success:true}], invalidMessage: [{invalidMessage:"Invalid Username and/or Password"}]});
 });
 
 
