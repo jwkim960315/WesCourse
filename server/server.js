@@ -13,7 +13,8 @@ const bcrypt = require('bcrypt');
 
 var passport = require('passport')
   , LocalStrategy = require('passport-local').Strategy
-  , session = require('express-session');
+  , session = require('express-session')
+  , GoogleStrategy = require('passport-google-oauth2').Strategy;
 
 const port = process.env.port || 3000;
 
@@ -144,35 +145,81 @@ mysql.createConnection({
 //   }
 // ));
 
-passport.use(new LocalStrategy({
-        usernameField: 'email',
-        passwordField: 'password',
-    },
-    function (email,password,done) {
-                connection.query(`SELECT * FROM users where email="${email}"`).then((data,err) => {
-                    if (err) {
-                        return done(err);
-                    };
+// passport.use(new LocalStrategy({
+//         usernameField: 'email',
+//         passwordField: 'password',
+//     },
+//     function (email,password,done) {
+//                 connection.query(`SELECT * FROM users where email="${email}"`).then((data,err) => {
+//                     if (err) {
+//                         return done(err);
+//                     };
 
-                    if (data.length === 0) {
-                        return done(null,false, { message: 'Incorrect username.'});
-                    };
+//                     if (data.length === 0) {
+//                         return done(null,false, { message: 'Incorrect username.'});
+//                     };
 
-                    bcrypt.compare(password,data[0].password,(err,result) => {
-                        if (result) {
-                            return done(null,data[0]);
-                        }
+//                     bcrypt.compare(password,data[0].password,(err,result) => {
+//                         if (result) {
+//                             return done(null,data[0]);
+//                         }
                         
 
-                        return done(null,false,{ message: 'Incorrect password.'});
-                    });
+//                         return done(null,false,{ message: 'Incorrect password.'});
+//                     });
 
                     
-                });
+//                 });
 
                 
-    }
-));
+//     }
+// ));
+
+
+// Google-OAuth2 Passport Middleware
+passport.use(new GoogleStrategy({
+    clientID: "277763886590-097le00059nkdkt4dcv1pif6oirf955k.apps.googleusercontent.com",
+    clientSecret: "Ya6_3UPFSEMoMfSDHYRj2Eic",
+    callbackURL: "/auth/google/callback",
+    passReqToCallback: true
+  },
+  function(req, accessToken, refreshToken, profile, done) {
+
+        console.log(profile);
+        console.log(accessToken);
+        connection.query(`SELECT * FROM users WHERE users.id=${profile.id}`).then((data,err) => {
+            console.log(data);
+            if (err) {
+                console.log(err);
+                return done(err);
+            };
+
+            console.log(req.query.state);
+            console.log(profile.id);
+
+            if (data.length === 0) {                
+                connection.query(`INSERT INTO users (id,username,email,first_name,last_name) VALUES ("${profile.id}","${req.query.state}","${profile.email}","${profile.name.givenName}","${profile.name.familyName}")`);                
+                return done(null, { id: profile.id,
+                                    username: req.query.state });        
+            }
+
+            if (req.query.state) {
+                return done(null, false, { message: 'You already have an account' });
+            };
+
+            console.log(profile._json.verified);
+
+            if (profile._json.domain === "wesleyan.edu") {
+                return done(null, data[0]);
+            };
+
+
+
+            return done(null, false, { message: 'Unknown Error' });
+
+        
+        }).catch(e => console.log(e.message));
+  }));
 
 passport.serializeUser((user, done) => {
     done(null,user.id);
@@ -495,72 +542,98 @@ app.post('/comment/submit/:fieldAc/:courseAc/:courseId/:sectionNum/:pageNum',(re
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 app.get('/createUser',(req,res) => {
     req.session.returnTo = req.header('Referer') || req.protocol + '://' + req.get('host');
-    res.render('createUser',{});
+    console.log(req.session.returnTo);
+    res.render('createUser',{success: [{success:true}], invalidMessage: undefined});
 });
-
-
-// User Creating
-
-
-
-
 
 
 app.get('/login',(req,res) => {
-    // res = previousUrlSaver(req,res);
-    // console.log(res.locals);
-    // console.log(req.header('Referer'));
-    // console.log(req.protocol + '://' + req.get('host'));
+    console.log("Return to :"+req.session.returnTo);
     req.session.returnTo = req.header('Referer') || req.protocol + '://' + req.get('host');
-    // console.log(req.session.returnTo);
+    console.log(req.session.returnTo);
+    console.log(req.session.err);
     res.render('createUser',{success: [{success:true}], invalidMessage: [{invalidMessage:"Invalid Username and/or Password"}]});
 });
 
+// Google Sign-In Routes
+app.get('/createUser/auth/google', (req,res) => {
 
-// app.post('/loggingIn',
-//     passport.authenticate('local', {
-//         successRedirect: req.header('Referer'),
-//         failureRedirect: '/login'
-//     })
-// );
+    // console.log(req.body.username);
+    // console.log(req.query.username);
+    // console.log(req.params.username);
 
-app.post('/loggingIn',(req,res,next) => {
-    passport.authenticate('local',(err, user, info) => {
+    passport.authenticate('google', { 
+        hd: 'wesleyan.edu',
+        scope: [ 'profile','email' ],
+        prompt : "select_account",
+        state: req.query.username
+    
+    })(req,res)
+});
+
+app.get('/login/auth/google', (req,res) => {
+
+    // console.log(req.body.username);
+    // console.log(req.query.username);
+    // console.log(req.params.username);
+
+    passport.authenticate('google', { 
+        hd: 'wesleyan.edu',
+        scope: [ 'profile','email' ],
+        prompt : "select_account"
+    })(req,res)
+});
+
+// Google Sign-In Callbacks
+app.get( '/auth/google/callback', (req,res,next) => {
+    passport.authenticate('google',(err, user, info) => {
+        console.log(info);
         if (err) {
             return next(err);
         };
 
         if (!user) {
-            return res.render('login',{success: [{success:false}], invalidMessage: [{invalidMessage:"Invalid Username and/or Password"}]});
+            req.session.err = true;
+            return res.redirect('/login');
+            // return res.render('createUser',{success: [{success:false}], invalidMessage: [{invalidMessage: info.message}]});
         };
 
         req.logIn(user, (err) => {
             if (err) {
                 return next(err);
             };
+            console.log('redirected successfully');
             res.redirect(req.session.returnTo);
             delete req.session.returnTo;
             return;
         })
     }) (req,res,next)
+
 });
+
+
+// app.post('/loggingIn',(req,res,next) => {
+//     passport.authenticate('local',(err, user, info) => {
+//         if (err) {
+//             return next(err);
+//         };
+
+//         if (!user) {
+//             return res.render('login',{success: [{success:false}], invalidMessage: [{invalidMessage:"Invalid Username and/or Password"}]});
+//         };
+
+//         req.logIn(user, (err) => {
+//             if (err) {
+//                 return next(err);
+//             };
+//             res.redirect(req.session.returnTo);
+//             delete req.session.returnTo;
+//             return;
+//         })
+//     }) (req,res,next)
+// });
 
 
 app.get('/logout',(req,res) => {
@@ -793,147 +866,6 @@ app.get('/search/query/:sectionNum/:pageNum/:searchParam',(req,res) => {
 
 
 
-app.get('/profile',(req,res) => {
-    res.render('profile');
-});
-
-app.get('/profile/changePass',(req,res) => {
-    res.render('changePass');
-});
-
-app.post('/profile/changePassSubmit',(req,res) => {
-    connection.query(`SELECT email,password FROM users WHERE id="${req.user.id}"`).then((info) => {
-        if (info[0].password !== req.body.password) {
-            return res.render('changePass',{invalidMessage: [{invalidMessage: "Incorrect Password"}]});
-        };
-
-        verId = req.user.id;
-
-        host = req.get('host');
-
-        verPassword = req.body.password;
-
-        jwt.verify('','SECRET',(err,result) => {
-            
-
-            transporter = nodemailer.createTransport({
-                service: "Gmail",
-                auth: {
-                    user: 'jwkim0315@gmail.com',
-                    pass: result.password
-                }
-            });
-
-            rand = Math.floor((Math.random() * 100) + 54);
-
-            link = "http://"+req.get('host')+"/verifyNewPass?id="+rand;
-
-            
-
-            mailOptions = {
-                from: 'jwkim0315@gmail.com',
-                to: info[0].email,
-                subject: 'Please confirm your Email Account',
-                html: "Hello,<br> Please Click on the link to verify your email.<br><a href="+link+">Click here to verify</a>"
-            }
-
-            transporter.sendMail(mailOptions,(err,info) => {
-                if (err) {
-                    return console.log(err);
-                }
-                console.log('Message %s sent: %s', info.messageId, info.response);
-                res.render('submitUser',{success: true});
-            });
-        });
-    });
-});
-
-
-app.get('/verifyNewPass',(req,res) => {
-    if ((req.protocol+"://"+req.get('host'))==("http://"+host)) {
-        console.log("Domain is matched. Information is from Authentic email");
-        if (req.query.id == rand) {
-            console.log("email is verified");
-            res.render('newPass');
-        } else {
-            console.log("email is not verified");
-            res.send("<h1>Bad Request</h1>");
-        }
-    } else {
-        res.send("<h1>Request is from unknown source</h1>");
-    }
-});
-
-
-app.post('/newPass',(req,res) => {
-    if (req.body.password !== req.body.confirmPass) {
-        return res.render('newPass',{invalidMessage: [{invalidMessage: "Password must match Confirm Password"}]});
-    };
-
-    bcrypt.genSalt(10,(err,salt) => {
-        bcrypt.hash(verPassword,salt,(err1,hash) => {
-            verPassword = hash;
-            connection.query(`UPDATE users SET password="${verPassword}" WHERE id="${verId}`).then((success) => {
-                res.render('newPass',{success: [{success: true}]});
-            });
-
-        });
-    });
-
-    
-});
-
-
-
-
-app.get('/forgotPass',(req,res) => {
-    res.render('forgotPass');
-});
-
-app.post('/forgotPassSubmit',(req,res) => {
-
-    if (req.body.email.slice(-12) !== 'wesleyan.edu') {
-        return res.render('forgotPass',{success: [{success: false}]});
-    };
-    
-    verEmail = req.body.email;
-
-    host = req.get('host');
-
-    verPassword = req.body.password;
-
-    jwt.verify('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXNzd29yZCI6Inl1c2VvdW5nMSIsImlhdCI6MTQ5NzQ5NjkwMH0.TtTIpFBotfxL1-pQX2wCS2XRofnyB4v4FNdaIH19QMI','SECRET',(err,result) => {
-
-        transporter = nodemailer.createTransport({
-            service: "Gmail",
-            auth: {
-                user: 'jwkim0315@gmail.com',
-                pass: result.password
-            }
-        });
-
-        rand = Math.floor((Math.random() * 100) + 54);
-
-        link = "http://"+req.get('host')+"/verifyNewPass?id="+rand;
-
-        
-
-        mailOptions = {
-            from: 'jwkim0315@gmail.com',
-            to: info[0].email,
-            subject: 'Please confirm your Email Account',
-            html: "Hello,<br> Please Click on the link to verify your email.<br><a href="+link+">Click here to verify</a>"
-        }
-
-        transporter.sendMail(mailOptions,(err,info) => {
-            if (err) {
-                return console.log(err);
-            }
-            console.log('Message %s sent: %s', info.messageId, info.response);
-            res.render('submitUser',{success: true});
-        });
-    });
-});
 
 app.post('/checkUsername',(req,res) => {
     console.log(req.body.username.length);
@@ -949,7 +881,9 @@ app.post('/checkUsername',(req,res) => {
 
         return res.send(false);
     })
-})
+});
+
+
 
 
 

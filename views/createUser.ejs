@@ -51,15 +51,15 @@
                 </li>
   		    </ul>
               <ul class="navbar-nav justify-content-end">
-                  <li class="nav-item">
+                  <!-- <li class="nav-item">
                       <a class="nav-link" href="/login">Sign In</a>
-                  </li>
+                  </li> -->
                   <li class="nav-item">
                       <a class="nav-link" href="/logout">Sign Out</a>
                   </li>
                   
                   <li class="nav-item">
-                      <a class="nav-link" href="/createUser">Create An Account</a>
+                      <a class="nav-link" href="/login">Sign In/Create Account</a>
                   </li>
               </ul>
 
@@ -135,7 +135,7 @@
                 <div class="form-group username">
                   <label for="inputUsername1" class="col-form-label">Username</label>
                   <input type="text" class="form-control" name="username" id="inputUsername1" placeholder="Enter your username" autocomplete="off" maxlength="30"/>
-                  <label id="inputUsername1-err" class="errors inputUsername1-err" for="inputUsername1" style="display: none;"></label>
+                  <label id="inputUsername1-err" class="errors inputUsername1-err" for="inputUsername1" style=""></label>
                 </div>
                 <div class="form-group">
                   <div class="d-flex justify-content-center buttons">
@@ -179,6 +179,11 @@
             $('a[href="#login"]').addClass('active');
             $('.tab-content-outside .tab-content #login').addClass('active');
           }
+
+          <% if (!success[0].success) { %>
+            $('#inputUsername1-err').show();
+            $('#inputUsername1-err').val("<%= invalidMessage[0].invalidMessage %>");
+          <% } %>
         });
 
         // Username Unique Validator
@@ -195,7 +200,7 @@
                   if (isUnique === "noInput") {
                       $('.createUser button.loginBtn.loginBtn--google').prop('disabled',true);
                       $('.createUser button.loginBtn.loginBtn--google').css('opacity','.3');
-                      // e.preventDefault(e);
+                      
                       $('#inputUsername1-err').switchClass('inputUsername1-success','inputUsername1-err',0);
                       $('#inputUsername1-err').text('You must enter a username you desire');
                   }
@@ -203,7 +208,7 @@
                   if (!isUnique) {
                       $('.createUser button.loginBtn.loginBtn--google').prop('disabled',true);
                       $('.createUser button.loginBtn.loginBtn--google').css('opacity','.3');
-                      // e.preventDefault(e);
+                      
                       $('#inputUsername1-err').switchClass('inputUsername1-success','inputUsername1-err',0);
                       $('#inputUsername1-err').text("Username already exists");
                   } else if (isUnique === true) {

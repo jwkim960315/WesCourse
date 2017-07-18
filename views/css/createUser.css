@@ -96,7 +96,7 @@ body::after {
     
     color: black;
     /*text-align: center;*/
-    margin-top: 14%;
+    margin-top: 180px;
     /*margin-left: 50%;*/
     background: white;
     /*background-clip: content-box;*/
@@ -163,8 +163,13 @@ div.d-flex.justify-content-center.buttons {
 	padding-top: 18px;
 }
 
-label.error, label.inputUsername1-err {
-	color: red;
+label#inputUsername1-err {
+  padding-top: 10px !important;
+  padding-left: 10px !important;
+}
+
+label.inputUsername1-err {
+	color: red;  
 }
 
 .createUser button.loginBtn.loginBtn--google {

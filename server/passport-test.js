@@ -169,8 +169,7 @@ app.get('/auth/google', (req,res) => {
         state: req.query.username
     
     })(req,res)
-}
-  );
+});
 
 app.get( '/auth/google/callback', (req,res,next) => {
     passport.authenticate('google',(err, user, info) => {
