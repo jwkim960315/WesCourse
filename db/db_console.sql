@@ -1,3 +1,7 @@
+DROP DATABASE wes_course_test;
+CREATE DATABASE wes_course_test;
+use wes_course_test;
+
 create table fields (
   acronym varchar(4) primary key not null,
   name varchar(255) not null,
@@ -6,6 +10,7 @@ create table fields (
   term int not null,
   created_at timestamp default current_timestamp
 );
+
 
 create table courses (
   id int AUTO_INCREMENT PRIMARY KEY,
@@ -23,11 +28,11 @@ create table courses (
 );
 
 create table users (
-  id int AUTO_INCREMENT PRIMARY KEY,
+  id VARCHAR(255) NOT NULL PRIMARY KEY,
   username varchar(255) not null,
-  email varchar(255) not null,
-  password varchar(80) not null,
-  verified BOOL not null,
+  email varchar(255) not null UNIQUE,
+  first_name varchar(255) not null,
+  last_name varchar(255) not null,
   created_at timestamp default current_timestamp
 );
 
@@ -39,16 +44,10 @@ create table ratings (
   professors decimal(2,1) not null,
   recommend INT not null,
   course_id int not null,
-  user_id int not null,
-  FOREIGN KEY (course_id) REFERENCES courses(id) on delete cascade,
-  FOREIGN KEY (user_id) REFERENCES users(id) on delete cascade
-);
-
-create table comments (
-  id int AUTO_INCREMENT PRIMARY KEY,
-  comment text not null,
-  course_id int not null,
-  user_id int not null,
+  user_id VARCHAR(255) not null,
+  comment TEXT,
+  anonymous BOOLEAN not null,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (course_id) REFERENCES courses(id) on delete cascade,
   FOREIGN KEY (user_id) REFERENCES users(id) on delete cascade
 );
@@ -118,8 +117,8 @@ INSERT INTO users (username,email,password) values ('Me','fdsaf@fdasfas.com',SHA
 
 select * from ratings;
 
-INSERT INTO ratings (difficulty,organization,effort,professors,recommend,course_id,user_id) VALUES (3.9,3.9,3.9,3.9,true,196,2);
-INSERT INTO ratings (difficulty,organization,effort,professors,recommend,course_id,user_id) VALUES (4.9,4.9,4.9,4.9,true,196,2);
+INSERT INTO ratings (difficulty,organization,effort,professors,recommend,course_id,user_id) VALUES (3.9,3.9,3.9,3.9,true,196,20);
+INSERT INTO ratings (difficulty,organization,effort,professors,recommend,course_id,user_id) VALUES (4.9,4.9,4.9,4.9,true,196,20);
 
 SELECT avg(difficulty) as Difficulty,
         avg(organization) as Organization,
@@ -138,12 +137,96 @@ from ratings
 GROUP BY ratings.course_id
 HAVING courses.course_acronym="ARAB101-01";
 
+delete from ratings;
 
 select * from ratings;
 
 delete from users;
 
 
+select * from ratings;
+
+select * from users where email="jkim11@wesleyan.edu";
+
+delete from users;
+
+select * from courses where course_name like "%ARAB%" OR section like "%ARAB%";
+
+select * from courses;
+
+SELECT * FROM courses WHERE course_name like "%COMP%" OR
+                                                  professors like "%COMP%" OR
+                                                  course_acronym like "%COMP%" OR
+                                                  field_acronym like "%COMP%"
+                     ORDER BY course_acronym
+                     LIMIT 10,10;
+
+SELECT  FROM comments INNER JOIN courses ON comments.course_id = courses.id INNER JOIN users ON comments.user_id = users.id HAVING courses.course_acronym = "ARAB";
+
+SELECT avg(difficulty) as Difficulty,
+                                    avg(organization) as Organization,
+                                    avg(effort) as EffortRequired,
+                                    avg(ratings.professors) as ProfessorsRating,
+                                    CASE
+                                        WHEN avg(recommend)>=.5 THEN "Yes"
+                                        ELSE "No"
+                                        END as Recommend,
+                                    courses.course_acronym
+                            from ratings
+                            inner join courses
+                                on ratings.course_id = courses.id
+                            inner join users
+                                on users.id = ratings.user_id
+                            GROUP BY ratings.course_id
+                            HAVING courses.course_acronym="ARAB101-01";
+
+delete from ratings where user_id=20;
+
+select * from ratings;
+
+
+SELECT * FROM ratings;
+
+SELECT CASE
+                                        WHEN ratings.anonymous=1 THEN "Anonymous"
+                                        ELSE username
+                                    END as username,
+                                    comment,
+                                    ratings.created_at,
+                                    ratings.difficulty,
+                                    ratings.organization,
+                                    ratings.effort,
+                                    ratings.professors,
+                                    CASE
+                                        WHEN ratings.recommend=1 THEN "Yes"
+                                        ELSE "No"
+                                    END as recommend
+                             FROM ratings RIGHT JOIN courses ON ratings.course_id = courses.id RIGHT JOIN users ON ratings.user_id = users.id where course_acronym="AMST119-01";
+SELECT AVG(recommend) FROM ratings GROUP BY recommend WHERE course_acronym="ARAB101-01";
+SELECT recommend FROM ratings WHERE course_acronym="ARAB101-01";
+select case when anonymous=1 then "Anonymous" ELSE username END as username FROM ratings INNER JOIN courses ON ratings.course_id = courses.id INNER JOIN users ON ratings.user_id = users.id WHERE courses.course_acronym="ARAB101-01";
+SELECT id FROM courses WHERE course_acronym="ARAB101-01";
+select * from ratings where course_id=196;
+
+select avg(recommend) FROM ratings GROUP BY recommend WHERE course_id=196;
+
+SELECT CASE WHEN recommend=true THEN 1 ELSE 0 END AS yes,
+        CASE WHEN recommend=false THEN 1 ELSE 0 END AS no
+        FROM ratings WHERE course_id=196;
+
+SELECT * from courses WHERE course_acronym="AMST119-01";
+
+delete from ratings;
+
+select * from ratings;
+
 
 
 select * from users;
+
+
+delete from users;
+
+DROP DATABASE wes_course_test;
+CREATE DATABASE wes_course_test;
+INSERT INTO ratings (difficulty,organization,effort,professors,recommend,comment,anonymous,course_id,user_id) VALUES (3.0,1.0,2.0,4.5,1,"fdsafsdafs",1,196,20);
