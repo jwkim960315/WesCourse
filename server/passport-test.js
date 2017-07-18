@@ -94,18 +94,41 @@ passport.use(new GoogleStrategy({
   function(req, accessToken, refreshToken, profile, done) {
 
         console.log(profile);
-        connection.query(`SELECT * FROM users where email="${profile.email}"`).then((data,err) => {
+        console.log(accessToken);
+        connection.query(`SELECT * FROM users WHERE users.id=${profile.id}`).then((data,err) => {
+            console.log(data);
             if (err) {
+                console.log(err);
                 return done(err);
             };
+
+            console.log(req.query.state);
+            console.log(profile.id);
 
             if (data.length === 0) {
-                return done(err);
+                connection.query(`SELECT * FROM users WHERE username="${req.query.state}"`).then(data => {
+                    if (data.length === 0) {
+                        connection.query(`INSERT INTO users (id,username,email,first_name,last_name) VALUES ("${profile.id}","${req.query.state}","${profile.email}","${profile.name.givenName}","${profile.name.familyName}")`);                
+                        return done(null, { id: profile.id,
+                                            username: req.query.state });
+                    } else {
+                        return done(null, false, { message: 'Username Already Exists' });
+                    }
+
+
+                }) 
+                
             };
 
-            if (profile._json.hd === "wesleyan.edu") {
-                return done(null,profile);
+            console.log(profile._json.verified);
+
+            if (profile._json.domain === "wesleyan.edu") {
+                return done(null, data[0]);
             };
+
+
+
+            return done(null, false, { message: 'Unknown Error' });
 
         
         }).catch(e => console.log(e.message));
@@ -133,18 +156,46 @@ passport.use(new GoogleStrategy({
 //   login page.  Otherwise, the primary route function function will be called,
 //   which, in this example, will redirect the user to the home page.
 
-app.get('/auth/google',
-  passport.authenticate('google', { 
-    hd: 'wesleyan.edu',
-    scope: [ 'https://www.googleapis.com/auth/plus.login',
-             'https://www.googleapis.com/auth/plus.profile.emails.read' ] }
-));
+app.get('/auth/google', (req,res) => {
 
-app.get( '/auth/google/callback',
-    passport.authenticate( 'google', {
-        successRedirect: '/',
-        failureRedirect: '/auth/google/failure'
-}));
+    // console.log(req.body.username);
+    // console.log(req.query.username);
+    // console.log(req.params.username);
+
+    passport.authenticate('google', { 
+        hd: 'wesleyan.edu',
+        scope: [ 'profile','email' ],
+        prompt : "select_account",
+        state: req.query.username
+    
+    })(req,res)
+}
+  );
+
+app.get( '/auth/google/callback', (req,res,next) => {
+    passport.authenticate('google',(err, user, info) => {
+        if (err) {
+            return next(err);
+        };
+
+        if (!user) {
+            return res.render('login',{success: [{success:false}], invalidMessage: [{invalidMessage:"Invalid Username and/or Password"}]});
+        };
+
+        req.logIn(user, (err) => {
+            if (err) {
+                return next(err);
+            };
+            console.log('redirected successfully');
+            res.redirect('/');
+            // res.redirect(req.session.returnTo);
+            // delete req.session.returnTo;
+            // return;
+        })
+    }) (req,res,next)
+
+});
+
 
 
 
@@ -158,10 +209,15 @@ app.get( '/auth/google/callback',
 //   });
 
 app.get('/',(req,res) => {
-    res.render('passport-test',{});
+    if (req.user) {
+        return res.render('passport-test',{ user: req.user });
+    };
+
+    res.render('passport-test',{ user : undefined });
 })
 
 
 app.listen(port,() => {
     console.log(`Server listening on ${port}`);
 })
+

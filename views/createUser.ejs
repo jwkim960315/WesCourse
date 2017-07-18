@@ -21,9 +21,6 @@
     	<link rel="stylesheet" type="text/css" href="semantic/dist/semantic.min.css">
 	</head>
 	<body>
-    <!-- <div class="backgroun-image">
-      <img src="http://newsletter.blogs.wesleyan.edu/files/2012/11/DSC_4361.jpg"/>
-    </div> -->
     
 
 		<!-- NavBar -->
@@ -84,57 +81,67 @@
         <div class="container tab-content-outside">
           <div class="tab-content">
             <div class="tab-pane" id="login" role="tabpanel">
-              <form class="login" action="/loggingIn" method="POST">
-                  <div class="form-group">
+              <!-- <form class="login" action="/loggingIn" method="POST"> -->
+                  <!-- <div class="form-group">
                       <label for="inputEmail1" class="col-form-label">Email</label>
-                      <!-- <div class="col-sm-10"> -->
-                          <input type="email" class="form-control" name="email" id="inputEmail1" placeholder="Enter your email" autocomplete="off">
-                      <!-- </div> -->
+                      <input type="email" class="form-control" name="email" id="inputEmail1" placeholder="Enter your email" autocomplete="off">
                   </div>
                   <div class="form-group">
                       <label for="inputPassword1" class=" col-form-label">Password</label>
-                      <!-- <div class=""> -->
-                          <input type="password" class="form-control" name="password" id="inputPassword1" placeholder="Enter your password" autocomplete="off">
-                      <!-- </div> -->
+                      <input type="password" class="form-control" name="password" id="inputPassword1" placeholder="Enter your password" autocomplete="off">
                   </div>
                   <div class="form-group">
                       <div class="d-flex justify-content-center buttons">
                           <button type="submit" class="btn btn-primary">Sign In</button>
                       </div>
+                  </div> -->
+
+              <form class="login" action="login/auth/google" method="GET">
+                <div class="form-group">
+                  <div class="d-flex justify-content-center buttons">
+                    <button class="loginBtn loginBtn--google">Login with Google</button>  
                   </div>
+                </div>
+                  
               </form>
             </div>
             <div class="tab-pane" id="createUser" role="tabpanel">
-              <form class="createUser" action="/submitUser" method="POST">
-                  <div class="form-group">
+              <!-- <form class="createUser" action="/submitUser" method="POST"> -->
+                  <!-- <div class="form-group">
                       <label for="inputUsername1" class="col-form-label">Username</label>
-                      <!-- <div class="col-sm-10"> -->
-                          <input type="text" class="form-control" name="username" id="inputUsername1" placeholder="Enter your username" autocomplete="off">
-                      <!-- </div> -->
+                      <input type="text" class="form-control" name="username" id="inputUsername1" placeholder="Enter your username" autocomplete="off">
                   </div>
                   <div class="form-group">
                       <label for="inputEmail2" class="col-form-label">Email</label>
-                      <!-- <div class="col-sm-10"> -->
-                          <input type="email" class="form-control" name="email" id="inputEmail2" placeholder="Enter your email" autocomplete="off">
-                      <!-- </div> -->
+                      <input type="email" class="form-control" name="email" id="inputEmail2" placeholder="Enter your email" autocomplete="off">
                   </div>
                   <div class="form-group ">
                       <label for="inputPassword2" class=" col-form-label">Password</label>
-                      <!-- <div class=""> -->
-                          <input type="password" class="form-control" name="password" id="inputPassword2" placeholder="Enter your password" autocomplete="off">
-                      <!-- </div> -->
+                      <input type="password" class="form-control" name="password" id="inputPassword2" placeholder="Enter your password" autocomplete="off">
                   </div>
                   <div class="form-group ">
                       <label for="inputPassword3" class=" col-form-label">Confirm Password</label>
-                      <!-- <div class=""> -->
-                          <input type="password" class="form-control" name="rePassword" id="inputPassword3" placeholder="Re-type your Password" autocomplete="off">
-                      <!-- </div> -->
+                      <input type="password" class="form-control" name="rePassword" id="inputPassword3" placeholder="Re-type your Password" autocomplete="off">
                   </div>
                   <div class="form-group">
                       <div class="d-flex justify-content-center buttons">
                           <button type="submit" class="btn btn-primary">Create Account</button>
                       </div>
+                  </div> -->
+
+              <!-- </form> -->
+
+              <form class="createUser" action="createUser/auth/google" method="GET">
+                <div class="form-group username">
+                  <label for="inputUsername1" class="col-form-label">Username</label>
+                  <input type="text" class="form-control" name="username" id="inputUsername1" placeholder="Enter your username" autocomplete="off" maxlength="30"/>
+                  <label id="inputUsername1-err" class="errors inputUsername1-err" for="inputUsername1" style="display: none;"></label>
+                </div>
+                <div class="form-group">
+                  <div class="d-flex justify-content-center buttons">
+                    <button class="loginBtn loginBtn--google">Login with Google</button>
                   </div>
+                </div>
               </form>
             </div>
           </div>
@@ -159,6 +166,9 @@
       <!-- jQuery Validate -->
       <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.16.0/jquery.validate.min.js"></script>
 
+      <!-- jQuery UI -->
+      <script type="text/javascript" src="https://code.jquery.com/ui/1.8.23/jquery-ui.min.js"></script>
+
       <script>
         // Access Logic
         $(document).ready(function() {
@@ -172,54 +182,99 @@
         });
 
         // Username Unique Validator
-        // $('#inputUsername1').input(function() {
-        //   $.ajax({
-        //       url: '/checkUsername',
-        //       method: 'POST'
-        //       data: {
-        //         username: $('#inputUsername1').val();
-        //       },
-        //       success: function(isUnique) {
-        //           if (isUnique) {
-        //             $('')
-        //           }
-        //       }
-        //     })
-        // })
+        $('#inputUsername1').on('input',function(e) {
+          $.ajax({
+              url: '/checkUsername',
+              method: 'POST',
+              data: {
+                username: $('#inputUsername1').val()
+              },
+              success: function(isUnique) {
+                  // console.log(isUnique);
+                  $('#inputUsername1-err').show();
+                  if (isUnique === "noInput") {
+                      $('.createUser button.loginBtn.loginBtn--google').prop('disabled',true);
+                      $('.createUser button.loginBtn.loginBtn--google').css('opacity','.3');
+                      // e.preventDefault(e);
+                      $('#inputUsername1-err').switchClass('inputUsername1-success','inputUsername1-err',0);
+                      $('#inputUsername1-err').text('You must enter a username you desire');
+                  }
 
+                  if (!isUnique) {
+                      $('.createUser button.loginBtn.loginBtn--google').prop('disabled',true);
+                      $('.createUser button.loginBtn.loginBtn--google').css('opacity','.3');
+                      // e.preventDefault(e);
+                      $('#inputUsername1-err').switchClass('inputUsername1-success','inputUsername1-err',0);
+                      $('#inputUsername1-err').text("Username already exists");
+                  } else if (isUnique === true) {
+                      $('.createUser button.loginBtn.loginBtn--google').prop('disabled',false);
+                      $('.createUser button.loginBtn.loginBtn--google').css('opacity','1');
+                      $('#inputUsername1-err').switchClass('inputUsername1-err','inputUsername1-success',0);
+                      $('#inputUsername1-err').text(`${$('#inputUsername1').val()} works!`);
+                  }
+              }
+            })
+        })
 
-        //Validator Rule Creators
-        jQuery.validator.addMethod('username-check',function(value,element) {
-
+        $('.createUser').submit(function(e) {
+          console.log($('#inputUsername1').val().trim().length);
+          if ($('#inputUsername1').val().trim().length === 0) {
+            $('#inputUsername1-err').show();
+            $('#inputUsername1-err').prop('disabled',true);
+            $('.createUser button.loginBtn.loginBtn--google').css('opacity','.3');
+            $('#inputUsername1-err').switchClass('inputUsername1-success','inputUsername1-err',0);
+            $('#inputUsername1-err').text('You must enter a username you desire');
+            e.preventDefault(e);
             
-        });
+          }
+        })
+
+
+        var elem = `<label id="inputUsername1-error" class="error" for="inputUsername1" style="">Username already exists</label>`;
+
+        // Validator Rule Creators
+        // jQuery.validator.addMethod('username-check',function(value,element) {
+        //   var check;
+        //   $.ajax({
+        //     url: '/checkUsername',
+        //     method: 'POST',
+        //     data: {
+        //       username: value
+        //     },
+        //     success: function(isUnique) {
+        //         check = isUnique;
+        //         return;
+        //     }
+        //   })
+        //   return check;
+        // });
 
         // Main Validators
-        $('form.createUser').validate({
-          rules: {
-            email: 'required',
-            username: 'required',
-            password: 'required',
-            rePassword: 'required'
-          },
-          messages: {
-            email: 'You must enter a Wesleyan email',
-            username: 'You must enter a username you desire',
-            password: 'You must enter a password',
-            rePassword: 'You must enter a password above'
-          }
-        });
+        // $('form.createUser').validate({
+        //   rules: {
+        //     email: 'required',
+        //     username: 'required',
+        //     password: 'required',
+        //     rePassword: 'required'
+        //   },
+        //   messages: {
+        //     email: 'You must enter a Wesleyan email',
+        //     username: 'You must enter a username you desire',
+        //     password: 'You must enter a password',
+        //     rePassword: 'You must enter a password above'
+        //   }
+        // });
 
-        $('form.login').validate({
-          rules: {
-            email: 'required',
-            password: 'required'
-          },
-          messages: {
-            email: 'You must enter a Wesleyan email',
-            password: 'You must enter a password'
-          }
-        });
+        // $('form.login').validate({
+        //   rules: {
+        //     email: 'required',
+        //     password: 'required'
+        //   },
+        //   messages: {
+        //     email: 'You must enter a Wesleyan email',
+        //     password: 'You must enter a password'
+        //   }
+        // });
 
       </script>
 	</body>

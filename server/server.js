@@ -511,97 +511,13 @@ app.post('/comment/submit/:fieldAc/:courseAc/:courseId/:sectionNum/:pageNum',(re
 
 
 app.get('/createUser',(req,res) => {
+    req.session.returnTo = req.header('Referer') || req.protocol + '://' + req.get('host');
     res.render('createUser',{});
 });
 
 
 // User Creating
 
-// nodemailer
-
-const nodemailer = require('nodemailer');
-
-let host;
-
-app.post('/submitUser',async (req,res) => {
-
-    host = req.get('host');
-
-    verEmail = req.body.email;
-    verUsername = req.body.username;
-    verPassword = req.body.password;
-
-    if (req.body.email.slice(-12) !== 'wesleyan.edu' || req.body.username.length >= 255 || req.body.password.length >= 80) {
-        res.render('submitUser',{success: false});
-    } else {
-        jwt.verify('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXNzd29yZCI6Inl1c2VvdW5nMSIsImlhdCI6MTQ5NzQ5NjkwMH0.TtTIpFBotfxL1-pQX2wCS2XRofnyB4v4FNdaIH19QMI','SECRET',(err,result) => {
-            console.log(typeof result.password);
-
-            transporter = nodemailer.createTransport({
-                service: "Gmail",
-                auth: {
-                    user: 'jwkim0315@gmail.com',
-                    pass: result.password
-                }
-            });
-
-            rand = Math.floor((Math.random() * 100) + 54);
-
-            link = "http://"+req.get('host')+"/verify?id="+rand;
-
-            console.log(verEmail);
-
-            mailOptions = {
-                from: 'jwkim0315@gmail.com',
-                to: verEmail,
-                subject: 'Please confirm your Email Account',
-                html: "Hello,<br> Please Click on the link to verify your email.<br><a href="+link+">Click here to verify</a>"
-            }
-
-            transporter.sendMail(mailOptions,(err,info) => {
-                if (err) {
-                    return console.log(err);
-                }
-                console.log('Message %s sent: %s', info.messageId, info.response);
-                res.render('submitUser',{success: true});
-            });
-        
-
-        });
-
-
-    }
-});
-
-
-app.get('/verify',(req,res) => {
-    if ((req.protocol+"://"+req.get('host'))==("http://"+host)) {
-        console.log("Domain is matched. Information is from Authentic email");
-        if (req.query.id == rand) {
-            console.log("email is verified");
-            bcrypt.genSalt(10,(err,salt) => {
-                bcrypt.hash(verPassword,salt,(err1,hash) => {
-                    verPassword = hash;
-                    connection.query(`INSERT INTO users (username,email,password) VALUES ("${verUsername}","${verEmail}","${verPassword}")`).then((success) => {
-                        // console.log(success);
-                        res.send(`<h1>Email ${mailOptions.to} has been Successfully verified
-                                                             <a href="/login">LOGIN PAGE</a>`);
-
-                        
-                    });
-
-                });
-            });
-            
-            
-        } else {
-            console.log("email is not verified");
-            res.send("<h1>Bad Request</h1>");
-        }
-    } else {
-        res.send("<h1>Request is from unknown source</h1>");
-    }
-});
 
 
 
@@ -1020,7 +936,19 @@ app.post('/forgotPassSubmit',(req,res) => {
 });
 
 app.post('/checkUsername',(req,res) => {
-    
+    console.log(req.body.username.length);
+    if (req.body.username.length === 0) {
+        return res.send("noInput");
+    };
+
+    connection.query(`SELECT * FROM users WHERE username="${req.body.username}"`).then(data => {
+        console.log(data);
+        if (data.length === 0) {
+            return res.send(true);
+        };
+
+        return res.send(false);
+    })
 })
 
 

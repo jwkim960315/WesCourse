@@ -71,16 +71,9 @@
     </head>
     <body>
 
-        <form action="/auth/google" method="GET">
+        <form action="/auth/google/username" method="POST">
             <input name="username" autocomplete="off">
-            <button class="loginBtn loginBtn--google">
-              Login with Google
-            </button>
         </form>
-
-        <% if (user) { %>
-            <p><%= user.id %></p>
-        <% } %>
 
 
         <!-- JQuery -->
@@ -100,11 +93,7 @@
         <script src="https://apis.google.com/js/platform.js" async defer></script>
 
         <script>
-            function trigger() {
-                $.ajax({
-                    url: '/auth/google'
-                })
-            };
+            
 
             
         </script>
