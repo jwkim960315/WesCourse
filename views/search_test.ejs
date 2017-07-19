@@ -52,16 +52,26 @@
               </li>
 		    </ul>
             <ul class="navbar-nav justify-content-end">
-                <!-- <li class="nav-item">
-                      <a class="nav-link" href="/login">Sign In</a>
-                  </li> -->
-                  <li class="nav-item">
-                      <a class="nav-link" href="/logout">Sign Out</a>
-                  </li>
-                  
-                  <li class="nav-item">
-                      <a class="nav-link" href="/login">Sign In/Create Account</a>
-                  </li>
+                <% if (!userLoggedIn) { %>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/login">Sign In</a>
+                    </li>
+                <% } else { %>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/profile">
+                          <img class="user-image" src="<%= image %>"/>
+                          <%= username %>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/logout">Sign Out</a>
+                    </li>
+                <% } %>
+                <% if (!userLoggedIn) { %>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/createUser">Create Account</a>
+                    </li>
+                <% } %>
             </ul>
 
             

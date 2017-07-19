@@ -33,6 +33,7 @@ create table users (
   email varchar(255) not null UNIQUE,
   first_name varchar(255) not null,
   last_name varchar(255) not null,
+  image TEXT not null,
   created_at timestamp default current_timestamp
 );
 

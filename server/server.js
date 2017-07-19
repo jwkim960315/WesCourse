@@ -187,46 +187,54 @@ passport.use(new GoogleStrategy({
 
         console.log(profile);
         console.log(accessToken);
-        connection.query(`SELECT * FROM users WHERE users.id=${profile.id}`).then((data,err) => {
-            console.log(data);
-            if (err) {
-                console.log(err);
-                return done(err);
-            };
-
-            console.log(req.query.state);
-            console.log(profile.id);
-
-            if (data.length === 0) {                
-                connection.query(`INSERT INTO users (id,username,email,first_name,last_name) VALUES ("${profile.id}","${req.query.state}","${profile.email}","${profile.name.givenName}","${profile.name.familyName}")`);                
-                return done(null, { id: profile.id,
-                                    username: req.query.state });        
-            }
-
-            if (req.query.state) {
-                return done(null, false, { message: 'You already have an account' });
-            };
-
-            console.log(profile._json.verified);
-
-            if (profile._json.domain === "wesleyan.edu") {
-                return done(null, data[0]);
-            };
-
-
-
-            return done(null, false, { message: 'Unknown Error' });
 
         
-        }).catch(e => console.log(e.message));
-  }));
+            connection.query(`SELECT * FROM users WHERE users.id=${profile.id}`).then((data,err) => {
+                if (profile._json.domain === "wesleyan.edu") {
+                    console.log(data);
+                    if (err) {
+                        console.log(err);
+                        return done(err);
+                    };
+
+                    console.log(typeof req.query.state);
+                    console.log(profile.id);
+
+                    if (data.length === 0 && req.query.state !== "1111111111111111111111111111111") {
+                        connection.query(`INSERT INTO users (id,username,email,first_name,last_name,image) VALUES ("${profile.id}","${req.query.state}","${profile.email}","${profile.name.givenName}","${profile.name.familyName}","${profile.photos[0].value}")`);                
+                            return done(null, { id: profile.id,
+                                                username: req.query.state });  
+                    } else if (data.length === 0 && req.query.state === "1111111111111111111111111111111") {
+                        return done(null,false,{ message: 'You do not have an account',
+                                                 type: 'no account' });
+                    };
+
+                    console.log('Loggin in...');
+
+                    if (req.query.state !== "1111111111111111111111111111111" && req.query.state !== undefined) {
+                        return done(null, false, { message: 'You already have an account',
+                                                   type: 'duplicate account' });
+                    };
+
+                    console.log(profile._json.verified);
+
+
+                    return done(null, data[0]);
+
+                } else {
+                    return done(null,false,{ message: "Domain must be wesleyan.edu",
+                                             type: 'invalid domain' })
+                };
+        
+  });
+}));
 
 passport.serializeUser((user, done) => {
     done(null,user.id);
 });
 
 passport.deserializeUser((id, done) => {
-    connection.query(`SELECT id,username FROM users WHERE id="${id}"`).then((data,err) => {
+    connection.query(`SELECT id,username,email,first_name,last_name,image,DATE_FORMAT(created_at,"%b %d, %Y") as created_date FROM users WHERE id="${id}"`).then((data,err) => {
         done(err,data[0]);
     })
 })
@@ -239,25 +247,41 @@ passport.deserializeUser((id, done) => {
 let options;
 
 app.get('/',(req,res) => {
-    options = {
-        root: __dirname + '/../views/'
-    };
+    console.log(req.user);
 
     if (req.user) {
-        return res.render('home',{userId: req.user.id});
+        return res.render('home',{username: req.user.username,
+                                  image: req.user.image,
+                                  userLoggedIn: true});
     };
 
 
-    res.render('home',{userId: null});
+    res.render('home',{username: null,
+                       userLoggedIn: false});
 
     
 });
 
 
 app.get('/catalog',(req,res) => {
+
+    if (req.user) {
+        userLoggedIn = true;
+        username = req.user.username;
+        image = req.user.image;
+    } else {
+        userLoggedIn = false;
+        username = undefined;
+        image = undefined;
+    };
+
     connection.query('SELECT category,name FROM fields ORDER BY 1,2').then(data => {
         data = catalogDataManipulator(data);
-        res.render('catalog',{data});
+
+        res.render('catalog',{data,
+                              userLoggedIn,
+                              username,
+                              image});
     });
 });
 
@@ -437,7 +461,15 @@ app.get('/catalog/:fieldAc/:courseAc/:sectionNum/:pageNum',async (req,res) => {
 
             console.log('*********************');
 
-            // console.log(currentSecNum);
+            if (req.user) {
+                userLoggedIn = true;
+                username = req.user.username;
+                image = req.user.image;
+            } else {
+                userLoggedIn = false;
+                username = undefined;
+                image = undefined;
+            };
 
 
             res.render('specificCourse_test',{courseInfo,
@@ -454,7 +486,10 @@ app.get('/catalog/:fieldAc/:courseAc/:sectionNum/:pageNum',async (req,res) => {
                                               currentPageNum: [{currentPageNum: req.params.pageNum}],
                                               fieldAc: [{fieldAc: req.params.fieldAc}],
                                               courseAc: [{courseAc: req.params.courseAc}],
-                                              pageNum: [{pageNum: req.params.pageNum}]});
+                                              pageNum: [{pageNum: req.params.pageNum}],
+                                              userLoggedIn,
+                                              username,
+                                              image});
 
 
         });
@@ -544,25 +579,77 @@ app.post('/comment/submit/:fieldAc/:courseAc/:courseId/:sectionNum/:pageNum',(re
 
 app.get('/createUser',(req,res) => {
     req.session.returnTo = req.header('Referer') || req.protocol + '://' + req.get('host');
-    console.log(req.session.returnTo);
-    res.render('createUser',{success: [{success:true}], invalidMessage: undefined});
+    console.log(req.session.success);
+    
+    if (req.session.success === undefined) {
+        req.session.success = true;    
+    };
+
+    if (req.user) {
+        userLoggedIn = true;
+        username = req.user.username;
+        image = req.user.image;
+    } else {
+        userLoggedIn = false;
+        username = undefined;
+        image = undefined;
+    };
+
+    console.log('Directed to createUser');
+    console.log(req.session.success);
+    console.log(userLoggedIn);
+
+    let success = req.session.success;
+    let invalidMessage = req.session.invalidMessage;
+    delete req.session.success;
+    delete req.session.invalidMessage;
+    res.render('createUser',{success: [{success}], 
+                             invalidMessage: [{invalidMessage}],
+                             isSignIn: [{isSignIn: false}],
+                             userLoggedIn,
+                             username,
+                             image});
 });
 
 
 app.get('/login',(req,res) => {
-    console.log("Return to :"+req.session.returnTo);
-    req.session.returnTo = req.header('Referer') || req.protocol + '://' + req.get('host');
+    req.session.returnTo = req.header('Referer') || req.protocol + '://' + req.get('host').slice(0,req.get('host').length);
     console.log(req.session.returnTo);
-    console.log(req.session.err);
-    res.render('createUser',{success: [{success:true}], invalidMessage: [{invalidMessage:"Invalid Username and/or Password"}]});
+    console.log(req.session.success);
+
+    if (req.session.success === undefined) {
+        req.session.success = true;    
+    };
+
+    if (req.user) {
+        userLoggedIn = true;
+        username = req.user.username;
+        image = req.user.image;
+    } else {
+        userLoggedIn = false;
+        username = undefined;
+        image = undefined;
+    };
+
+    console.log('Directed to login');
+    console.log(req.session.success);
+    console.log(userLoggedIn);
+
+    let success = req.session.success;
+    let invalidMessage = req.session.invalidMessage;
+    delete req.session.success;
+    delete req.session.invalidMessage;
+    res.render('createUser',{success: [{success}], 
+                             invalidMessage: [{invalidMessage}],
+                             isSignIn: [{isSignIn: true}],
+                             userLoggedIn,
+                             username,
+                             image});
 });
 
 // Google Sign-In Routes
 app.get('/createUser/auth/google', (req,res) => {
 
-    // console.log(req.body.username);
-    // console.log(req.query.username);
-    // console.log(req.params.username);
 
     passport.authenticate('google', { 
         hd: 'wesleyan.edu',
@@ -582,7 +669,8 @@ app.get('/login/auth/google', (req,res) => {
     passport.authenticate('google', { 
         hd: 'wesleyan.edu',
         scope: [ 'profile','email' ],
-        prompt : "select_account"
+        prompt : "select_account",
+        state: "1111111111111111111111111111111"
     })(req,res)
 });
 
@@ -594,11 +682,24 @@ app.get( '/auth/google/callback', (req,res,next) => {
             return next(err);
         };
 
-        if (!user) {
-            req.session.err = true;
-            return res.redirect('/login');
+        if (!user && info.type === 'duplicate account') {
+            req.session.success = false;
+            // req.session.isSignIn = false;
+            req.session.invalidMessage = info.message;
+            console.log('redirected to createUser...');
+            return res.redirect('/createUser');
             // return res.render('createUser',{success: [{success:false}], invalidMessage: [{invalidMessage: info.message}]});
-        };
+        } else if (!user && info.type === 'no account') {
+            req.session.success = false;
+            console.log('redirected to login...');
+            req.session.invalidMessage = info.message;
+            return res.redirect('/login');
+        } else if (!user && info.type === 'invalid domain') {
+            req.session.success = false;
+            console.log('redirected to login for invalid domain...');
+            req.session.invalidMessage = info.message;
+            return res.redirect('/login');
+        }
 
         req.logIn(user, (err) => {
             if (err) {
@@ -607,6 +708,7 @@ app.get( '/auth/google/callback', (req,res,next) => {
             console.log('redirected successfully');
             res.redirect(req.session.returnTo);
             delete req.session.returnTo;
+            delete req.session.success;
             return;
         })
     }) (req,res,next)
@@ -638,12 +740,27 @@ app.get( '/auth/google/callback', (req,res,next) => {
 
 app.get('/logout',(req,res) => {
     req.logout();
-    res.redirect('/');
+    res.redirect(req.header('Referer') || req.protocol + '://' + req.get('host').slice(0,req.get('host').length));
 });
 
 
 app.get('/search',(req,res) => {
-    res.render('search_test',{data: undefined, currentPageNum: [{currentPageNum: undefined}]});
+
+    if (req.user) {
+        userLoggedIn = true;
+        username = req.user.username;
+        image = req.user.image;
+    } else {
+        userLoggedIn = false;
+        username = undefined;
+        image = undefined;
+    };
+
+    res.render('search_test',{data: undefined, 
+                              currentPageNum: [{currentPageNum: undefined}],
+                              userLoggedIn,
+                              username,
+                              image});
 });
 
 app.get('/searching',(req,res) => {
@@ -863,6 +980,30 @@ app.get('/search/query/:sectionNum/:pageNum/:searchParam',(req,res) => {
 });
 
 
+
+
+// Profile
+app.get('/profile',(req,res) => {
+    console.log(req.user);
+    if (req.user) { 
+        userLoggedIn = true;
+        username = req.user.username;
+        image = req.user.image;
+    } else {
+        userLoggedIn = false;
+        username = undefined;
+        image = undefined;
+    };
+
+    let fullName = `${req.user.last_name}, ${req.user.first_name}`
+
+    res.render('profile',{ userLoggedIn,
+                           username,
+                           image,
+                           email: req.user.email,
+                           fullName,
+                           created_date: req.user.created_date })
+});
 
 
 

@@ -51,16 +51,26 @@
                 </li>
   		    </ul>
               <ul class="navbar-nav justify-content-end">
-                  <!-- <li class="nav-item">
-                      <a class="nav-link" href="/login">Sign In</a>
-                  </li> -->
-                  <li class="nav-item">
-                      <a class="nav-link" href="/logout">Sign Out</a>
-                  </li>
-                  
-                  <li class="nav-item">
-                      <a class="nav-link" href="/login">Sign In/Create Account</a>
-                  </li>
+                  <% if (!userLoggedIn) { %>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/login">Sign In</a>
+                    </li>
+                  <% } else { %>
+                      <li class="nav-item">
+                          <a class="nav-link" href="/profile">
+                            <img class="user-image" src="<%= image %>"/>
+                            <%= username %>
+                          </a>
+                      </li>
+                      <li class="nav-item">
+                          <a class="nav-link" href="/logout">Sign Out</a>
+                      </li>
+                  <% } %>
+                  <% if (!userLoggedIn) { %>
+                      <li class="nav-item">
+                          <a class="nav-link" href="/createUser">Create Account</a>
+                      </li>
+                  <% } %>
               </ul>
 
               
@@ -97,6 +107,13 @@
                   </div> -->
 
               <form class="login" action="login/auth/google" method="GET">
+                <% if (!success[0].success && isSignIn[0].isSignIn) { %>
+                  <div class="form-group no-account">
+                    <div class="d-flex justify-content-center">
+                      <label id="login-err"><%= invalidMessage[0].invalidMessage %></label>
+                    </div>
+                  </div>
+                <% } %>
                 <div class="form-group">
                   <div class="d-flex justify-content-center buttons">
                     <button class="loginBtn loginBtn--google">Login with Google</button>  
@@ -172,19 +189,22 @@
       <script>
         // Access Logic
         $(document).ready(function() {
-          if (window.location.pathname === "/createUser") {
+          <% if (!isSignIn[0].isSignIn) { %>
             $('a[href="#createUser"]').addClass('active');
             $('.tab-content-outside .tab-content #createUser').addClass('active');
-          } else {
+          <% } else { %>
             $('a[href="#login"]').addClass('active');
             $('.tab-content-outside .tab-content #login').addClass('active');
-          }
+          <% } %>
 
-          <% if (!success[0].success) { %>
+          <% if (!(success[0].success) && !(isSignIn[0].isSignIn)) { %>
             $('#inputUsername1-err').show();
-            $('#inputUsername1-err').val("<%= invalidMessage[0].invalidMessage %>");
+            $('#inputUsername1-err').text("<%= invalidMessage[0].invalidMessage %>");
           <% } %>
         });
+
+        // No account Login Validator
+        
 
         // Username Unique Validator
         $('#inputUsername1').on('input',function(e) {

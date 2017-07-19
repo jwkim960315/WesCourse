@@ -229,3 +229,12 @@ label.inputUsername1-success {
 .loginBtn--google:focus {
   background: #E74B37;
 }
+
+
+
+
+
+
+label#login-err {
+  color: red !important;
+}

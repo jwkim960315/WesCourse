@@ -5,22 +5,110 @@
         <meta name="'viewport" content="width=device-width, initial-scale=1, user-scalable=no">
         <title>WesCourse</title>
 
+        <link rel="stylesheet" type="text/css" href="css/profile.css">
+
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+
+        <!-- Font Awesome -->
         <script src="https://use.fontawesome.com/b6a42b064c.js"></script>
 
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
-        <script src="https://code.jquery.com/jquery-3.2.1.js" integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE=" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+        <!-- Google Fonts -->
+        <link href="https://fonts.googleapis.com/css?family=Bree+Serif|Anton|Cormorant+Garamond|Indie+Flower|Merriweather|Ubuntu|Josefin+Sans" rel="stylesheet">
+
+        <!-- Semantic UI CSS -->
+        <link rel="stylesheet" type="text/css" href="semantic/dist/semantic.min.css">
         
     </head>
     
     
     <body>
-        
+
+        <!-- NavBar -->
+        <nav class="navbar navbar-toggleable-md navbar-light navbar-inverse bg-inverse fixed-top">
+            <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarContents" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+            </button>
+        <div>
+              <a class="navbar-brand" href="http://www.wesleyan.edu/">
+                    <p id="wes">Wesleyan</p>
+                    <p id="uni">University</p>
+              </a>
+        </div>
+
+          <div class="collapse navbar-collapse" id="navbarContents">
+            <ul class="navbar-nav mr-auto">
+              <li class="nav-item">
+                <a class="nav-link" href="/">Home<span class="sr-only">(current)</span></a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/catalog">Catalog</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/about">About</a>
+              </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="/search">Search</a>
+                </li>
+            </ul>
+              <ul class="navbar-nav justify-content-end">
+                  <% if (!userLoggedIn) { %>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/login">Sign In</a>
+                    </li>
+                  <% } else { %>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/profile">
+                          <img class="user-image" src="<%= image %>"/>
+                          <%= username %>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/logout">Sign Out</a>
+                    </li>
+                  <% } %>
+                  <% if (!userLoggedIn) { %>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/createUser">Create Account</a>
+                    </li>
+                  <% } %>
+                  
+              </ul>
+          </div>
+        </nav>
+
+        <div class="container profile">
+            <div class="header">
+                <img src="<%= image %>"/>
+                <h1><%= username %></h1>
+            </div>
+            <hr id="header-user-info" />
+            
+                <div class="user-info col">
+                    <div class="user-info-header">
+                        <h2>User Info</h2>
+                    </div>
+                    <hr id="user-info-header-user-info-content" />
+                    <div class="user-info-content">
+                        <h3 class="email">Email: <span class="email-content user-info-content"><%= email %></span></h3>
+                        <h3 class="full-name">Full Name: <span class="full-name-content user-info-content"><%= fullName %></span></h3>
+                        <h3 class="created-at">Joined Date: <span class="created-at-content user-info-content"><%= created_date %></span></h3>
+                    </div>
+                </div>
+                <div class="col"></div>
+            
+        </div>
 
 
+        <!-- JQuery -->
+        <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
 
+        <!-- Semantics UI JavaScript -->
+        <script src="/semantic/dist/semantic.min.js"></script>      
 
+        <!-- Bootstrap 4 JavaScript -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
 
     </body>
 </html>

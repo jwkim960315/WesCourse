@@ -82,106 +82,56 @@ li a:hover {
 
 
 
-.professors {
-	vertical-align: text-top;
-	text-align: right;
-	padding-bottom: 3%;
-}
 
-.professors p {
-	display: inline-block;
-	vertical-align: text-top;
-}
-
-
-
-.courses-group::-webkit-scrollbar-track {
-	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
-	border-radius: 10px;
-	background-color: #F5F5F5;
-	-webkit-box-shadow: inset 0 0 6px rgba(153,0,0,1);
-}
-
-.courses-group::-webkit-scrollbar {
-	background-color: rgba(153,0,0,1);
-}
-
-.courses-group::-webkit-scrollbar-thumb {
-	border-radius: 10px;
-	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
-	background-color: #D62929;
-}
-
-
-.inside-courses-group a {
-	color: black;
-	font-family: "Josefin Sans", sans-serif;
-	font-weight: bold;
-}
-
-.inside-courses-group a:hover {
-	color: red;
-}
-
-.inside-courses-group .categories {
-	font-family: 'Merriweather', serif;
-	font-weight: bold;
-	font-size: 15px;
-	color: white;
-	background-color: #D62929;
-}
-
-
-button[type="submit"] {
+.profile {
+	font-family: 'Merriweather', serif !important;
 	background-color: white;
-	color: #D62929;
+	margin-top: 250px;
+	border-radius: .25rem;
+    padding: 20px;
+    border: 10px solid rgb(221,221,221);
+    width: 80% !important;
+}
+
+.profile .header h1 {
+	font-family: 'Merriweather', serif !important;
+	padding-left: 10px;
+	display: inline-block;
+}
+
+.profile .header img {
+	border-radius: 50%;
+	margin-left: 10px;
+}
+
+#header-user-info, #user-info-header-user-info-content {
+	/*height: 30px;*/
+	border: 1.2px solid rgb(221,221,221);
+}
+
+.user-info {
+	/*background-color: ; */
+	font-family: 'Merriweather', serif !important;
+	border-radius: .25rem;
+    padding: 20px;
+    border: 7px solid rgb(221,221,221);
+}
+
+.user-info * {
+	padding-left: 10px;
 }
 
 
-button[type="submit"]:hover {
-	background-color: #D62929;
-	color: white;
-}
-
-input#search-keyword:focus {
-	box-shadow: 1px 1px 6px red,1px 1px 6px red,1px 1px 6px red,1px 1px 6px red;
-	border-color: red !important;
+.user-info-content {
+	font-family: 'Merriweather', serif !important;
+	/*font-size: 1rem;*/
+	font-weight: normal;
 }
 
 
-form {
-	margin: 0 auto;
-	width: 90%;
-	margin-top: 7%;
-}
-
-.courses-group {
-	margin: 0 auto !important;
-	max-height: 400px;
-	overflow-y: scroll;
-	position: absolute;
-	width: 90%;
-	z-index: 10 !important;
-	margin-left: 5% !important;
-}
-
-.main-searchbar {
-	margin-top: 7%;
-	position: relative;
-	z-index: 10 !important;
-	margin: 0 auto !important;
-}
 
 
-#view-all {
-	margin: 0 auto;
-	font-size: 15px;
-}
 
-.inside-courses-group {
-	z-index: 10 !important;
-	margin: 0 auto;
-}
 
 nav img {
 	height: 25px;
