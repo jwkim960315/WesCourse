@@ -30,10 +30,10 @@
             <span class="navbar-toggler-icon"></span>
             </button>
         <div>
-              <a class="navbar-brand" href="http://www.wesleyan.edu/">
-                    <p id="wes">Wesleyan</p>
-                    <p id="uni">University</p>
-              </a>
+            <a class="navbar-brand" href="http://www.wesleyan.edu/">
+                  <p id="wes">Wesleyan</p>
+                  <p id="uni">University</p>
+            </a>
         </div>
 
           <div class="collapse navbar-collapse" id="navbarContents">
@@ -57,10 +57,12 @@
                         <a class="nav-link" href="/login">Sign In</a>
                     </li>
                   <% } else { %>
-                    <li class="nav-item">
+                    <li class="nav-item profile-button">
                         <a class="nav-link" href="/profile">
-                          <img class="user-image" src="<%= image %>"/>
-                          <%= username %>
+                          <div class="user-image">
+                            <img class="user-image" src="<%= image %>"/>
+                          </div>
+                          <p><%= username %></p>
                         </a>
                     </li>
                     <li class="nav-item">
@@ -83,20 +85,33 @@
                 <h1><%= username %></h1>
             </div>
             <hr id="header-user-info" />
-            
-                <div class="user-info col">
+              <div class="row user-info-outside">
+                <div class="user-info col col-xs">
                     <div class="user-info-header">
                         <h2>User Info</h2>
                     </div>
                     <hr id="user-info-header-user-info-content" />
                     <div class="user-info-content">
+                        <h3 class="username">Username: <span class="username-content user-info-content"><%= username %></span></h3>
                         <h3 class="email">Email: <span class="email-content user-info-content"><%= email %></span></h3>
                         <h3 class="full-name">Full Name: <span class="full-name-content user-info-content"><%= fullName %></span></h3>
                         <h3 class="created-at">Joined Date: <span class="created-at-content user-info-content"><%= created_date %></span></h3>
                     </div>
                 </div>
-                <div class="col"></div>
-            
+                <div class="col col-xs user-image-mod">
+                  
+                    
+                      <div class="user-image-mod-inside">
+                        <a href="#">
+                          <img src="<%= image %>" align="left" />
+                        </a>
+                        
+                      </div>
+                    
+                  
+                  
+                </div>
+              </div>
         </div>
 
 
@@ -110,5 +125,27 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
 
+        <!-- jQuery UI -->
+        <script type="text/javascript" src="https://code.jquery.com/ui/1.8.23/jquery-ui.min.js"></script>
+
+
+        <script>
+
+        // Image Hover Effect
+        $(document).ready(function() {
+          $('.user-image-mod a').hover(function() {
+              $('.user-image-mod div').stop().animate({
+                borderColor: '7px solid rgb(171,171,171)'
+              },180,"linear");
+            },
+            function() {
+            $('.user-image-mod div').stop().animate({
+              borderColor: '7px solid rgb(221,221,221)'
+            },180,"linear");
+          });
+        });
+        
+
+        </script>
     </body>
 </html>
