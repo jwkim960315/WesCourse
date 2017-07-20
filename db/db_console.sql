@@ -33,7 +33,9 @@ create table users (
   email varchar(255) not null UNIQUE,
   first_name varchar(255) not null,
   last_name varchar(255) not null,
-  image TEXT not null,
+  google_image TEXT not null,
+  custom_image MEDIUMBLOB,
+  use_google_img BOOL DEFAULT TRUE,
   created_at timestamp default current_timestamp
 );
 
@@ -224,9 +226,15 @@ select * from ratings;
 
 
 select * from users;
+115870424843024280095
+SELECT id,username,email,first_name,last_name,image,DATE_FORMAT(created_at,"%b %d, %Y") as created_date FROM users WHERE id="115870424843024280095";
 
 
 delete from users;
+
+
+
+
 
 DROP DATABASE wes_course_test;
 CREATE DATABASE wes_course_test;
