@@ -106,6 +106,9 @@ li a:hover {
 	border-radius: 50%;
 	margin-left: 10px;
 	margin-bottom: 10px;
+	width: 50px;
+	height: 50px;
+	border: 1px solid rgb(221,221,221);
 }
 
 #header-user-info {
@@ -189,7 +192,7 @@ div.user-image {
 	/*margin: 20px;*/
 }
 
-.user-image-mod div {
+.user-image-mod .user-image-mod-inside {
 	/*position: absolute;*/
 	/*top: 40%;
 	left: 50%;
@@ -203,13 +206,12 @@ div.user-image {
 	margin-top: 30px;
 }
 
-.user-image-mod a {
-	/*padding: 150px;*/
-	box-sizing: border-box;
-	animation: .2s all ease;
-	/*margin: 150px !important;*/
-}
 
+
+.upload-options, .updateToCustomImg-options, .updateToGoogleImg-options {
+	margin: 0 auto;
+	display: none;
+}
 
 
 

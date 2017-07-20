@@ -9,6 +9,9 @@ const fs = require('fs');
 const html = require('html');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
+const multer = require('multer');
+const upload = multer({ dest: '/profile'});
+const DataURI = require('datauri').promise;
 
 
 var passport = require('passport')
@@ -27,13 +30,12 @@ app.use(methodOverride('X-HTTP-Method-Override'));
 app.use(express.static(path.join(__dirname, '/../views')));
 console.log(__dirname);
 
-// console.log(path.join(__dirname,'/../public'));
+
 app.set('view engine','ejs');
 app.use(session({ secret: 'a random password!'}));
 app.use(passport.initialize());
 app.use(passport.session());
-// app.use(routes.index);
-// app.use(express.static('public'));
+
 
 
 // Important Variables
@@ -201,7 +203,7 @@ passport.use(new GoogleStrategy({
                     console.log(profile.id);
 
                     if (data.length === 0 && req.query.state !== "1111111111111111111111111111111") {
-                        connection.query(`INSERT INTO users (id,username,email,first_name,last_name,image) VALUES ("${profile.id}","${req.query.state}","${profile.email}","${profile.name.givenName}","${profile.name.familyName}","${profile.photos[0].value}")`);                
+                        connection.query(`INSERT INTO users (id,username,email,first_name,last_name,google_image) VALUES ("${profile.id}","${req.query.state}","${profile.email}","${profile.name.givenName}","${profile.name.familyName}","${profile.photos[0].value}")`);                
                             return done(null, { id: profile.id,
                                                 username: req.query.state });  
                     } else if (data.length === 0 && req.query.state === "1111111111111111111111111111111") {
@@ -222,7 +224,7 @@ passport.use(new GoogleStrategy({
                     return done(null, data[0]);
 
                 } else {
-                    return done(null,false,{ message: "Domain must be wesleyan.edu",
+                    return done(null,false,{ message: "Domain must be @wesleyan.edu",
                                              type: 'invalid domain' })
                 };
         
@@ -234,7 +236,7 @@ passport.serializeUser((user, done) => {
 });
 
 passport.deserializeUser((id, done) => {
-    connection.query(`SELECT id,username,email,first_name,last_name,image,DATE_FORMAT(created_at,"%b %d, %Y") as created_date FROM users WHERE id="${id}"`).then((data,err) => {
+    connection.query(`SELECT id,username,email,first_name,last_name,google_image,custom_image,use_google_img,DATE_FORMAT(created_at,"%b %d, %Y") as created_date FROM users WHERE id="${id}"`).then((data,err) => {
         done(err,data[0]);
     })
 })
@@ -250,14 +252,20 @@ app.get('/',(req,res) => {
     console.log(req.user);
 
     if (req.user) {
-        return res.render('home',{username: req.user.username,
-                                  image: req.user.image,
-                                  userLoggedIn: true});
+        userLoggedIn = true;
+        username = req.user.username;
+        image = (req.user.use_google_img) ? req.user.google_image : req.user.custom_image;
+    } else {
+        userLoggedIn = false;
+        username = undefined;
+        image = undefined;
     };
 
-
-    res.render('home',{username: null,
-                       userLoggedIn: false});
+    
+    return res.render('home',{username,
+                              image,
+                              userLoggedIn});
+    
 
     
 });
@@ -268,7 +276,7 @@ app.get('/catalog',(req,res) => {
     if (req.user) {
         userLoggedIn = true;
         username = req.user.username;
-        image = req.user.image;
+        image = (req.user.use_google_img) ? req.user.google_image : req.user.custom_image;
     } else {
         userLoggedIn = false;
         username = undefined;
@@ -464,7 +472,7 @@ app.get('/catalog/:fieldAc/:courseAc/:sectionNum/:pageNum',async (req,res) => {
             if (req.user) {
                 userLoggedIn = true;
                 username = req.user.username;
-                image = req.user.image;
+                image = (req.user.use_google_img) ? req.user.google_image : req.user.custom_image;
             } else {
                 userLoggedIn = false;
                 username = undefined;
@@ -588,7 +596,7 @@ app.get('/createUser',(req,res) => {
     if (req.user) {
         userLoggedIn = true;
         username = req.user.username;
-        image = req.user.image;
+        image = (req.user.use_google_img) ? req.user.google_image : req.user.custom_image;
     } else {
         userLoggedIn = false;
         username = undefined;
@@ -624,7 +632,7 @@ app.get('/login',(req,res) => {
     if (req.user) {
         userLoggedIn = true;
         username = req.user.username;
-        image = req.user.image;
+        image = (req.user.use_google_img) ? req.user.google_image : req.user.custom_image;
     } else {
         userLoggedIn = false;
         username = undefined;
@@ -749,7 +757,7 @@ app.get('/search',(req,res) => {
     if (req.user) {
         userLoggedIn = true;
         username = req.user.username;
-        image = req.user.image;
+        image = (req.user.use_google_img) ? req.user.google_image : req.user.custom_image;
     } else {
         userLoggedIn = false;
         username = undefined;
@@ -785,7 +793,6 @@ app.get('/searching',(req,res) => {
                                                                           course_acronym like "%${req.query.keyword}%" OR
                                                                           field_acronym like "%${req.query.keyword}%"`)
                 .then(dataLength => {
-                    
                     dataLength = dataLength[0].count;
                     data = searchingDataHandler(JSON.parse(JSON.stringify(data)));
                     res.send({data,dataLength});
@@ -984,25 +991,32 @@ app.get('/search/query/:sectionNum/:pageNum/:searchParam',(req,res) => {
 
 // Profile
 app.get('/profile',(req,res) => {
-    console.log(req.user);
+    
+
     if (req.user) { 
+
+
         userLoggedIn = true;
         username = req.user.username;
-        image = req.user.image;
+
+        image = (req.user.use_google_img) ? req.user.google_image : req.user.custom_image;
     } else {
         userLoggedIn = false;
         username = undefined;
         image = undefined;
+        return res.redirect('/');
     };
 
     let fullName = `${req.user.last_name}, ${req.user.first_name}`
 
+    delete req.session.image;
     res.render('profile',{ userLoggedIn,
                            username,
                            image,
                            email: req.user.email,
                            fullName,
-                           created_date: req.user.created_date })
+                           created_date: req.user.created_date,
+                           usingGoogleImg: req.user.use_google_img })
 });
 
 
@@ -1025,7 +1039,56 @@ app.post('/checkUsername',(req,res) => {
 });
 
 
+app.post('/profile/uploadCustomImg',upload.single('image'),(req,res) => {
+    
+    if (!req.user) { 
+        return res.redirect('/');
+    };
 
+
+    console.log(req.file);
+
+
+
+    DataURI(req.file.path).then(content => {
+        connection.query(`UPDATE users SET custom_image="${content}",use_google_img=false WHERE id=${req.user.id}`).then(() => {
+            req.session.image = content;
+            res.redirect('/profile');
+        });
+    });
+
+
+
+
+
+    // res.setHeader('Content-Type', req.file.mimetype);
+    // fs.createReadStream(path.join('/profile', req.file.filename)).pipe(res);
+    // res.render('profile',{ image: req.file.path });
+});
+
+
+app.get('/profile/updateToCustomImg',(req,res) => {
+
+    if (!req.user) { 
+        return res.redirect('/');
+    };
+
+    connection.query(`UPDATE users SET use_google_img=false WHERE id=${req.user.id}`).then(() => {
+        res.redirect('/profile');
+    });
+})
+
+
+app.get('/profile/updateToGoogleImg',(req,res) => {
+
+    if (!req.user) { 
+        return res.redirect('/');
+    };
+
+    connection.query(`UPDATE users SET use_google_img=true WHERE id=${req.user.id}`).then(() => {
+        res.redirect('/profile');
+    });
+})
 
 
 

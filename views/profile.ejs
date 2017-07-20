@@ -102,14 +102,27 @@
                   
                     
                       <div class="user-image-mod-inside">
-                        <a href="#">
+                        <a href="#" onclick="imgChangeOptionsExpand()">
                           <img src="<%= image %>" align="left" />
                         </a>
-                        
                       </div>
-                    
-                  
-                  
+                        <form action="/profile/uploadCustomImg" method="POST" enctype="multipart/form-data">
+                          <div class="upload-options">
+                            <input type="file" name="image" accept="image/*"></input>
+                            <button type="submit">SUBMIT</button>
+                          </div>
+                        </form>
+                        <form action="/profile/updateToCustomImg">
+                          <div class="updateToCustomImg-options">
+                            <button type="submit">Change to Custom Image</button>
+                          </div>
+                        </form>
+                        <form action="/profile/updateToGoogleImg">
+                          <div class="updateToGoogleImg-options">
+                            <button type="submit">Change to Google Image</button>
+                          </div>
+                        </form>
+
                 </div>
               </div>
         </div>
@@ -126,25 +139,43 @@
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
 
         <!-- jQuery UI -->
-        <script type="text/javascript" src="https://code.jquery.com/ui/1.8.23/jquery-ui.min.js"></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
 
 
         <script>
 
-        // Image Hover Effect
-        $(document).ready(function() {
-          $('.user-image-mod a').hover(function() {
-              $('.user-image-mod div').stop().animate({
-                borderColor: '7px solid rgb(171,171,171)'
-              },180,"linear");
-            },
-            function() {
-            $('.user-image-mod div').stop().animate({
-              borderColor: '7px solid rgb(221,221,221)'
-            },180,"linear");
+          // Image Hover Effect
+          $(document).ready(function() {
+
+            $('.upload-options, .updateToCustomImg-options, .updateToGoogleImg-options').hide();
+
+            $('.user-image-mod a').hover(function() {
+                $('.user-image-mod div').stop().animate({
+                  borderColor: '7px solid rgb(171,171,171)'
+                },180,"linear");
+              },
+              function() {
+                $('.user-image-mod div').stop().animate({
+                  borderColor: '7px solid rgb(221,221,221)'
+                },180,"linear");
+            });
           });
-        });
-        
+
+          // Image Change Function
+          var imgChangeOptionsExpand = function () {
+            $('.upload-options, .updateToCustomImg-options, .updateToGoogleImg-options').toggle();
+          };
+
+          // Image Default Upload Handler
+          $('form[enctype="multipart/form-data"]').submit(function(e) {
+            if ($('input[type="file"]').val() === "") {
+              e.preventDefault();
+            };
+          });
+          
+
+
+          
 
         </script>
     </body>

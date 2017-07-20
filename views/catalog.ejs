@@ -57,10 +57,12 @@
                         <a class="nav-link" href="/login">Sign In</a>
                     </li>
                 <% } else { %>
-                    <li class="nav-item">
+                    <li class="nav-item profile-button">
                         <a class="nav-link" href="/profile">
-                          <img class="user-image" src="<%= image %>"/>
-                          <%= username %>
+                          <div class="user-image">
+                            <img class="user-image" src="<%= image %>"/>
+                          </div>
+                          <p><%= username %></p>
                         </a>
                     </li>
                     <li class="nav-item">
