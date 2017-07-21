@@ -1,9 +1,8 @@
 
 
-
 /* Bootstrap CSS Modification */
-
 .navbar-default {
+  display: none;
   margin: 10px;
   margin-left: 0;
   margin-right: 0;
@@ -40,76 +39,92 @@
   background-color: none;
 }
 
+
+/* Weselyan Logo Img */
 .navbar-default .navbar-brand img {
   margin-top: -8px;
 }
 
 
+/* Navbar-form Common CSS */
+.navbar-form * {
+  color: rgb(131,131,131);
+  text-align: center;
+  font-size: 16px !important;
+  font-weight: 500;
+}
 
 
+/* Search Input */
+.navbar-form .form-control {
+  letter-spacing: .5px;
+  border: none !important;
+  border-radius: 0;
+  border-bottom: 2px solid rgb(221,221,221) !important;
+  height: 30px !important;
+  padding-bottom: 23px;
+  margin-top: 7px;
+  box-shadow: none;
+}
+
+.navbar-form .form-control:focus {
+  border-bottom: 2px solid rgb(225,0,0) !important;
+}
 
 
-/* Foundation top-sticky-bar CSS Modification */
+/* Search Button */
+.navbar-form button {
+  background-color: transparent;
+  margin: 0 auto;
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+  margin-left: 10px;
+}
+
+.navbar-form button:hover {
+  background-color: rgb(225,0,0);
+  color: white;
+  transition: .3s all ease;
+}
 
 
-
-
-
-/* Foundation menu-hover-lines CSS Modification */
-
-.navbar-default .navbar-nav {
+/* Navbar Hover Effect (<a> Underline) */
+.navbar-default .navbar-nav li a {
+  position: relative;
   text-align: center;
   text-transform: uppercase;
   font-weight: 500;
   letter-spacing: 1px;
-  transition: all 0.35s ease;
+  transition: all 0.3s ease 0s;
 }
 
-.navbar-default .navbar-nav li a {
-  /*padding: 0.75rem;*/
-  color: rgba(10, 10, 10, 0.5);
-  position: relative;
-  margin-left: 1rem;
+.navbar-default .navbar-nav li a:hover {
+  color: black;
 }
 
-.navbar-default .navbar-nav li:first-child a {
-  margin-left: 0 !important;
-}
-
-.navbar-default .navbar-nav li.active > a {
-  background-color: transparent;
-}
-
-.navbar-default .navbar-nav a:before,
-.navbar-default .navbar-nav a::after {
-  height: 3px;
+.navbar-default .navbar-nav li a:before {
+  content: "";
   position: absolute;
-  content: '';
-  transition: all 0.35s ease;
-  background-color: rgb(225,0,0);
-  width: 0;
-}
-
-.navbar-default .navbar-nav a::before {
-  top: 0;
-  left: 0;
-}
-
-.navbar-default .navbar-nav a::after {
-  bottom: 0;
-  right: 0;
-}
-
-.navbar-default .navbar-nav a:hover,
-.navbar-default .navbar-nav li.active > a {
-  color: #0a0a0a;
-  transition: all 0.35s ease;
-}
-
-.navbar-default .navbar-nav a:hover::before,
-.navbar-default .navbar-nav .active a::before,
-.navbar-default .navbar-nav a:hover::after,
-.navbar-default .navbar-nav .active a::after {
   width: 100%;
+  height: 2px;
+  bottom: 0;
+  left: 0;
+  background-color: rgb(225,0,0);
+  visibility: hidden;
+  -webkit-transform: scaleX(0);
+  transform: scaleX(0);
+  -webkit-transition: all 0.3s ease-in-out 0s;
+  transition: all 0.3s ease-in-out 0s;
 }
 
+.navbar-default .navbar-nav li a:hover:before {
+  visibility: visible;
+  -webkit-transform: scaleX(1);
+  transform: scaleX(1);
+}
+
+
+/* Header */
+.header {
+  display: none;
+}

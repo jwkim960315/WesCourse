@@ -10,7 +10,7 @@ const html = require('html');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const multer = require('multer');
-const upload = multer({ dest: '/profile'});
+const upload = multer({});
 const DataURI = require('datauri').promise;
 
 
