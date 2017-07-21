@@ -89,7 +89,6 @@ li a:hover {
 	border-radius: .25rem;
     padding: 20px;
     border: 10px solid rgb(221,221,221);
-    /*width: 80% !important;*/
 }
 
 .profile .header {
@@ -117,8 +116,6 @@ li a:hover {
 }
 
 #user-info-header-user-info-content {
-	/*border: 1.2px solid black;
-	background-color: black;*/
 	border: 1.2px solid rgb(221,221,221);
 	background-color: rgb(221,221,221);
 }
@@ -128,7 +125,6 @@ li a:hover {
 	border-radius: .25rem;
     padding: 20px;
     margin-left: 15px;
-    /*border: 5px solid rgb(221,221,221);*/
 }
 
 .user-info * {
@@ -144,12 +140,6 @@ nav img.user-image {
 	height: 25px;
 	width: 25px;
 	border-radius: 50%;
-	/*margin-right: 7px;*/
-	/*padding-top: -30px;
-	padding-bottom: -30px;*/
-	/*float: left;*/
-	/*position: absolute;*/
-	/*padding-bottom: 3px;*/
 }
 
 a[href="/profile"] {
@@ -158,16 +148,11 @@ a[href="/profile"] {
 
 li.nav-item.profile-button p {
 	display: inline-block;
-	/*padding-top: 1px;*/
 }
 
 div.user-image {
-	/*padding-bottom: 5px;*/
-	/*padding-top: -30px;
-	padding-bottom: -30px;*/
 	display:inline-block;
 	margin-right: 7px;
-	/*height: 59px;*/
 }
 
 .user-info-outside {
@@ -184,19 +169,12 @@ div.user-image {
 
 
 .user-image-mod img {
-	/*width: 150px;
-	height: 150px;*/
 	width: 100%;
 	height: 100%;
 	border-radius: 50%;
-	/*margin: 20px;*/
 }
 
 .user-image-mod .user-image-mod-inside {
-	/*position: absolute;*/
-	/*top: 40%;
-	left: 50%;
-	transform: translate(-50%,-50%);*/
 	border-radius: 50%;
 	height: 150px;
 	width: 150px;

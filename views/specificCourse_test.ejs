@@ -112,7 +112,6 @@
             <!-- HighCharts --> 
             <div id="chart-container"></div>
 
-            
             <br/>
 
             <div class="comments">
@@ -153,7 +152,6 @@
                                 <div class="form-check validation"></div>
                             </fieldset>
 
-
                             <% tmp = ["difficulty","organization","effort","professors"] %>
                             <% tmp1 = ["Difficulty","Organization","Effort Required","Professor(s)"] %>
                             <% for (var i=0; i < tmp.length; i++) { %>
@@ -166,15 +164,12 @@
                             <% } %>
                         </div>
 
-                        
-                        
                         <div class="comment-submit">
                             <label class="form-label" for="inlineFormInput">Comment:</label>
                             <textarea type="text" rows="5" class="form-control justify-content-start check" id="inlineFormInput" placeholder="Write your comment here!" name="comment"></textarea>
                         </div>
                         <br/>
                         <button type="submit" class="btn btn-primary check">Submit</button>
-                        
                     </form>
 
                     <br/>
@@ -211,12 +206,8 @@
                                             <div class="comment-inside">
                                                 <pre><h4 class="card-text" id="rated-comment"><%= courseComments[i].comment %></h4></pre>
                                             </div>
-                                            
                                         </div>
-                                        
                                     </div>
-
-                                    
                                 </div>
                             </div>
                             <br/>
@@ -257,12 +248,7 @@
                         <% } %>
                     </div>
                 </ul>
-                
             </nav>
-            
-
-            
-            
         </div>
         <hr/>
 
@@ -293,6 +279,7 @@
 
         <script>
 
+            // Current Page Active Handler
             <% if (currentPageNum[0].currentPageNum !== undefined) { %>
                 $('.paginated-number').each(function(index) {
                     if ("<%= currentPageNum[0].currentPageNum %>" === $(this).text()) {
@@ -301,7 +288,7 @@
                 });
             <% } %>
 
-
+            // Form Validator
             $('form').validate({
               rules: {
                 optionsRadios1: "required",
@@ -320,7 +307,9 @@
                 professors: "Please rate this category"
               },
               errorPlacement: function(error, element) {
+                
                 var placement = $(element).data('error');
+
                 if (placement) {
                   $(placement).parent().append(error);
                 } else {
@@ -328,9 +317,8 @@
                       element.parent().parent().parent().children().last().append(error);
                   } else {
                       element.next().append(error);
-                  }
-                  
-                }
+                  };
+                };
               }
             });
 
@@ -361,16 +349,12 @@
               });
             })
             
-
-
-
-
+            // Radio Buttons Click Event Handlers
             $('.anonymous-submit input[type=radio]').click(function() {
               $('.anonymous-submit').css({
                 'border-color': 'white',
                 'transition': 'border-color .4s ease'
               });
-
             });
 
             $('.recommend-submit input[type=radio]').click(function() {
@@ -380,6 +364,7 @@
               });
             })
 
+            // Login Check Before Input Event Handler
             $(document).ready(function() {
                 $('.check').on('click',function(e) {
                     $.ajax({
@@ -390,15 +375,13 @@
                                 $('.form-check-input').prop('checked',false);
                                 alert('You must login to evaluate this course');
                                 window.location.href = '/login';
-                            }
+                            };
                         }
-                    })
-                })
+                    });
+                });
+            });
 
-
-            })
-
-
+            // jRate Constructors
             $('#jRate0').jRate({
                 width: 30,
                 height: 30,
@@ -410,8 +393,6 @@
                     $('#rating-result0').val(rating);
                 }
             });
-
-
 
             $('#jRate1').jRate({
                 width: 30,
@@ -680,9 +661,8 @@
                 Highcharts.setOptions(Highcharts.theme);
 
 
-
+                // HighCharts Constructor
                 var chart = Highcharts.chart('chart-container',{
-
                     credits: {
                         enabled: false
                     },

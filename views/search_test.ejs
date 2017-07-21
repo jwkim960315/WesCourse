@@ -104,30 +104,26 @@
                 No Results found. Please go to the Catalog section.
             </h3>
         <% } else if (data !== undefined) { %>
-        	
             <table class="table">
                 <tbody>
-                    
                     <% for (var i=0; i < data.length; ++i) { %>
                         <tr>
                             <th>
                                 <a href="/catalog/<%= data[i].field_acronym %>/<%= data[i].course_acronym %>/1/1"><strong><u><%= data[i].course_acronym %></u></strong></a>
                                 <h6 style="display:inline;"><strong><%= data[i].course_name %></strong></h6>
-                                <h6 style="float: right;"><strong>Class Time: <%= data[i].class_date %></strong></h6>
-                                <!-- <br> -->
+                                
                                 <h6 style="margin-bottom: 0;"><strong>Section: <%= data[i].section %></strong></h6>
                                 <h6><strong>Professors: <%= data[i].professors %></strong></h6>
                             </th>
+                            <td><h6 style="float: right;"><strong>Class Time: <%= data[i].class_date %></strong></h6></td>
                         </tr>
                     <% } %>
-                    
                 </tbody>
             </table>
             
 
 
             <nav class="pagination-nav">
-                
                 <ul class="pagination justify-content-center">
                     <div id="pages-container">
                         <% startNextPageNum = currentSecNum[0].currentSecNum*5+1 %>
@@ -153,9 +149,7 @@
                         <% } %>
                     </div>
                 </ul>
-                
-            </nav>
-            
+            </nav>            
         <% } %>
 
 
@@ -198,7 +192,6 @@
                     };
                 },
                 focusout: function() {
-                    console.log($('.courses-group').data('clicked'));
                     if (!$('.courses-group').data('clicked')) {
                         $('.courses-group').hide();
                     }
@@ -209,9 +202,8 @@
 
 			// Search Bar Suggested Search Results Handler
             $('.search-keyword').on('input', function() {
+
                 keyword = $('.search-keyword').val();
-
-
 
                 $.ajax({
                     url: `/searching`,
@@ -277,11 +269,7 @@
                                                     
                                                         <p>Professor(s): </p>
                                                         <p>${obj.professors}</p>
-                                                    
                                                 </div>
-                                                
-                                                
-
                                             </a>`;
                             });
                         };
@@ -302,18 +290,11 @@
                 })
             });
 
-
-            // Search Results Show & Hide Transition Handlers
-            
-
             // Width Align Handler
             $(document).ready(function() {  
                 $('.courses-group').hide();
             });
 
-
-
-            
             window.onbeforeunload = function(){ window.scrollTo(0,0); }
 
             // Hilitor

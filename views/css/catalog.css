@@ -63,13 +63,10 @@ li a:hover {
 	font-family: 'Cormorant Garamond', serif;
 	text-align: center;
 	padding-right: 5px;
-	/*border-right: 3px solid red;*/
 }
 
 .navbar-brand:hover {
 	color: rgba(255,255,255,.5) !important;
-	/*box-shadow: 3px 3px 1px 1px rgba(31, 33, 34, 1) inset !important;*/
-	/*padding-left: 5px !important;*/
 }
 
 #wes {
@@ -98,7 +95,6 @@ li a:hover {
 	border: 1px solid white;
 	background: white;
 	font-family: 'Merriweather', serif;
-	/*font-family: "Ubuntu", sans-serif !important;*/
 }
 
 
@@ -109,15 +105,11 @@ li a:hover {
 }
 
 .row {
-	/*overflow-wrap: break-word !important;*/
-	/*word-wrap: break-word !important;*/
 	hyphens: auto;
-	/*white-space: nowrap !important;*/
 }
 
 .category-names,.row a {
 	font-family: "Josefin Sans", sans-serif;
-	
 	white-space: nowrap !important;
 }
 
@@ -137,24 +129,13 @@ nav img.user-image {
 	height: 25px;
 	width: 25px;
 	border-radius: 50%;
-	/*margin-right: 7px;*/
-	/*padding-top: -30px;
-	padding-bottom: -30px;*/
-	/*float: left;*/
-	/*position: absolute;*/
-	/*padding-bottom: 3px;*/
 }
 
 li.nav-item.profile-button p {
 	display: inline-block;
-	/*padding-top: 1px;*/
 }
 
 div.user-image {
-	/*padding-bottom: 5px;*/
-	/*padding-top: -30px;
-	padding-bottom: -30px;*/
 	display:inline-block;
 	margin-right: 7px;
-	/*height: 59px;*/
 }

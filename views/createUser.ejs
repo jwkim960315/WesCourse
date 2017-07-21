@@ -91,21 +91,6 @@
         <div class="container tab-content-outside">
           <div class="tab-content">
             <div class="tab-pane" id="login" role="tabpanel">
-              <!-- <form class="login" action="/loggingIn" method="POST"> -->
-                  <!-- <div class="form-group">
-                      <label for="inputEmail1" class="col-form-label">Email</label>
-                      <input type="email" class="form-control" name="email" id="inputEmail1" placeholder="Enter your email" autocomplete="off">
-                  </div>
-                  <div class="form-group">
-                      <label for="inputPassword1" class=" col-form-label">Password</label>
-                      <input type="password" class="form-control" name="password" id="inputPassword1" placeholder="Enter your password" autocomplete="off">
-                  </div>
-                  <div class="form-group">
-                      <div class="d-flex justify-content-center buttons">
-                          <button type="submit" class="btn btn-primary">Sign In</button>
-                      </div>
-                  </div> -->
-
               <form class="login" action="login/auth/google" method="GET">
                 <% if (!success[0].success && isSignIn[0].isSignIn) { %>
                   <div class="form-group no-account">
@@ -123,31 +108,6 @@
               </form>
             </div>
             <div class="tab-pane" id="createUser" role="tabpanel">
-              <!-- <form class="createUser" action="/submitUser" method="POST"> -->
-                  <!-- <div class="form-group">
-                      <label for="inputUsername1" class="col-form-label">Username</label>
-                      <input type="text" class="form-control" name="username" id="inputUsername1" placeholder="Enter your username" autocomplete="off">
-                  </div>
-                  <div class="form-group">
-                      <label for="inputEmail2" class="col-form-label">Email</label>
-                      <input type="email" class="form-control" name="email" id="inputEmail2" placeholder="Enter your email" autocomplete="off">
-                  </div>
-                  <div class="form-group ">
-                      <label for="inputPassword2" class=" col-form-label">Password</label>
-                      <input type="password" class="form-control" name="password" id="inputPassword2" placeholder="Enter your password" autocomplete="off">
-                  </div>
-                  <div class="form-group ">
-                      <label for="inputPassword3" class=" col-form-label">Confirm Password</label>
-                      <input type="password" class="form-control" name="rePassword" id="inputPassword3" placeholder="Re-type your Password" autocomplete="off">
-                  </div>
-                  <div class="form-group">
-                      <div class="d-flex justify-content-center buttons">
-                          <button type="submit" class="btn btn-primary">Create Account</button>
-                      </div>
-                  </div> -->
-
-              <!-- </form> -->
-
               <form class="createUser" action="createUser/auth/google" method="GET">
                 <div class="form-group username">
                   <label for="inputUsername1" class="col-form-label">Username</label>
@@ -187,7 +147,7 @@
       <script type="text/javascript" src="https://code.jquery.com/ui/1.8.23/jquery-ui.min.js"></script>
 
       <script>
-        // Access Logic
+        // Current State Handler (Create An Account VS. Sign In)
         $(document).ready(function() {
           <% if (!isSignIn[0].isSignIn) { %>
             $('a[href="#createUser"]').addClass('active');
@@ -202,11 +162,9 @@
             $('#inputUsername1-err').text("<%= invalidMessage[0].invalidMessage %>");
           <% } %>
         });
-
-        // No account Login Validator
         
 
-        // Username Unique Validator
+        // Unique Username Validator
         $('#inputUsername1').on('input',function(e) {
           $.ajax({
               url: '/checkUsername',
@@ -215,7 +173,6 @@
                 username: $('#inputUsername1').val()
               },
               success: function(isUnique) {
-                  // console.log(isUnique);
                   $('#inputUsername1-err').show();
                   if (isUnique === "noInput") {
                       $('.createUser button.loginBtn.loginBtn--google').prop('disabled',true);
@@ -238,8 +195,8 @@
                       $('#inputUsername1-err').text(`${$('#inputUsername1').val()} works!`);
                   }
               }
-            })
-        })
+          });
+        });
 
         $('.createUser').submit(function(e) {
           console.log($('#inputUsername1').val().trim().length);
@@ -250,56 +207,8 @@
             $('#inputUsername1-err').switchClass('inputUsername1-success','inputUsername1-err',0);
             $('#inputUsername1-err').text('You must enter a username you desire');
             e.preventDefault(e);
-            
           }
-        })
-
-
-        var elem = `<label id="inputUsername1-error" class="error" for="inputUsername1" style="">Username already exists</label>`;
-
-        // Validator Rule Creators
-        // jQuery.validator.addMethod('username-check',function(value,element) {
-        //   var check;
-        //   $.ajax({
-        //     url: '/checkUsername',
-        //     method: 'POST',
-        //     data: {
-        //       username: value
-        //     },
-        //     success: function(isUnique) {
-        //         check = isUnique;
-        //         return;
-        //     }
-        //   })
-        //   return check;
-        // });
-
-        // Main Validators
-        // $('form.createUser').validate({
-        //   rules: {
-        //     email: 'required',
-        //     username: 'required',
-        //     password: 'required',
-        //     rePassword: 'required'
-        //   },
-        //   messages: {
-        //     email: 'You must enter a Wesleyan email',
-        //     username: 'You must enter a username you desire',
-        //     password: 'You must enter a password',
-        //     rePassword: 'You must enter a password above'
-        //   }
-        // });
-
-        // $('form.login').validate({
-        //   rules: {
-        //     email: 'required',
-        //     password: 'required'
-        //   },
-        //   messages: {
-        //     email: 'You must enter a Wesleyan email',
-        //     password: 'You must enter a password'
-        //   }
-        // });
+        });
 
       </script>
 	</body>

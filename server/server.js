@@ -262,7 +262,7 @@ app.get('/',(req,res) => {
     };
 
     
-    return res.render('home',{username,
+    return res.render('home2',{username,
                               image,
                               userLoggedIn});
     

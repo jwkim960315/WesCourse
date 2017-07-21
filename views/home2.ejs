@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    	<meta charset="utf-8">
+    	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+      <html lang="en">
+    	
+    	<title>WesCourse</title>
+
+    	<!-- Google Fonts -->
+      <link href="https://fonts.googleapis.com/css?family=Bree+Serif|Anton|Cormorant+Garamond|Indie+Flower|Merriweather|Ubuntu|Josefin+Sans" rel="stylesheet">
+
+    	<!-- Bootstrap CSS -->
+    	<link rel="stylesheet" type="text/css" href="/bootstrap/css/bootstrap.css">
+
+      <!-- Foundation CSS -->
+      <!-- <link rel="stylesheet" type="text/css" href="/foundation/css/foundation.css"> -->
+
+    	<!-- Font Awesome -->
+    	<script src="https://use.fontawesome.com/b6a42b064c.js"></script>    	
+
+      <!-- Custom CSS -->
+      <link rel="stylesheet" type="text/css" href="/css/container.css">
+      <link rel="stylesheet" type="text/css" href="/css/navbar.css">
+      <!-- <link rel="stylesheet" type="text/css" href="/css/menu-hover-lines.css"> -->
+
+    </head>
+
+    <body>
+
+    	
+
+
+
+
+
+
+      <div class="container">
+
+        <!-- NavBar -->
+        <nav class="navbar navbar-default">
+          <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              <a class="navbar-brand" href="http://www.wesleyan.edu/">
+                <img class="Brand" src="https://upload.wikimedia.org/wikipedia/en/thumb/3/31/Wesleyan_University_Shield.svg/917px-Wesleyan_University_Shield.svg.png" width="40" height="40" />
+              </a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+              <ul class="nav navbar-nav">
+                <li class="nav-item active">
+                  <a class="nav-link" href="/">Home<span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="/catalog">Catalog</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="/about">About</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="/search">Search</a>
+                </li>
+              </ul>
+              <ul class="nav navbar-nav navbar-right">
+                <% if (!userLoggedIn) { %>
+                  <li class="nav-item">
+                      <a class="nav-link" href="/login">Sign In</a>
+                  </li>
+                <% } else { %>
+                  <li class="nav-item profile-button">
+                      <a class="nav-link" href="/profile">
+                        <div class="user-image">
+                          <img class="user-image" src="<%= image %>"/>
+                        </div>
+                        <p><%= username %></p>
+                      </a>
+                  </li>
+                  <li class="nav-item">
+                      <a class="nav-link" href="/logout">Sign Out</a>
+                  </li>
+                <% } %>
+                <% if (!userLoggedIn) { %>
+                  <li class="nav-item">
+                      <a class="nav-link" href="/createUser">Create Account</a>
+                  </li>
+                <% } %>
+                <form class="navbar-form navbar-right" method="POST" action="/search/query/1/1">
+                  <label class="sr-only" for="search-keyword"></label>
+                  <div class="form-group">
+                      <input type="text" class="form-control search-keyword" spellcheck="false" autocomplete="off" name="searchParam" id="search-keyword" placeholder="Search any keywords...">
+                      <!-- <span class=""> -->
+                          <button type="submit" class="btn btn-danger">Search</button>    
+                      <!-- </span> -->
+                  </div>
+              </form>
+              </ul>
+
+            </div><!-- /.navbar-collapse -->
+          </div><!-- /.container-fluid -->
+        </nav>
+
+        <!-- Title -->
+        <div class="">
+          <p class="">WesCourse</p>
+        </div>
+      </div>
+
+
+    	<!-- Header -->
+
+
+  		<!-- Search Bar -->
+      <!-- <form class="form" method="POST" action="/search/query/1/1">
+          <label class="sr-only" for="search-keyword"></label>
+          <div class="input-group">
+              <input type="text" class="form-control search-keyword" spellcheck="false" autocomplete="off" name="searchParam" id="search-keyword" placeholder="Search any keywords...">
+              <span class="input-group-btn">
+                  <button type="submit" class="btn btn-danger">Search</button>    
+              </span>
+          </div>
+      </form> -->
+      <!-- <div class="courses-group" id="courses-group">
+          <div class="list-group inside-courses-group" id="inside-courses-group"></div>
+      </div> -->
+    </div>
+
+
+      <!-- JQuery -->
+      <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+    
+
+    	<!-- Bootstrap JavaScript -->
+    	<script src="/bootstrap/js/bootstrap.js"></script>
+
+
+      <!-- Foundation JavaScript -->
+      <script src="/foundation/js/vendor/foundation.js"></script>
+
+      <!-- Event Handlers -->
+      <script>
+
+          $('.top-bar-right .menu li button').on('click',function(e) {
+              if ($('.top-bar-right .menu li input').val() !== "") {
+                  console.log($('.top-bar-right .menu li input').val());
+                  $.ajax({
+                      url: `/search/query/1/1/${$('.top-bar-right .menu li input').val()}`,
+                      type: "GET"
+                      // success: function(data) {
+                      //   console.log(data);
+                      // }
+                  })
+              } else {
+                  // e.preventDefault();
+              }
+          });
+
+          // Search Bar Suggested Search Results Handler
+          // $('.search-keyword').on('input', function() {
+
+          //     keyword = $('.search-keyword').val();
+
+          //     $.ajax({
+          //         url: `/searching`,
+          //         data: {keyword},
+          //         success: function(data) {
+                      
+          //             if (!data) {
+          //                 return $('.courses-group').stop().fadeOut(1);
+          //             };
+
+          //             if (data === "-1") {
+          //                 $('.courses-group').fadeIn(400);
+          //                 return $('div.list-group').html(`<div class="categories list-group-item">
+          //                                                     <p>No Matching Results Found</p>
+          //                                                  </div>`);
+          //             };
+                      
+          //             myHilitor = new Hilitor("courses-group");
+
+          //             template = "";
+
+          //             for (var i=0; i < Object.keys(data.data).length; i++) {
+                          
+          //                 template += `<div class="categories list-group-item">
+          //                                 <p>${Object.keys(data.data)[i]}</p>
+          //                             </div>`;
+          //                 data.data[Object.keys(data.data)[i]].forEach((obj,index,arr) => {
+
+          //                     obj.professors = obj.professors.replace(/;/g,"<br/>");
+
+          //                     splittedLst = obj.term_name.split(";");
+                              
+          //                     if (splittedLst.length !== 1 && splittedLst[0] !== splittedLst[1]) {
+          //                         obj.term_name = `${splittedLst[0]} & ${splittedLst[1]}`; 
+          //                     } else {
+          //                         obj.term_name = splittedLst[0];
+          //                     };
+
+
+          //                     template += `<a class="list-group-item action courses" href="/catalog/${obj.field_acronym}/${obj.course_acronym}/1/1">
+          //                                     <div class="col-6">
+          //                                         <div class="course-acronyms">
+          //                                             <p>Course: ${obj.course_acronym}</p>
+          //                                         </div>
+
+          //                                         <div class="course-names">
+          //                                             <p>${obj.course_name}</p>
+          //                                         </div>
+
+          //                                         <div class="sections">
+          //                                             <p>Section: ${obj.section}</p>
+          //                                         </div>
+
+          //                                         <div class="term-names">
+          //                                             <p>Term: ${obj.term_name}</p>
+          //                                         </div>
+          //                                     </div>
+          //                                     <div class="col-6 professors">
+          //                                             <p>Professor(s): </p>
+          //                                             <p>${obj.professors}</p>
+          //                                     </div>
+          //                                 </a>`;
+          //                 });
+          //             };
+
+          //             if (data.dataLength > 10) {
+          //                 template += `<a href="/search/query/1/1/${keyword}" class="list-group-item">
+          //                                 <p id="view-all">View All Results</p>
+          //                              </a>`;
+          //             };
+                      
+
+          //             $('div.list-group').html(template);
+
+          //             myHilitor.setMatchType("open");
+          //             myHilitor.apply(keyword);
+
+          //             $("html, body").animate({ scrollTop: $(document).height() }, 1000);
+                      
+          //             $('.courses-group').fadeIn(400);
+          //         }
+          //     })
+          // });
+          
+
+          // Width Align Handler
+          $(document).ready(function() {  
+              $('.courses-group').hide("fast");
+          });
+
+          // Goes to the top fo the page once refreshed
+          window.onbeforeunload = function(){ window.scrollTo(0,0); }
+
+          // Hilitor
+          // Original JavaScript code by Chirp Internet: www.chirp.com.au
+          // Please acknowledge use of this code by including this header.
+
+          function Hilitor(id, tag)
+          {
+
+            var targetNode = document.getElementById(id) || document.body;
+            var hiliteTag = tag || "EM";
+            var skipTags = new RegExp("^(?:" + hiliteTag + "|SCRIPT|FORM|SPAN)$");
+            var colors = ["#ff6", "#a0ffff", "#9f9", "#f99", "#f6f"];
+            var wordColor = [];
+            var colorIdx = 0;
+            var matchRegex = "";
+            var openLeft = false;
+            var openRight = false;
+
+            // characters to strip from start and end of the input string
+            var endCharRegex = new RegExp("^[^\\\w]+|[^\\\w]+$", "g");
+
+            // characters used to break up the input string into words
+            var breakCharRegex = new RegExp("[^\\\w'-]+", "g");
+
+            this.setMatchType = function(type)
+            {
+              switch(type)
+              {
+                case "left":
+                  this.openLeft = false;
+                  this.openRight = true;
+                  break;
+
+                case "right":
+                  this.openLeft = true;
+                  this.openRight = false;
+                  break;
+
+                case "open":
+                  this.openLeft = this.openRight = true;
+                  break;
+
+                default:
+                  this.openLeft = this.openRight = false;
+
+              }
+            };
+
+            this.setRegex = function(input)
+            {
+              input = input.replace(endCharRegex, "");
+              input = input.replace(breakCharRegex, "|");
+              input = input.replace(/^\||\|$/g, "");
+              if(input) {
+                var re = "(" + input + ")";
+                if(!this.openLeft) re = "\\b" + re;
+                if(!this.openRight) re = re + "\\b";
+                matchRegex = new RegExp(re, "i");
+                return true;
+              }
+              return false;
+            };
+
+            this.getRegex = function()
+            {
+              var retval = matchRegex.toString();
+              retval = retval.replace(/(^\/(\\b)?|\(|\)|(\\b)?\/i$)/g, "");
+              retval = retval.replace(/\|/g, " ");
+              return retval;
+            };
+
+            // recursively apply word highlighting
+            this.hiliteWords = function(node)
+            {
+              if(node === undefined || !node) return;
+              if(!matchRegex) return;
+              if(skipTags.test(node.nodeName)) return;
+
+              if(node.hasChildNodes()) {
+                for(var i=0; i < node.childNodes.length; i++)
+                  this.hiliteWords(node.childNodes[i]);
+              }
+              if(node.nodeType == 3) { // NODE_TEXT
+                if((nv = node.nodeValue) && (regs = matchRegex.exec(nv))) {
+                  if(!wordColor[regs[0].toLowerCase()]) {
+                    wordColor[regs[0].toLowerCase()] = colors[colorIdx++ % colors.length];
+                  }
+
+                  var match = document.createElement(hiliteTag);
+                  match.appendChild(document.createTextNode(regs[0]));
+                  match.style.backgroundColor = wordColor[regs[0].toLowerCase()];
+                  match.style.fontStyle = "inherit";
+                  match.style.color = "#000";
+
+                  var after = node.splitText(regs.index);
+                  after.nodeValue = after.nodeValue.substring(regs[0].length);
+                  node.parentNode.insertBefore(match, after);
+                }
+              };
+            };
+
+            // remove highlighting
+            this.remove = function()
+            {
+              var arr = document.getElementsByTagName(hiliteTag);
+              while(arr.length && (el = arr[0])) {
+                var parent = el.parentNode;
+                parent.replaceChild(el.firstChild, el);
+                parent.normalize();
+              }
+            };
+
+            // start highlighting at target node
+            this.apply = function(input)
+            {
+              this.remove();
+              if(input === undefined || !input) return;
+              if(this.setRegex(input)) {
+                this.hiliteWords(targetNode);
+              }
+            };
+
+          }
+
+      </script>
+    </body>
+
+    
+</html>

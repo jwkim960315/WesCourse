@@ -170,7 +170,6 @@
 
 
             // Catalog Trigger Event Listener
-            // console.log(typeof <%- JSON.stringify(data) %>);
             $(document).ready(function(e) {
             	contQuery = $('.jumbotron');
                 if (contQuery.html() !== '') return;
@@ -182,86 +181,46 @@
                 buttonsQuery = $('button[data-toggle="collapse"]');
 
                 buttonsQuery.each(function (i,elem) {
-                    // $(`button[data-target="#collapse${i}"]`).attr('class','btn btn-outline-danger');
                     $(`button[data-target="#collapse${i}"]`).css('background','white !important');
                     $(`button[data-target="#collapse${i}"]`).css('border','1px solid white');
                 });
+            	buttonsQuery.on('click' ,function (e) {
+                    e.preventDefault();
 
-                // buttonsQuery.dblclick(function (e) {
+                    buttonsQuery.each(function(i,elem) {
+                        if (e.currentTarget.dataset.target === `#collapse${i}`) {
+                            $(`button[data-target="#collapse${i}"]`).blur();
 
-                // })
-                // let buttonClicked = false;
-                // if (!buttonClicked) {
-                	// buttonClicked = true;
-                	buttonsQuery.on('click' ,function (e) {
-	                    e.preventDefault();
+                            if (!$(`#collapse${i}`).find('hr').length) {
+                                    $(`#collapse${i}`).append(`<hr/>`);
+                            };
 
-	                 	// buttonsQuery.attr('pointer-events','none');
-	                 	// setTimeout(function() {buttonsQuery.attr('pointer-events','none')},200);
+                            $(`#collapse${i}`).on('show.bs.collapse',function() {
+                            	$(`button[data-target="#collapse${i}"]`).css('border','1px solid white');
+                                $(`button[data-target="#collapse${i}"]`).css('background','rgba(153,0,0,1)');
+                                $(`button[data-target="#collapse${i}"]`).css('color','white');
+                            });
 
-	                    buttonsQuery.each(function(i,elem) {
-	                        if (e.currentTarget.dataset.target === `#collapse${i}`) {
-	                            $(`button[data-target="#collapse${i}"]`).blur();
-	                            if (!$(`#collapse${i}`).find('hr').length) {
-	                                    $(`#collapse${i}`).append(`<hr/>`);
-	                            }
-	                            // try {
-		                            // if ($(`button[data-target="#collapse${i}"]`).attr('aria-expanded') === 'false') {
-		                            // if ($(`button[data-target="#collapse${i}"]`).hasClass('collapsed')) {
-		                                // $(`button[data-target="#collapse${i}"]`).attr('class','btn btn-outline-danger');
-		                            $(`#collapse${i}`).on('show.bs.collapse',function() {
-		                            	$(`button[data-target="#collapse${i}"]`).css('border','1px solid white');
-		                                $(`button[data-target="#collapse${i}"]`).css('background','rgba(153,0,0,1)');
-		                                $(`button[data-target="#collapse${i}"]`).css('color','white');
-		                            });
+                            $(`#collapse${i}`).on('shown.bs.collapse',function() {
+                            	$(`button[data-target="#collapse${i}"]`).css('border','1px solid white');
+                                $(`button[data-target="#collapse${i}"]`).css('background','rgba(153,0,0,1)');
+                                $(`button[data-target="#collapse${i}"]`).css('color','white');
+                            });
 
-		                            $(`#collapse${i}`).on('shown.bs.collapse',function() {
-		                                	$(`button[data-target="#collapse${i}"]`).css('border','1px solid white');
-			                                $(`button[data-target="#collapse${i}"]`).css('background','rgba(153,0,0,1)');
-			                                $(`button[data-target="#collapse${i}"]`).css('color','white');
-		                                });
-
-		                                
-		                                
-		                                
-		                                
-		                            // } else {
-		                                // $(`button[data-target="#collapse${i}"]`).attr('class','btn btn-danger');
-		                            $(`#collapse${i}`).on('hide.bs.collapse',function() {
-		                            	$(`button[data-target="#collapse${i}"]`).css('background','white');
-		                                $(`button[data-target="#collapse${i}"]`).css('border','1px solid white');
-		                                $(`button[data-target="#collapse${i}"]`).css('color','#D62929');
-		                            });
-		                                
-	                                $(`#collapse${i}`).on('hidden.bs.collapse',function() {
-	                                	$(`button[data-target="#collapse${i}"]`).css('background','white');
-		                                $(`button[data-target="#collapse${i}"]`).css('border','1px solid white');
-		                                $(`button[data-target="#collapse${i}"]`).css('color','#D62929');
-	                                });
-		                                
-		                            // }
-		                  //       } catch (error) {
-				               	// 	console.log(error);
-				                // }
-	                        } 
-
-	                    });
-	                    
-	                });
-
-
-
-
-                // }
-            	
-
-
-
-
-
-                
-
-
+                            $(`#collapse${i}`).on('hide.bs.collapse',function() {
+                            	$(`button[data-target="#collapse${i}"]`).css('background','white');
+                                $(`button[data-target="#collapse${i}"]`).css('border','1px solid white');
+                                $(`button[data-target="#collapse${i}"]`).css('color','#D62929');
+                            });
+                                
+                            $(`#collapse${i}`).on('hidden.bs.collapse',function() {
+                            	$(`button[data-target="#collapse${i}"]`).css('background','white');
+                                $(`button[data-target="#collapse${i}"]`).css('border','1px solid white');
+                                $(`button[data-target="#collapse${i}"]`).css('color','#D62929');
+                            });
+                        }; 
+                    }); 
+                });
             })
 
             
