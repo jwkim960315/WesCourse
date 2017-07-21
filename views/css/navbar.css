@@ -105,7 +105,8 @@
 .navbar-default .navbar-nav li a:before {
   content: "";
   position: absolute;
-  width: 100%;
+  margin-left: 5%;
+  width: 90%;
   height: 2px;
   bottom: 0;
   left: 0;
@@ -121,6 +122,18 @@
   visibility: visible;
   -webkit-transform: scaleX(1);
   transform: scaleX(1);
+}
+
+/* Navigation Current Nav-Item Effect */
+.navbar-default .nav-item.active::after {
+  content: "";
+  position: absolute;
+  width: 90%;
+  margin-left: 5%;
+  height: 2px;
+  bottom: 0;
+  left: 0;
+  background-color: rgb(225,0,0);
 }
 
 
