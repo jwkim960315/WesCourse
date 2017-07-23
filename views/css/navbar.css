@@ -1,11 +1,15 @@
 
 
 /* Bootstrap CSS Modification */
+
+/* navbar-default */
 .navbar-default {
-  display: none;
+  /*display: none;*/
   margin: 10px;
   margin-left: 0;
   margin-right: 0;
+  margin-top: 50px;
+  margin-bottom: 50px;
   /* Modified 
   	 background-color: none;
   	 border-color: none; 
@@ -134,10 +138,16 @@
   bottom: 0;
   left: 0;
   background-color: rgb(225,0,0);
+
 }
 
-
-/* Header */
-.header {
-  display: none;
+/* User Image */
+nav img.user-image {
+  border-radius: 50%;
+  border: .5px solid rgb(221,221,221);
 }
+
+li.nav-item.profile-button p {
+  display: inline;
+}
+

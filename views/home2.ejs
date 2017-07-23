@@ -2,7 +2,7 @@
 <html>
     <head>
     	<meta charset="utf-8">
-    	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
       <html lang="en">
     	
     	<title>WesCourse</title>
@@ -22,7 +22,7 @@
       <!-- Custom CSS -->
       <link rel="stylesheet" type="text/css" href="/css/container.css">
       <link rel="stylesheet" type="text/css" href="/css/navbar.css">
-      <!-- <link rel="stylesheet" type="text/css" href="/css/menu-hover-lines.css"> -->
+      
 
     </head>
 
@@ -49,7 +49,7 @@
                 <span class="icon-bar"></span>
               </button>
               <a class="navbar-brand" href="http://www.wesleyan.edu/">
-                <img class="Brand" src="https://upload.wikimedia.org/wikipedia/en/thumb/3/31/Wesleyan_University_Shield.svg/917px-Wesleyan_University_Shield.svg.png" width="40" height="40" />
+                <img class="Brand" src="http://www.tennisoncampus.com/Assets/Wesleyan+University+Mascot2.jpg" width="50" height="40" />
               </a>
             </div>
 
@@ -77,9 +77,7 @@
                 <% } else { %>
                   <li class="nav-item profile-button">
                       <a class="nav-link" href="/profile">
-                        <div class="user-image">
-                          <img class="user-image" src="<%= image %>"/>
-                        </div>
+                        <img class="user-image" src="<%= image %>" width="20" height="20"/>
                         <p><%= username %></p>
                       </a>
                   </li>
@@ -106,29 +104,8 @@
         </nav>
 
         <!-- Title -->
-        <div class="header">
-          <p class="">WesCourse</p>
-        </div>
+
       </div>
-
-
-    	<!-- Header -->
-
-
-  		<!-- Search Bar -->
-      <!-- <form class="form" method="POST" action="/search/query/1/1">
-          <label class="sr-only" for="search-keyword"></label>
-          <div class="input-group">
-              <input type="text" class="form-control search-keyword" spellcheck="false" autocomplete="off" name="searchParam" id="search-keyword" placeholder="Search any keywords...">
-              <span class="input-group-btn">
-                  <button type="submit" class="btn btn-danger">Search</button>    
-              </span>
-          </div>
-      </form> -->
-      <!-- <div class="courses-group" id="courses-group">
-          <div class="list-group inside-courses-group" id="inside-courses-group"></div>
-      </div> -->
-    </div>
 
 
       <!-- JQuery -->
@@ -141,58 +118,11 @@
       <!-- JQuery UI -->
       <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
 
-      <!-- Event Handlers -->
-      <script>
-          $(document).ready(function() {
-              // Current Page Navigation Indication Event Handler
-              $('.navbar-nav .nav-item').each(function(val,elem) {
-                  navItem = $(this).find('a').attr('href').toLowerCase();
-                  currentLocation = window.location.pathname;
-                  if (navItem === currentLocation) {
-                    console.log(navItem);
-                    console.log(currentLocation);
+      <!-- Navbar.js -->
+      <script src="/js/navbar.js"></script>
 
-                    $(this).addClass('active');
-                  };
-              });
 
-              // Prevent Empty Input Submittion Event Handler
-              $('.navbar-form').submit(function(e) {
-                  if ($('.navbar-form .form-control').val() !== "") {
-                      console.log($('.navbar-form .form-control').val());
-                      $.ajax({
-                          url: `/search/query/1/1/${$('.navbar-form .form-control').val()}`,
-                          type: "GET"
-                      })
-                  } else {
-                      e.preventDefault(e);
-                  };
-              });
 
-              // Placeholder Disappear When Input Clicked Event Handler
-              $('.navbar-form .form-control').on('focus',function() {
-                $(this).attr('placeholder','');
-              });
-
-              $('.navbar-form .form-control').on('focusout',function() {
-                $(this).attr('placeholder','Search any keyword...');
-              });
-
-              // Navigation Bar Appear Effect
-              $('.navbar-default').fadeIn(1000,function() {
-                $('.header').fadeIn(1000,function() {});
-              });
-          })
-          
-          
-
-          
-
-          
-
-          
-
-      </script>
     </body>
 
     

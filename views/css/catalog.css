@@ -139,3 +139,7 @@ div.user-image {
 	display:inline-block;
 	margin-right: 7px;
 }
+
+a[href="/profile"] {
+	padding:0;
+}

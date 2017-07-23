@@ -1,0 +1,44 @@
+
+
+/* Bootstrap CSS Modification */
+
+/* panel-default */
+.panel-default {
+    /* Modified
+       border: 0;
+       box-shadow: none;
+    in bootstrap.css */
+}
+
+
+/* panel-heading */
+.panel-default > .panel-heading {
+    /* Modified
+       background-color: transparent;
+       color: rgb(200,0,0);
+    in bootstrap.css */
+}
+
+
+/* Anchor Tag */
+a {
+    /* Modified
+       color: rgb(119,119,119);
+    in bootstrap.css
+    */
+}
+
+a:hover,
+a:focus {
+    /* Modified
+       color: rgb(225,0,0);
+       text-decoration: none;
+    */
+}
+
+/* Custom Modification */
+
+/* Individual Fields */
+.field-content {
+    padding-left: 12px;
+}

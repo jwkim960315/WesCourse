@@ -10,8 +10,23 @@ const html = require('html');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const multer = require('multer');
-const upload = multer({});
+var storage = multer.memoryStorage();
+// dest: path.join(__dirname,'../uploads/')
+var upload = multer({ storage });
 const DataURI = require('datauri').promise;
+
+const s3 = require('s3');
+
+var client = s3.createClient({
+    s3Options: {
+        accessKeyId: "AKIAIZRU2NNKZVWG3SBA",
+        secretAccessKey: "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"
+    }
+});
+
+let params = {
+
+}
 
 
 var passport = require('passport')
@@ -285,8 +300,8 @@ app.get('/catalog',(req,res) => {
 
     connection.query('SELECT category,name FROM fields ORDER BY 1,2').then(data => {
         data = catalogDataManipulator(data);
-
-        res.render('catalog',{data,
+        console.log(data);
+        res.render('catalog2',{data,
                               userLoggedIn,
                               username,
                               image});
@@ -317,7 +332,7 @@ app.get('/catalog/:name',async (req,res) => {
     springCourses = filteredCourses.filter((obj,i,arr) => {
         return obj.term_name.includes('spring');
     });
-    res.render('specificField',{filteredCourses,fallCourses,springCourses});
+    res.render('specificField2',{filteredCourses,fallCourses,springCourses});
     // return;
 });
 
@@ -1045,25 +1060,25 @@ app.post('/profile/uploadCustomImg',upload.single('image'),(req,res) => {
         return res.redirect('/');
     };
 
-
+    console.log('*****************');
     console.log(req.file);
+    console.log('*****************');
 
+    params = {
+        s3Params: {
+            Bucket: "wescourse",
+            Key: ""
+        }
 
+    }
 
     DataURI(req.file.path).then(content => {
         connection.query(`UPDATE users SET custom_image="${content}",use_google_img=false WHERE id=${req.user.id}`).then(() => {
             req.session.image = content;
             res.redirect('/profile');
         });
-    });
+    }).catch(e => console.log(e));
 
-
-
-
-
-    // res.setHeader('Content-Type', req.file.mimetype);
-    // fs.createReadStream(path.join('/profile', req.file.filename)).pipe(res);
-    // res.render('profile',{ image: req.file.path });
 });
 
 

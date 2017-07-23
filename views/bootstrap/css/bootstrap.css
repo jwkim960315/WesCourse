@@ -1105,11 +1105,14 @@ textarea {
 a {
   color: #337ab7;
   text-decoration: none;
+  color: rgb(119,119,119);
 }
 a:hover,
 a:focus {
   color: #23527c;
   text-decoration: underline;
+  color: rgb(225,0,0);
+  text-decoration: none;
 }
 a:focus {
   outline: 5px auto -webkit-focus-ring-color;
@@ -5469,6 +5472,7 @@ button.list-group-item-danger.active:focus {
   border-bottom: 1px solid transparent;
   border-top-right-radius: 3px;
   border-top-left-radius: 3px;
+  /*border-bottom: 0;*/
 }
 .panel-heading > .dropdown .dropdown-toggle {
   color: inherit;
@@ -5690,11 +5694,16 @@ button.list-group-item-danger.active:focus {
 }
 .panel-default {
   border-color: #dddddd;
+  border: 0;
+  box-shadow: none;
 }
 .panel-default > .panel-heading {
   color: #333333;
   background-color: #f5f5f5;
   border-color: #dddddd;
+  background-color: transparent;
+  /*color: rgb(99,99,99);*/
+  color: rgb(200,0,0);
 }
 .panel-default > .panel-heading + .panel-collapse > .panel-body {
   border-top-color: #dddddd;
