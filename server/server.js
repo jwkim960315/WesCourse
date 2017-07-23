@@ -12,8 +12,13 @@ const bcrypt = require('bcrypt');
 const multer = require('multer');
 var storage = multer.memoryStorage();
 // dest: path.join(__dirname,'../uploads/')
-var upload = multer({ storage });
+var upload = multer({ dest: path.join( __dirname,'../uploads/') });
 const DataURI = require('datauri').promise;
+const rimraf = require('rimraf');
+
+var base64 = require('node-base64-image'); // ES5
+
+// import {encode, decode} from 'node-base64-image'; // ES6
 
 const s3 = require('s3');
 
@@ -1060,9 +1065,12 @@ app.post('/profile/uploadCustomImg',upload.single('image'),(req,res) => {
         return res.redirect('/');
     };
 
+
+
     console.log('*****************');
     console.log(req.file);
     console.log('*****************');
+    console.log(req.user.custom_image);
 
     params = {
         s3Params: {
@@ -1073,10 +1081,20 @@ app.post('/profile/uploadCustomImg',upload.single('image'),(req,res) => {
     }
 
     DataURI(req.file.path).then(content => {
-        connection.query(`UPDATE users SET custom_image="${content}",use_google_img=false WHERE id=${req.user.id}`).then(() => {
-            req.session.image = content;
-            res.redirect('/profile');
-        });
+        fs.readdir(path.join(__dirname, '../uploads'), (err,files) => {
+            fs.unlink(path.join(__dirname,`../uploads/${files[0]}`),(err) => {
+                if (err) {
+                    return console.log(err)
+                };
+
+                connection.query(`UPDATE users SET custom_image="${content}",use_google_img=false WHERE id=${req.user.id}`).then(() => {
+                    req.session.image = content;
+                    res.redirect('/profile');
+                });    
+            })
+        })
+            
+        
     }).catch(e => console.log(e));
 
 });
