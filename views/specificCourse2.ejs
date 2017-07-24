@@ -10,11 +10,20 @@
     	<!-- Google Fonts -->
       <link href="https://fonts.googleapis.com/css?family=Abel|Bree+Serif|Anton|Cormorant+Garamond|Indie+Flower|Merriweather|Ubuntu|Josefin+Sans|Yanone+Kaffeesatz" rel="stylesheet">
 
+      <!-- Font Awesome CSS -->
+      <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
+
     	<!-- Bootstrap CSS -->
     	<link rel="stylesheet" type="text/css" href="/bootstrap/css/bootstrap.css">
 
       <!-- Foundation CSS -->
       <!-- <link rel="stylesheet" type="text/css" href="/foundation/css/foundation.css"> -->	
+
+      <!-- Font Awesome Star CSS -->
+      <link rel="stylesheet" href="/dist/themes/bars-square.css">
+
+      <!-- iCheck CSS -->
+      <link rel="stylesheet" href="/iCheck/skins/line/green.css">
 
       <!-- Custom CSS -->
       <link rel="stylesheet" type="text/css" href="/css/container.css">
@@ -143,8 +152,105 @@
         <div id="chart-container"></div>
 
         <!-- User Input for Course Ratings -->
-        
-        
+        <!-- <form class="form" method="POST" action="/comment/submit/<%= courseInfo[0].field_acronym %>/<%= courseInfo[0].course_acronym %>/<%= courseInfo[0].id %>/<%= currentSecNum[0].currentSecNum %>/<%= pageNum[0].pageNum %>">
+          <div class="col-lg-2 form-group">
+            <input class="anonymous" type="radio" name="iCheck">
+            <label>Yes</label>
+
+            <input class="anonymous" type="radio" name="iCheck" checked>
+            <label>No</label>
+          </div>
+          <% var tmp = ["difficulty","organization","effort","professors"] %>
+          <% for (var i=0; i < tmp.length; i++) { %>
+            <div class="col-lg-12">
+            <select id="<%= tmp[i] %>">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+            </div>
+          <% } %>
+        </form> -->
+        <% if (courseComments) { %>
+          <% for (var i=0; i < courseComments.length; i++) { %>
+            <div class="panel submitted-ratings">
+              <div class="panel-heading">
+                <h3><%= courseComments[i].username %></h3>
+              </div>
+              <div class="panel-body">
+                <div class="col-lg-4 all-ratings">
+                  <div class="row all-ratings-row">
+                    <!-- <div class="col-lg-12 all-ratings-header">
+                      <h3>Ratings</h3>
+                    </div>
+                    <hr class="col-lg-12"/> -->
+                    <div class="col-lg-12 difficulty">
+                      <h4 class="ratings-header">
+                        Difficulty: <span class="indiv-ratings-num"><%= courseComments[i].difficulty %></span>  
+                      </h4>
+                    </div>
+                    <div class="col-lg-12 organization">
+                      <h4 class="ratings-header">
+                        Organization: <span class="indiv-ratings-num"><%= courseComments[i].organization %></span>
+                      </h4>
+                    </div>
+                    <div class="col-lg-12 effort">
+                      <h4 class="ratings-header">
+                        Effort Required: <span class="indiv-ratings-num"><%= courseComments[i].effort %></span>
+                      </h4>
+                    </div>
+                    <div class="col-lg-12 professors">
+                      <h4 class="ratings-header">
+                        Professor(s): <span class="indiv-ratings-num"><%= courseComments[i].professors %></span>
+                      </h4>
+                    </div>
+                    <div class="col-lg-12 recommend">
+                      <h4 class="ratings-header">
+                        Recommend: <span class="indiv-ratings-yes-no">
+                          <% if (courseComments[i].recommend === "Yes") { %>
+                            <i class="fa fa-thumbs-up" style="color: rgb(92, 184, 92)" aria-hidden="true"></i>
+                          <% } else { %>
+                            <i class="fa fa-thumbs-down" style="color: rgb(217, 83, 79);" aria-hidden="true"></i>
+                          <% } %>
+                        </span>
+                      </h4>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-8 comments">
+                  <div class="row comments-row">
+                    <!-- <div class="col-lg-12 all-ratings-header">
+                      <h3>Comments</h3>
+                    </div>
+                    <hr class="col-lg-12"/> -->
+                    <div class="col-lg-12 comments-content-cont">
+                      <pre><%= courseComments[i].comment %></pre>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          <% } %>
+        <% } %>
+        <div class="row">
+        <nav class="col-xs-12 text-center" aria-label="Page navigation">
+          <ul class="pagination">
+            <li>
+              <a href="#" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+              </a>
+            </li>
+            <li><a href="#">1</a></li>
+            <li>
+              <a href="#" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+        </div>
       </div>
 
       <!-- Font Awesome -->
@@ -163,11 +269,19 @@
       <!-- HighCharts -->
       <script src="https://code.highcharts.com/highcharts.src.js"></script>
 
+      <!-- JQuery Bar Rating -->
+      <script src="/dist/jquery.barrating.min.js"></script>
+
+      <!-- iCheck JavaScript -->
+      <script src="/iCheck/icheck.min.js"></script>
+
       <!-- Navbar.js -->
       <script src="/js/navbar.js"></script>
       <script src="/js/courseInfo.js"></script>
       <script src="/js/ratingsNumColor.js"></script>
-      <!-- <script src="/js/highChartsConfig.js"></script> -->
+      <script src="/js/barRatingConfig.js"></script>
+      <script src="/js/customRadio.js"></script>
+      
 
       <script>
         <% if (!courseRating) { %>
@@ -270,16 +384,19 @@
                       color: '#777777'
                    },
                    formatter: function() {
-                     return `<p style="width: 200px !important;font-size: 20px;text-align:center;">${this.x}: <span style="color: ${this.series.color}">${this.y}</span></p>`;
+                     return `<p style="width: 200px !important;font-size: 20px;text-align:center;">${this.x}: <span style="color: ${this.point.color}">${this.y}</span></p>`;
                    }
                 },
                 plotOptions: {
+                   column: {
+                      colorByPoint: true
+                   },
                    series: {
                       dataLabels: {
                          color: '#777777'
                       },
                       marker: {
-                         lineColor: '#333'
+                         lineColor: '#777777'
                       }
                    },
                    boxplot: {

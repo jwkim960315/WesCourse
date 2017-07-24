@@ -1,5 +1,31 @@
 
 
+/* Bootstrap CSS Modification */
+
+/* Panel */
+
+div.panel-heading {
+	color: rgb(119,119,119);
+	border: 2px solid rgb(221,221,221);
+	border-bottom: none;
+	background-color: #e5e5e5;
+}
+
+div.panel-heading h3 {
+	margin-top: 10px;
+}
+
+div.panel-body {
+	border: 2px solid rgb(221,221,221);
+	border-top: 1px solid rgb(221,221,221);
+}
+
+div.panel-body .all-ratings .all-ratings-row div .ratings-header {
+	color: rgb(99,99,99);
+}
+
+
+
 
 /* Custom CSS */
 
@@ -63,8 +89,26 @@
 
 /* HighCharts Container */
 
+#chart-container {
+	margin-bottom: 70px;
+}
+
 #chart-container * {
 	border-radius: 5px !important;
 }
+
+
+/* Comments */
+
+div.comments-content-cont pre {
+	background-color: transparent !important;
+	border: 1.3px solid rgb(221,221,221);
+	color: rgb(99,99,99);
+	max-height: 180px;
+	overflow-y: auto;
+}
+
+
+
 
 

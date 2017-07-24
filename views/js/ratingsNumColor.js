@@ -12,7 +12,7 @@ $(document).ready(function() {
   };
 
   // Individual Rating Numbers Color Modifier
-  $('#rated-ratings h4 span').each(function(index) {
+  $('.indiv-ratings-num').each(function(index) {
     score = parseFloat($(this).text());
     if (0 <= score && score < 2) {
       $(this).css('color','rgb(217, 83, 79)');
@@ -24,4 +24,29 @@ $(document).ready(function() {
       $(this).css('color','rgb(92, 184, 92)');
     }
   });
+
+  // Individual Rater's Username Color Modifier
+  $('.panel .panel-heading h3').each(function(index,elem) {
+    totalScore = 0;
+    $(this).parent()
+           .next()
+           .children('.all-ratings')
+           .children()
+           .children()
+           .children()
+           .children('.indiv-ratings-num')
+           .each(function() {
+      totalScore += parseFloat($(this).text());
+    });
+    avgScore = totalScore/4.0;
+    if (0 <= avgScore && avgScore < 2) {
+      $(elem).css('color','rgb(217, 83, 79)');
+    } else if (2 <= avgScore && avgScore < 3) {
+      $(elem).css('color','rgb(240, 173, 78)');
+    } else if (3 <= avgScore && avgScore < 4) {
+      $(elem).css('color','rgb(2, 117, 216)');
+    } else if (4 <= avgScore && avgScore <= 5) {
+      $(elem).css('color','rgb(92, 184, 92)');
+    }
+  })
 })

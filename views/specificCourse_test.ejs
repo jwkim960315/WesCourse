@@ -166,7 +166,7 @@
 
                         <div class="comment-submit">
                             <label class="form-label" for="inlineFormInput">Comment:</label>
-                            <textarea type="text" rows="5" class="form-control justify-content-start check" id="inlineFormInput" placeholder="Write your comment here!" name="comment"></textarea>
+                            <textarea type="text" rows="5" class="form-control justify-content-start check" id="inlineFormInput" placeholder="Write your comment here!" name="comment" onkeydown="if(event.keyCode===9){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+'\t'+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;}"></textarea>
                         </div>
                         <br/>
                         <button type="submit" class="btn btn-primary check">Submit</button>
@@ -196,7 +196,6 @@
                                                   <% } %>
                                                   </span></h4>
                                             </div>
-                                           
                                         </div>
                                         
                                         <label for="rated-comment"></label>
@@ -688,9 +687,9 @@
                         data: <%- JSON.stringify(tmp) %>
                     }]
                 })
-                
+                <% } %>
             })
-            <% } %>
+            
 
         </script>
     </body>
