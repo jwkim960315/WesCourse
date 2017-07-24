@@ -8,7 +8,6 @@ const path = require('path');
 const fs = require('fs');
 const html = require('html');
 const jwt = require('jsonwebtoken');
-// const bcrypt = require('bcrypt');
 const multer = require('multer');
 var storage = multer.memoryStorage();
 // dest: path.join(__dirname,'../uploads/')
@@ -144,22 +143,6 @@ mysql.createConnection({
     connection = conn;
 });
 
-// Passport Configuration
-// passport.use(new LocalStrategy(
-//   function(username, password, done) {
-//     User.findOne({ username: username }, function (err, user) {
-//       if (err) { return done(err); }
-//       if (!user) {
-//         return done(null, false, { message: 'Incorrect username.' });
-//       }
-//       if (!user.validPassword(password)) {
-//         return done(null, false, { message: 'Incorrect password.' });
-//       }
-//       return done(null, user);
-//     });
-//   }
-// ));
-
 
 
 
@@ -288,6 +271,17 @@ const course_getter = async (courseName) => {
 
 
 app.get('/catalog/:name',async (req,res) => {
+    
+    if (req.user) {
+        userLoggedIn = true;
+        username = req.user.username;
+        image = (req.user.use_google_img) ? req.user.google_image : req.user.custom_image;
+    } else {
+        userLoggedIn = false;
+        username = undefined;
+        image = undefined;
+    };
+
     courseName = req.params.name;
 
     acronyms = await course_getter(courseName);
@@ -303,8 +297,14 @@ app.get('/catalog/:name',async (req,res) => {
     springCourses = filteredCourses.filter((obj,i,arr) => {
         return obj.term_name.includes('spring');
     });
-    res.render('specificField2',{filteredCourses,fallCourses,springCourses});
-    // return;
+
+
+    res.render('specificField2',{filteredCourses,
+                                 fallCourses,
+                                 springCourses,
+                                 userLoggedIn,
+                                 username,
+                                 image});
 });
 
 
@@ -465,25 +465,27 @@ app.get('/catalog/:fieldAc/:courseAc/:sectionNum/:pageNum',async (req,res) => {
                 image = undefined;
             };
 
+            console.log(courseRating[0]);
 
-            res.render('specificCourse_test',{courseInfo,
-                                              courseRating: courseRating[0], 
-                                              courseComments, 
-                                              courseOverall, 
-                                              recommendNum,
-                                              totalSecNum,
-                                              currentSecNum:[{currentSecNum}], 
-                                              prevSecNum:[{prevSecNum}], 
-                                              nextSecNum:[{nextSecNum}], 
-                                              currentPageTotalNum: [{currentPageTotalNum}],
-                                              totalCount: [{totalCount}],
-                                              currentPageNum: [{currentPageNum: req.params.pageNum}],
-                                              fieldAc: [{fieldAc: req.params.fieldAc}],
-                                              courseAc: [{courseAc: req.params.courseAc}],
-                                              pageNum: [{pageNum: req.params.pageNum}],
-                                              userLoggedIn,
-                                              username,
-                                              image});
+
+            res.render('specificCourse2',{courseInfo,
+                                          courseRating: courseRating[0], 
+                                          courseComments, 
+                                          courseOverall, 
+                                          recommendNum,
+                                          totalSecNum,
+                                          currentSecNum:[{currentSecNum}], 
+                                          prevSecNum:[{prevSecNum}], 
+                                          nextSecNum:[{nextSecNum}], 
+                                          currentPageTotalNum: [{currentPageTotalNum}],
+                                          totalCount: [{totalCount}],
+                                          currentPageNum: [{currentPageNum: req.params.pageNum}],
+                                          fieldAc: [{fieldAc: req.params.fieldAc}],
+                                          courseAc: [{courseAc: req.params.courseAc}],
+                                          pageNum: [{pageNum: req.params.pageNum}],
+                                          userLoggedIn,
+                                          username,
+                                          image});
 
 
         });

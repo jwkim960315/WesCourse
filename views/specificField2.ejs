@@ -1,39 +1,30 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
       <html lang="en">
         
-        <title>WesCourse</title>
+      <title>WesCourse</title>
 
-        <!-- Google Fonts -->
+      <!-- Google Fonts -->
       <link href="https://fonts.googleapis.com/css?family=Bree+Serif|Anton|Cormorant+Garamond|Indie+Flower|Merriweather|Ubuntu|Josefin+Sans" rel="stylesheet">
 
-        <!-- Bootstrap CSS -->
-        <link rel="stylesheet" type="text/css" href="/bootstrap/css/bootstrap.css">
+      <!-- Bootstrap CSS -->
+      <link rel="stylesheet" type="text/css" href="/bootstrap/css/bootstrap.css">
 
       <!-- Foundation CSS -->
       <!-- <link rel="stylesheet" type="text/css" href="/foundation/css/foundation.css"> -->
 
-        <!-- Font Awesome -->
-        <script src="https://use.fontawesome.com/b6a42b064c.js"></script>       
-
       <!-- Custom CSS -->
       <link rel="stylesheet" type="text/css" href="/css/container.css">
       <link rel="stylesheet" type="text/css" href="/css/navbar.css">
-      
+      <link rel="stylesheet" type="text/css" href="/css/courseInfo.css">
+      <link rel="stylesheet" type="text/css" href="/css/specificField2.css">
 
     </head>
 
     <body>
-
-        
-
-
-
-
-
 
       <div class="container">
 
@@ -103,10 +94,70 @@
           </div><!-- /.container-fluid -->
         </nav>
 
-        <!-- Title -->
+        <!-- Individual Courses -->
 
+        <ul class="nav nav-tabs nav-justified">
+          <li role="presentation" class="active"><a href="#fall" aria-controls="fall" role="tab" data-toggle="tab">Fall</a></li>
+          <li role="presentation"><a href="#spring" aria-controls="spring" role="tab" data-toggle="tab">Spring</a></li>
+        </ul>
+
+        <!-- Tab panes -->
+        <div class="tab-content">
+          <div role="tabpanel" class="tab-pane active" id="fall">
+            <div class="row">
+            <% for (var i=0;i < fallCourses.length; ++i) { %>
+              
+              <a href="/catalog/<%= fallCourses[i].field_acronym %>/<%= fallCourses[i].course_acronym %>/1/1">
+                <div class="infos class-time col-xs-12 col-md-6 text-right">
+                  <p>Class Time: <%= fallCourses[i].class_date %></p>
+                </div>
+                <div class="infos rest col-xs-12 col-md-6">
+                  <span class="course-acronym"><%= fallCourses[i].course_acronym %></span><p class="course-name"><%= fallCourses[i].course_name %></p>
+                </div>
+                <div class="infos rest col-xs-12 col-md-12">
+                  <p>Section: <%= fallCourses[i].section %></p>
+                </div>
+                <div class="infos rest col-xs-12 col-md-12">
+                  <p>Professors: <%= fallCourses[i].professors %></p>
+                </div>
+              
+                
+              </a>
+              <% if (i !== fallCourses.length-1) { %>
+                <hr class="infos col-xs-12 col-md-12"/>
+              <% } %>
+            <% } %>
+            </div>
+          </div>
+          <div role="tabpanel" class="tab-pane" id="spring">
+            <div class="row">
+              <% for (var i=0;i < springCourses.length; ++i) { %>
+                <a href="/catalog/<%= springCourses[i].field_acronym %>/<%= springCourses[i].course_acronym %>/1/1">
+                  <div class="infos class-time col-xs-12 col-md-6 text-right">
+                    <p>Class Time: <%= springCourses[i].class_date %></p>
+                  </div>
+                  <div class="infos rest col-xs-12 col-md-6">
+                    <span class="course-acronym"><%= springCourses[i].course_acronym %></span><p class="course-name"><%= springCourses[i].course_name %></p>  
+                  </div>
+                  <div class="infos rest col-xs-12 col-md-12">
+                    <p>Section: <%= springCourses[i].section %></p>  
+                  </div>
+                  <div class="infos rest col-xs-12 col-md-12">
+                    <p>Professors: <%= springCourses[i].professors %></p>  
+                  </div>
+                  
+                  <% if (i !== springCourses.length-1) { %>
+                    <hr class="infos col-xs-12 col-md-12"/>
+                  <% } %>
+                </a>
+              <% } %>
+            </div>
+          </div>
+        </div>
       </div>
 
+      <!-- Font Awesome -->
+      <script src="https://use.fontawesome.com/b6a42b064c.js"></script> 
 
       <!-- JQuery -->
       <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
@@ -121,7 +172,8 @@
       <!-- Navbar.js -->
       <script src="/js/navbar.js"></script>
 
-
+      <!-- Custom JavaScript -->
+      <script src="/js/courseInfo.js"></script>
 
     </body>
 

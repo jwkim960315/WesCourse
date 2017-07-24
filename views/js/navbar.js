@@ -3,12 +3,17 @@
 $(document).ready(function() {
     // Current Page Navigation Indication Event Handler
     $('.navbar-nav .nav-item').each(function(val,elem) {
-        navItem = $(this).find('a').attr('href').toLowerCase();
+        navItem = $(this).find('a').attr('href').toLowerCase().slice(1);
         currentLocation = window.location.pathname;
-        if (navItem === currentLocation) {
-          console.log(navItem);
-          console.log(currentLocation);
+        slashIndex = currentLocation.slice(1).indexOf('/');
 
+        if (slashIndex !== -1) {
+            currentLocation = currentLocation.slice(1,slashIndex+1);
+        } else {
+            currentLocation = currentLocation.slice(1);    
+        };
+        
+        if (navItem === currentLocation) {
           $(this).addClass('active');
         };
     });

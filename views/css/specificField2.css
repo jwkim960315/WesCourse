@@ -1,0 +1,21 @@
+/* Bootstrap CSS Modification */
+
+/* Active Tab Content */
+
+.tab-content > .active {
+	border: 1px solid rgb(221,221,221);
+	border-top: none;
+	padding: 10px;
+	margin-bottom: 50px;
+
+}
+
+.nav-tabs li > a {
+	font-size: 18px;
+}
+
+.nav-tabs > li.active a:hover,
+.nav-tabs > li.active a:focus,
+.nav-tabs > li.active a {
+	color: rgb(225,0,0);
+}

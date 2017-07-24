@@ -1,0 +1,70 @@
+
+
+
+/* Custom CSS */
+
+/* Header */
+
+.row.header {
+	margin-bottom: 100px;
+}
+
+.infos {
+	color: rgb(139,139,139);
+	margin-top: 10px;
+}
+
+
+
+/* Overall Ratings/Recommend Headers */
+
+.overall-ratings-container {
+	margin-right: 10px;
+	margin-left: 10px;
+	margin-bottom: 70px;
+}
+
+.border-wrapper {
+	border: 1.5px solid rgb(139,139,139);
+	border-radius: 5px;
+	padding-bottom: 20px !important;
+}
+
+.overall-ratings .overall-ratings-header h3, .overall-recommend .overall-recommend-header h3 {
+	color: rgb(139,139,139);
+	font-weight: bold;
+}
+
+
+/* Overall Ratings/Recommend Numbers */
+
+.overall-ratings .overall-ratings-num p {
+	font-size: 3em;
+}
+
+.overall-recommend .overall-recommend-yes-no .overall-recommend-icon-num {
+	font-size: 2.3em;
+}
+
+.overall-recommend .overall-recommend-yes-no .overall-recommend-icon-num.yes {
+	color: #5cb85c;
+}
+
+.overall-recommend .overall-recommend-yes-no .overall-recommend-icon-num.no {
+	color: #d9534f;
+}
+
+.colon {
+	color: rgb(139,139,139);
+}
+
+
+
+
+/* HighCharts Container */
+
+#chart-container * {
+	border-radius: 5px !important;
+}
+
+

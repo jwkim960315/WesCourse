@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    	<meta charset="utf-8">
+    	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+      <html lang="en">
+    	
+    	<title>WesCourse</title>
+
+    	<!-- Google Fonts -->
+      <link href="https://fonts.googleapis.com/css?family=Abel|Bree+Serif|Anton|Cormorant+Garamond|Indie+Flower|Merriweather|Ubuntu|Josefin+Sans|Yanone+Kaffeesatz" rel="stylesheet">
+
+    	<!-- Bootstrap CSS -->
+    	<link rel="stylesheet" type="text/css" href="/bootstrap/css/bootstrap.css">
+
+      <!-- Foundation CSS -->
+      <!-- <link rel="stylesheet" type="text/css" href="/foundation/css/foundation.css"> -->	
+
+      <!-- Custom CSS -->
+      <link rel="stylesheet" type="text/css" href="/css/container.css">
+      <link rel="stylesheet" type="text/css" href="/css/navbar.css">
+      <link rel="stylesheet" type="text/css" href="/css/courseInfo.css">
+      <link rel="stylesheet" type="text/css" href="/css/specificCourse2.css">
+
+    </head>
+
+    <body>
+
+      <div class="container">
+
+        <!-- NavBar -->
+        <nav class="navbar navbar-default">
+          <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              <a class="navbar-brand" href="http://www.wesleyan.edu/">
+                <img class="Brand" src="http://www.tennisoncampus.com/Assets/Wesleyan+University+Mascot2.jpg" width="50" height="40" />
+              </a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+              <ul class="nav navbar-nav">
+                <li class="nav-item">
+                  <a class="nav-link" href="/">Home</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="/catalog">Catalog</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="/about">About</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="/search">Search</a>
+                </li>
+              </ul>
+              <ul class="nav navbar-nav navbar-right">
+                <% if (!userLoggedIn) { %>
+                  <li class="nav-item">
+                      <a class="nav-link" href="/login">Sign In</a>
+                  </li>
+                <% } else { %>
+                  <li class="nav-item profile-button">
+                      <a class="nav-link" href="/profile">
+                        <img class="user-image" src="<%= image %>" width="20" height="20"/>
+                        <p><%= username %></p>
+                      </a>
+                  </li>
+                  <li class="nav-item">
+                      <a class="nav-link" href="/logout">Sign Out</a>
+                  </li>
+                <% } %>
+                <% if (!userLoggedIn) { %>
+                  <li class="nav-item">
+                      <a class="nav-link" href="/createUser">Create Account</a>
+                  </li>
+                <% } %>
+                <form class="navbar-form navbar-right" method="POST" action="/search/query/1/1">
+                  <label class="sr-only" for="search-keyword"></label>
+                  <div class="form-group">
+                      <input type="text" class="form-control" spellcheck="false" autocomplete="off" name="searchParam" id="search-keyword" placeholder="Search any keywords...">
+                      <button type="submit" class="btn">Search</button>    
+                  </div>
+              </form>
+              </ul>
+
+            </div><!-- /.navbar-collapse -->
+          </div><!-- /.container-fluid -->
+        </nav>
+
+        <!-- Header -->
+        <div class="row header">
+          <div class="infos class-time col-xs-12 col-md-6 text-right">
+            <h3><span class="infos-header">Class Time:</span> <%= courseInfo[0].class_date %></h3>
+          </div>
+          <div class="infos rest col-xs-12 col-md-6">
+            <span class="course-acronym"><h3><span class="infos-header"><%= courseInfo[0].course_acronym %></span></h3></span><h3 class="course-name"><%= courseInfo[0].course_name %></h3>
+          </div>
+          <div class="infos rest col-xs-12 col-md-12">
+            <h3><span class="infos-header">Section: </span><%= courseInfo[0].section %></h3>
+          </div>
+          <div class="infos rest col-xs-12 col-md-12">
+            <h3><span class="infos-header">Professors: </span><%= courseInfo[0].professors %></h3>
+          </div>
+        </div>
+
+        <!-- Course Ratings Overall -->
+        <div class="row overall-ratings-container">
+          <% if (recommendNum) { %>
+            <div class="row border-wrapper">
+            <div class="col-sm-6 col-xs-12 col-md-push-1 overall-ratings">
+              <div class="col-xs-12 overall-ratings-header text-center">
+                <h3>Overall Rating</h3>
+              </div>
+              <div class="col-xs-12 overall-ratings-num text-center">
+                <p><%= courseOverall %></p>
+              </div>
+            </div>
+            <div class="col-sm-6 col-xs-12 col-md-pull-1 overall-recommend">
+              <div class="col-xs-12 overall-recommend-header text-center">
+                <h3>Recommend?</h3>
+              </div>
+              <div class="col-xs-12 overall-recommend-yes-no">
+                <div class="col-xs-12 col-sm-6 col-sm-push-1 col-lg-push-1 overall-recommend-icon-num text-center yes">
+                  <i class="fa fa-thumbs-up fa-lg" aria-hidden="true"></i> <span class="colon">:</span> <span class="overall-recommend-num yes"><%= recommendNum.yes %></span>
+                </div>
+                <div class="col-xs-12 col-sm-6 col-sm-pull-1 col-lg-pull-1 overall-recommend-icon-num text-center no">
+                  <i class="fa fa-thumbs-down fa-lg" aria-hidden="true"></i> <span class="colon">:</span> <span class="overall-recommend-num no"><%= recommendNum.no %></span>
+                </div>
+              </div>
+            </div>
+            </div>
+          <% } %>
+        </div>
+
+        <!-- Overall Ratings Graph -->
+        <div id="chart-container"></div>
+
+        <!-- User Input for Course Ratings -->
+        
+        
+      </div>
+
+      <!-- Font Awesome -->
+      <script src="https://use.fontawesome.com/b6a42b064c.js"></script>    
+
+      <!-- JQuery -->
+      <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+    
+
+    	<!-- Bootstrap JavaScript -->
+    	<script src="/bootstrap/js/bootstrap.js"></script>
+
+      <!-- JQuery UI -->
+      <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
+
+      <!-- HighCharts -->
+      <script src="https://code.highcharts.com/highcharts.src.js"></script>
+
+      <!-- Navbar.js -->
+      <script src="/js/navbar.js"></script>
+      <script src="/js/courseInfo.js"></script>
+      <script src="/js/ratingsNumColor.js"></script>
+      <!-- <script src="/js/highChartsConfig.js"></script> -->
+
+      <script>
+        <% if (!courseRating) { %>
+            $('#chart-container').append('<p style="text-align:center;margin-top: 150px;margin-bottom:150px;color:white;">NO DATA. PLEASE EVALUATE THIS COURSE IF YOU HAVE TAKEN IT.</p>');
+        <% } else { %>
+            <% var tmp = []; %>
+            <% for (var i=0;i < Object.keys(courseRating).length-3; ++i) { %>
+                <% tmp.push(courseRating[Object.keys(courseRating)[i]]) %>
+            <% } %>
+            <% var tmpColor = [] %>
+            <% for (var i=0; i < tmp.length; i++) { %>
+              <% if (0 <= tmp[i] && tmp[i] < 2) { %>
+                <% tmpColor.push('#d9534f') %>
+              <% } else if (2 <= tmp[i] && tmp[i] < 3) { %>
+                <% tmpColor.push('#f0ad4e') %>
+              <% } else if (3 <= tmp[i] && tmp[i] < 4) { %>
+                <% tmpColor.push('#0275d8') %>
+              <% } else if (4 <= tmp[i] && tmp[i] <= 5) { %>
+                <% tmpColor.push('#5cb85c') %>
+              <% } %>
+              <% tmpColor %>
+            <% } %>
+
+            // Apply the theme
+            // Highcharts.setOptions(Highcharts.theme);
+
+            // HighCharts Constructor
+            var chart = Highcharts.chart('chart-container',{
+                credits: {
+                    enabled: false
+                },
+                chart: {
+                    type: 'column',
+                    backgroundColor: {
+                       linearGradient: { x1: 0, y1: 0, x2: 1, y2: 1 },
+                       stops: [
+                          [0, '#e5e5e5'],
+                          [1, '#f9f9f9']
+                       ]
+                    },
+                    style: {
+                       fontFamily: '\'Unica One\', sans-serif'
+                    },
+                    plotBorderColor: '#606063'
+                },
+                colors: <%- JSON.stringify(tmpColor) %>,
+                title: {
+                    text: 'Course Ratings',
+                    style: {
+                       color: '#777777',
+                       textTransform: 'uppercase',
+                       fontSize: '30px'
+                    }
+                },
+                xAxis: {
+                    categories: ["Difficulty","Organization","Effort Required","Professor Rating"],
+                    fontSize: '20px',
+                    gridLineColor: '#777777',
+                    labels: {
+                       style: {
+                          color: '#777777',
+                          fontSize: '18px'
+                       }
+                    },
+                    lineColor: '#777777',
+                    minorGridLineColor: '#777777',
+                    tickColor: '#777777',
+                    title: {
+                       style: {
+                          color: '#777777'
+
+                       }
+                    }
+                },
+                yAxis: {
+                    title: {
+                        text: 'Avg Ratings',
+                        style: {
+                            color: '#777777',
+                            fontSize: '18px'
+                        }
+                    },
+                    gridLineColor: '#777777',
+                    labels: {
+                       style: {
+                          color: '#777777'
+
+                       }
+                    },
+                    lineColor: '#777777',
+                    minorGridLineColor: '#777777',
+                    tickColor: '#777777',
+                    tickWidth: 1,
+                    max: 5
+                },
+                tooltip: {
+                   useHTML: true,
+                   backgroundColor: 'rgba(255, 255, 255, 1)',
+                   style: {
+                      color: '#777777'
+                   },
+                   formatter: function() {
+                     return `<p style="width: 200px !important;font-size: 20px;text-align:center;">${this.x}: <span style="color: ${this.series.color}">${this.y}</span></p>`;
+                   }
+                },
+                plotOptions: {
+                   series: {
+                      dataLabels: {
+                         color: '#777777'
+                      },
+                      marker: {
+                         lineColor: '#333'
+                      }
+                   },
+                   boxplot: {
+                      fillColor: '#990000'
+                   },
+                   candlestick: {
+                      lineColor: 'white'
+                   },
+                   errorbar: {
+                      color: 'white'
+                   }
+                },
+                series: [{
+                    showInLegend: false,
+                    data: <%- JSON.stringify(tmp) %>
+                }]
+            })
+        <% } %>
+
+      </script>
+    </body>
+
+    
+</html>

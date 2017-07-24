@@ -1,0 +1,30 @@
+
+/* Custom CSS */
+
+/* Course Infos */
+
+.infos * {
+	display: inline;
+	word-wrap: break-word;
+	
+}
+
+.infos.class-time {
+	float: right;
+}
+
+.infos .course-name {
+	margin-left: 10px;
+}
+
+.infos .course-acronym {
+	text-decoration: underline;
+}
+
+.infos.rest {
+	float: left;
+}
+
+.infos .infos-header {
+	font-weight: bold;
+}

@@ -65,9 +65,10 @@
   border: none !important;
   border-radius: 0;
   border-bottom: 2px solid rgb(221,221,221) !important;
-  height: 30px !important;
-  padding-bottom: 20px;
-  margin-top: 7px;
+  height: 35px !important;
+  padding-top: 5px;
+  padding-bottom: 21px;
+  margin-top: 3px;
   box-shadow: none;
 }
 
