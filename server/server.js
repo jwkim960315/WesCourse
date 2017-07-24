@@ -8,7 +8,7 @@ const path = require('path');
 const fs = require('fs');
 const html = require('html');
 const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
+// const bcrypt = require('bcrypt');
 const multer = require('multer');
 var storage = multer.memoryStorage();
 // dest: path.join(__dirname,'../uploads/')
@@ -110,14 +110,7 @@ const generateToken = (userId) => {
     return jwt.sign({id: userId},'SECRET');
 };
 
-const saltHashPass = (password) => {
-    bcrypt.genSalt(10,(err,salt) => {
-        bcrypt.hash(password,salt,(err1,hash) => {
-            hashPass = hash;
-        })
-    })
-    return hashPass;
-};
+
 
 const searchingDataHandler = (data) => {
     let tmpLst = [data[0]];
@@ -167,35 +160,8 @@ mysql.createConnection({
 //   }
 // ));
 
-// passport.use(new LocalStrategy({
-//         usernameField: 'email',
-//         passwordField: 'password',
-//     },
-//     function (email,password,done) {
-//                 connection.query(`SELECT * FROM users where email="${email}"`).then((data,err) => {
-//                     if (err) {
-//                         return done(err);
-//                     };
 
-//                     if (data.length === 0) {
-//                         return done(null,false, { message: 'Incorrect username.'});
-//                     };
 
-//                     bcrypt.compare(password,data[0].password,(err,result) => {
-//                         if (result) {
-//                             return done(null,data[0]);
-//                         }
-                        
-
-//                         return done(null,false,{ message: 'Incorrect password.'});
-//                     });
-
-                    
-//                 });
-
-                
-//     }
-// ));
 
 
 // Google-OAuth2 Passport Middleware
