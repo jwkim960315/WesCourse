@@ -177,7 +177,15 @@
           <% for (var i=0; i < courseComments.length; i++) { %>
             <div class="panel submitted-ratings">
               <div class="panel-heading">
-                <h3><%= courseComments[i].username %></h3>
+                <% if (courseComments[i].username !== 'Anonymous') { %>
+                  <% if (courseComments[i].use_google_img) { %>
+                    <h3><img src="<%= courseComments[i].google_image %>" width="30" height="30"/>  <%= courseComments[i].username %></h3>
+                  <% } else { %>
+                    <h3><img src="<%= courseComments[i].custom_image %>" width="30" height="30"/>  <%= courseComments[i].username %></h3>
+                  <% } %>
+                <% } else { %>
+                  <h3><%= courseComments[i].username %></h3>
+                <% } %>
               </div>
               <div class="panel-body">
                 <div class="col-lg-4 all-ratings">

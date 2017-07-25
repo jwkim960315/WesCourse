@@ -24,6 +24,11 @@ div.panel-body .all-ratings .all-ratings-row div .ratings-header {
 	color: rgb(99,99,99);
 }
 
+div.panel-heading h3 img {
+	border-radius: 50%;
+	border: .7px solid rgb(221,221,221);
+}
+
 
 
 

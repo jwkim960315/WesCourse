@@ -329,6 +329,9 @@ const comments_getter = async (courseAcronym,offset) => {
                                     ratings.organization,
                                     ratings.effort,
                                     ratings.professors,
+                                    users.custom_image,
+                                    users.google_image,
+                                    users.use_google_img,
                                     CASE
                                         WHEN ratings.recommend=true THEN "Yes"
                                         ELSE "No"
@@ -362,14 +365,14 @@ const recommend_number_getter = async (course_id) => {
 };
 
 
-app.get('/catalog/:fieldAc/:courseAc/:sectionNum/:pageNum',async (req,res) => {
+app.get('/catalog/:fieldAc/:courseAc/:sectionNum/:pageNum', async (req,res) => {
 
     let offset = (req.params.pageNum-1)*10;
 
     
 
-    courseComments = JSON.parse(JSON.stringify(await comments_getter(req.params.courseAc,offset)));
-
+    courseComments = await comments_getter(req.params.courseAc,offset);
+    
     courseRating = await ratings_getter(req.params.courseAc);
 
     courseInfo = JSON.parse(JSON.stringify(await specific_course_getter(req.params.courseAc)));
@@ -379,7 +382,6 @@ app.get('/catalog/:fieldAc/:courseAc/:sectionNum/:pageNum',async (req,res) => {
     courseOverall = overall_avg_getter(courseRating[0]);
     
 
-    
 
     connection.query(`SELECT count(*) as count FROM ratings 
                       WHERE course_id=${courseInfo[0].id}`)
@@ -446,8 +448,8 @@ app.get('/catalog/:fieldAc/:courseAc/:sectionNum/:pageNum',async (req,res) => {
                 username = undefined;
                 image = undefined;
             };
-
-            console.log(courseRating[0]);
+            console.log(courseComments);
+            // console.log(courseRating[0]);
 
 
             res.render('specificCourse2',{courseInfo,
