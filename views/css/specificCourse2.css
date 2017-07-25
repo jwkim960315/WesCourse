@@ -104,6 +104,7 @@ div.comments-content-cont pre {
 	background-color: transparent !important;
 	border: 1.3px solid rgb(221,221,221);
 	color: rgb(99,99,99);
+	height: 180px;
 	max-height: 180px;
 	overflow-y: auto;
 }
