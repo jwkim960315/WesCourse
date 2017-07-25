@@ -10,27 +10,9 @@ const html = require('html');
 const jwt = require('jsonwebtoken');
 const multer = require('multer');
 var storage = multer.memoryStorage();
-// dest: path.join(__dirname,'../uploads/')
 var upload = multer({ dest: path.join( __dirname,'../uploads/') });
 const DataURI = require('datauri').promise;
 const rimraf = require('rimraf');
-
-var base64 = require('node-base64-image'); // ES5
-
-// import {encode, decode} from 'node-base64-image'; // ES6
-
-const s3 = require('s3');
-
-var client = s3.createClient({
-    s3Options: {
-        accessKeyId: "AKIAIZRU2NNKZVWG3SBA",
-        secretAccessKey: "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"
-    }
-});
-
-let params = {
-
-}
 
 
 var passport = require('passport')
@@ -680,11 +662,9 @@ app.get( '/auth/google/callback', (req,res,next) => {
 
         if (!user && info.type === 'duplicate account') {
             req.session.success = false;
-            // req.session.isSignIn = false;
             req.session.invalidMessage = info.message;
             console.log('redirected to createUser...');
             return res.redirect('/createUser');
-            // return res.render('createUser',{success: [{success:false}], invalidMessage: [{invalidMessage: info.message}]});
         } else if (!user && info.type === 'no account') {
             req.session.success = false;
             console.log('redirected to login...');
@@ -710,28 +690,6 @@ app.get( '/auth/google/callback', (req,res,next) => {
     }) (req,res,next)
 
 });
-
-
-// app.post('/loggingIn',(req,res,next) => {
-//     passport.authenticate('local',(err, user, info) => {
-//         if (err) {
-//             return next(err);
-//         };
-
-//         if (!user) {
-//             return res.render('login',{success: [{success:false}], invalidMessage: [{invalidMessage:"Invalid Username and/or Password"}]});
-//         };
-
-//         req.logIn(user, (err) => {
-//             if (err) {
-//                 return next(err);
-//             };
-//             res.redirect(req.session.returnTo);
-//             delete req.session.returnTo;
-//             return;
-//         })
-//     }) (req,res,next)
-// });
 
 
 app.get('/logout',(req,res) => {
@@ -760,7 +718,6 @@ app.get('/search',(req,res) => {
 });
 
 app.get('/searching',(req,res) => {
-    // console.log(req.query.keyword);
     if (!req.query.keyword) {
         return res.send(undefined);
     };
@@ -791,14 +748,12 @@ app.get('/searching',(req,res) => {
 app.post('/search/query/:sectionNum/:pageNum',(req,res) => {
     console.log(req.params.pageNum);
     console.log(req.body.searchParam);
-    // console.log(req.body.keyword);
     if (req.body.searchParam === "") {
         res.render('search_test',{data: -1});
     };
 
     let offset = (req.params.pageNum-1)*10;
 
-    // tmp = req.body.searchParam;
 
     connection.query(`SELECT * FROM courses WHERE course_name like "%${req.body.searchParam}%" OR
                                                   professors like "%${req.body.searchParam}%" OR
@@ -807,7 +762,6 @@ app.post('/search/query/:sectionNum/:pageNum',(req,res) => {
                      ORDER BY course_acronym
                      LIMIT ${offset},10`)
         .then(data => {
-            // console.log(data);
             if (data.length === 0) {
 
                 return res.render('search_test',{data: -1});
