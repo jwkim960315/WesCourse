@@ -251,45 +251,6 @@ const course_getter = async (courseName) => {
     });
 };
 
-
-app.get('/catalog/:name',async (req,res) => {
-    
-    if (req.user) {
-        userLoggedIn = true;
-        username = req.user.username;
-        image = (req.user.use_google_img) ? req.user.google_image : req.user.custom_image;
-    } else {
-        userLoggedIn = false;
-        username = undefined;
-        image = undefined;
-    };
-
-    courseName = req.params.name;
-
-    acronyms = await course_getter(courseName);
-    
-    filteredCourses = courseInfos.filter((obj,i,arr) => {
-        return obj.field_acronym === acronyms[0].acronym;
-    });
-
-    fallCourses = filteredCourses.filter((obj,i,arr) => {
-        return obj.term_name.includes('fall');
-    });
-
-    springCourses = filteredCourses.filter((obj,i,arr) => {
-        return obj.term_name.includes('spring');
-    });
-
-
-    res.render('specificField2',{filteredCourses,
-                                 fallCourses,
-                                 springCourses,
-                                 userLoggedIn,
-                                 username,
-                                 image});
-});
-
-
 const ratings_getter = async (courseAcronym) => {
     return connection.query(`SELECT ROUND(avg(difficulty),2) as Difficulty,
                                     ROUND(avg(organization),2) as Organization,
@@ -365,7 +326,48 @@ const recommend_number_getter = async (course_id) => {
 };
 
 
-app.get('/catalog/:fieldAc/:courseAc/',(req,res) => {
+app.get('/catalog/:name',async (req,res) => {
+    
+    if (req.user) {
+        userLoggedIn = true;
+        username = req.user.username;
+        image = (req.user.use_google_img) ? req.user.google_image : req.user.custom_image;
+    } else {
+        userLoggedIn = false;
+        username = undefined;
+        image = undefined;
+    };
+
+    courseName = req.params.name;
+
+    acronyms = await course_getter(courseName);
+    
+    filteredCourses = courseInfos.filter((obj,i,arr) => {
+        return obj.field_acronym === acronyms[0].acronym;
+    });
+
+    fallCourses = filteredCourses.filter((obj,i,arr) => {
+        return obj.term_name.includes('fall');
+    });
+
+    springCourses = filteredCourses.filter((obj,i,arr) => {
+        return obj.term_name.includes('spring');
+    });
+
+
+    res.render('specificField2',{filteredCourses,
+                                 fallCourses,
+                                 springCourses,
+                                 userLoggedIn,
+                                 username,
+                                 image});
+});
+
+
+
+
+
+app.get('/catalog/:fieldAc/:courseAc', async (req,res) => {
 
     if (req.user) {
         userLoggedIn = true;
@@ -391,23 +393,32 @@ app.get('/catalog/:fieldAc/:courseAc/',(req,res) => {
     currentPageTotalNum = req.session.currentPageTotalNum;
     totalCount = req.session.totalCount;
     currentPageNum = req.session.currentPageNum;
-    fieldAc = req.session.fieldAc;
-    courseAc = req.session.courseAc;
+    fieldAc = req.params.fieldAc;
+    courseAc = req.params.courseAc;
     pageNum = req.session.pageNum;
 
-    offset = (req.params.pageNum-1)*10;
+    offset = (pageNum-1)*10;
+    console.log(offset);
+
+    
+    
 
 
     courseComments = await comments_getter(courseAc,offset);
-    
+    // console.log(courseComments);
+    // console.log('*********************');
     courseRating = await ratings_getter(courseAc);
-
+    courseRating = courseRating[0];
+    // console.log(courseRating);
+    // console.log('*********************');
     courseInfo = await specific_course_getter(courseAc);
-    
-    recommendNum = (courseRating.length === 0) ? undefined : await recommend_number_getter(courseRating[0].course_id);
-
-    courseOverall = overall_avg_getter(courseRating[0]);
-
+    console.log(courseInfo);
+    console.log('*********************');
+    recommendNum = (courseRating.length === 0) ? undefined : await recommend_number_getter(courseRating.course_id);
+    console.log(recommendNum);
+    console.log('*********************');
+    courseOverall = overall_avg_getter(courseRating);
+    console.log(courseOverall);
 
     delete req.session.sectionNum,
            req.session.pageNum,
@@ -423,8 +434,6 @@ app.get('/catalog/:fieldAc/:courseAc/',(req,res) => {
            req.session.currentPageTotalNum,
            req.session.totalCount,
            req.session.currentPageNum,
-           req.session.fieldAc,
-           req.session.courseAc,
            req.session.pageNum;
 
 
@@ -547,8 +556,6 @@ app.get('/catalog/:fieldAc/:courseAc/:sectionNum/:pageNum', async (req,res) => {
             req.session.currentPageTotalNum = currentPageTotalNum;
             req.session.totalCount = totalCount;
             req.session.currentPageNum = req.params.currentPageNum;
-            req.session.fieldAc = req.params.fieldAc;
-            req.session.courseAc = req.params.courseAc;
             req.session.pageNum = req.params.pageNum;
 
 
