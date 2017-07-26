@@ -365,28 +365,112 @@ const recommend_number_getter = async (course_id) => {
 };
 
 
-app.get('/catalog/:fieldAc/:courseAc/:sectionNum/:pageNum', async (req,res) => {
+app.get('/catalog/:fieldAc/:courseAc/',(req,res) => {
 
-    let offset = (req.params.pageNum-1)*10;
+    if (req.user) {
+        userLoggedIn = true;
+        username = req.user.username;
+        image = (req.user.use_google_img) ? req.user.google_image : req.user.custom_image;
+    } else {
+        userLoggedIn = false;
+        username = undefined;
+        image = undefined;
+    };
 
+    sectionNum = req.session.sectionNum;
+    pageNum = req.session.pageNum;
+    // courseInfo = req.session.courseInfo;
+    // courseRating = req.session.courseRating;
+    // courseComments = req.session.courseComments;
+    // courseOverall = req.session.courseOverall;
+    // recommendNum = req.session.recommendNum;
+    totalSecNum = req.session.totalSecNum;
+    currentSecNum = req.session.currentSecNum;
+    prevSecNum = req.session.prevSecNum;
+    nextSecNum = req.session.nextSecNum;
+    currentPageTotalNum = req.session.currentPageTotalNum;
+    totalCount = req.session.totalCount;
+    currentPageNum = req.session.currentPageNum;
+    fieldAc = req.session.fieldAc;
+    courseAc = req.session.courseAc;
+    pageNum = req.session.pageNum;
+
+    offset = (req.params.pageNum-1)*10;
+
+
+    courseComments = await comments_getter(courseAc,offset);
     
+    courseRating = await ratings_getter(courseAc);
 
-    courseComments = await comments_getter(req.params.courseAc,offset);
+    courseInfo = await specific_course_getter(courseAc);
     
-    courseRating = await ratings_getter(req.params.courseAc);
-
-    courseInfo = JSON.parse(JSON.stringify(await specific_course_getter(req.params.courseAc)));
-    
-    recommendNum = (courseRating.length === 0) ? undefined : JSON.parse(JSON.stringify(await recommend_number_getter(courseRating[0].course_id)));
+    recommendNum = (courseRating.length === 0) ? undefined : await recommend_number_getter(courseRating[0].course_id);
 
     courseOverall = overall_avg_getter(courseRating[0]);
+
+
+    delete req.session.sectionNum,
+           req.session.pageNum,
+           // req.session.courseInfo,
+           // req.session.courseRating,
+           // req.session.courseComments,
+           // req.session.courseOverall,
+           // req.session.recommendNum,
+           req.session.totalSecNum,
+           req.session.currentSecNum,
+           req.session.prevSecNum,
+           req.session.nextSecNum,
+           req.session.currentPageTotalNum,
+           req.session.totalCount,
+           req.session.currentPageNum,
+           req.session.fieldAc,
+           req.session.courseAc,
+           req.session.pageNum;
+
+
+    res.render('specificCourse2',{ courseInfo,
+                                   courseRating,
+                                   courseComments, 
+                                   courseOverall, 
+                                   recommendNum,
+                                   totalSecNum,
+                                   currentSecNum, 
+                                   prevSecNum, 
+                                   nextSecNum, 
+                                   currentPageTotalNum,
+                                   totalCount,
+                                   currentPageNum,
+                                   fieldAc,
+                                   courseAc,
+                                   pageNum,
+                                   userLoggedIn,
+                                   username,
+                                   image });
+
+});
+
+
+app.get('/catalog/:fieldAc/:courseAc/:sectionNum/:pageNum', async (req,res) => {
+
+    // let offset = (req.params.pageNum-1)*10;
+
+
+    // courseComments = await comments_getter(req.params.courseAc,offset);
+    
+    // courseRating = await ratings_getter(req.params.courseAc);
+
+    courseInfo = await specific_course_getter(req.params.courseAc);
+    
+    // recommendNum = (courseRating.length === 0) ? undefined : await recommend_number_getter(courseRating[0].course_id);
+
+    // courseOverall = overall_avg_getter(courseRating[0]);
     
 
 
     connection.query(`SELECT count(*) as count FROM ratings 
                       WHERE course_id=${courseInfo[0].id}`)
         .then((totalCount) => {
-            courseRating = JSON.parse(JSON.stringify(courseRating));
+            // courseRating = JSON.parse(JSON.stringify(courseRating));
             // console.log('*****');
             // console.log(data);
             // console.log('*****');
@@ -448,28 +532,50 @@ app.get('/catalog/:fieldAc/:courseAc/:sectionNum/:pageNum', async (req,res) => {
                 username = undefined;
                 image = undefined;
             };
-            console.log(courseComments);
+            // console.log(courseComments);
             // console.log(courseRating[0]);
 
+            // req.session.courseInfo = courseInfo;
+            // req.session.courseRating = courseRating[0];
+            // req.session.courseComments = courseComments;
+            // req.session.courseOverall = courseOverall;
+            // req.session.recommendNum = recommendNum;
+            req.session.totalSecNum = totalSecNum;
+            req.session.currentSecNum = currentSecNum;
+            req.session.prevSecNum = prevSecNum;
+            req.session.nextSecNum = nextSecNum;
+            req.session.currentPageTotalNum = currentPageTotalNum;
+            req.session.totalCount = totalCount;
+            req.session.currentPageNum = req.params.currentPageNum;
+            req.session.fieldAc = req.params.fieldAc;
+            req.session.courseAc = req.params.courseAc;
+            req.session.pageNum = req.params.pageNum;
 
-            res.render('specificCourse2',{courseInfo,
-                                          courseRating: courseRating[0], 
-                                          courseComments, 
-                                          courseOverall, 
-                                          recommendNum,
-                                          totalSecNum,
-                                          currentSecNum:[{currentSecNum}], 
-                                          prevSecNum:[{prevSecNum}], 
-                                          nextSecNum:[{nextSecNum}], 
-                                          currentPageTotalNum: [{currentPageTotalNum}],
-                                          totalCount: [{totalCount}],
-                                          currentPageNum: [{currentPageNum: req.params.pageNum}],
-                                          fieldAc: [{fieldAc: req.params.fieldAc}],
-                                          courseAc: [{courseAc: req.params.courseAc}],
-                                          pageNum: [{pageNum: req.params.pageNum}],
-                                          userLoggedIn,
-                                          username,
-                                          image});
+
+
+
+            res.redirect(`/catalog/${req.params.fieldAc}/${req.params.courseAc}`);
+
+
+
+            // res.render('specificCourse2',{courseInfo,
+            //                               courseRating: courseRating[0], 
+            //                               courseComments, 
+            //                               courseOverall, 
+            //                               recommendNum,
+            //                               totalSecNum,
+            //                               currentSecNum:[{currentSecNum}], 
+            //                               prevSecNum:[{prevSecNum}], 
+            //                               nextSecNum:[{nextSecNum}], 
+            //                               currentPageTotalNum: [{currentPageTotalNum}],
+            //                               totalCount: [{totalCount}],
+            //                               currentPageNum: [{currentPageNum: req.params.pageNum}],
+            //                               fieldAc: [{fieldAc: req.params.fieldAc}],
+            //                               courseAc: [{courseAc: req.params.courseAc}],
+            //                               pageNum: [{pageNum: req.params.pageNum}],
+            //                               userLoggedIn,
+            //                               username,
+            //                               image});
 
 
         });

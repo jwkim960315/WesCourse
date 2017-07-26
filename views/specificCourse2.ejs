@@ -151,28 +151,7 @@
         <!-- Overall Ratings Graph -->
         <div id="chart-container"></div>
 
-        <!-- User Input for Course Ratings -->
-        <!-- <form class="form" method="POST" action="/comment/submit/<%= courseInfo[0].field_acronym %>/<%= courseInfo[0].course_acronym %>/<%= courseInfo[0].id %>/<%= currentSecNum[0].currentSecNum %>/<%= pageNum[0].pageNum %>">
-          <div class="col-lg-2 form-group">
-            <input class="anonymous" type="radio" name="iCheck">
-            <label>Yes</label>
-
-            <input class="anonymous" type="radio" name="iCheck" checked>
-            <label>No</label>
-          </div>
-          <% var tmp = ["difficulty","organization","effort","professors"] %>
-          <% for (var i=0; i < tmp.length; i++) { %>
-            <div class="col-lg-12">
-            <select id="<%= tmp[i] %>">
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-              <option value="4">4</option>
-              <option value="5">5</option>
-            </select>
-            </div>
-          <% } %>
-        </form> -->
+        
         <% if (courseComments) { %>
           <% for (var i=0; i < courseComments.length; i++) { %>
             <div class="panel submitted-ratings">
@@ -238,22 +217,22 @@
           <nav class="pagination-nav text-center">
                 <ul class="pagination">
                     <div id="pages-container">
-                        <% startNextPageNum = currentSecNum[0].currentSecNum*5+1 %>
-                        <% startPrevPageNum = ( currentSecNum[0].currentSecNum-2)*5+1 %>
-                        <% if (currentSecNum[0].currentSecNum !== 1) { %>
+                        <% startNextPageNum = currentSecNum*5+1 %>
+                        <% startPrevPageNum = (currentSecNum-2)*5+1 %>
+                        <% if (currentSecNum !== 1) { %>
                             <li class="page-item">
-                                <a class="page-link" href="/catalog/<%= fieldAc[0].fieldAc %>/<%= courseAc[0].courseAc %>/<%= prevSecNum[0].prevSecNum %>/<%= startPrevPageNum %>" aria-label="Previous" dataset=<%- prevSecNum[0].prevSecNum %>>
+                                <a class="page-link" href="/catalog/<%= fieldAc %>/<%= courseAc %>/<%= prevSecNum %>/<%= startPrevPageNum %>" aria-label="Previous" dataset=<%- prevSecNum %>>
                                     <span aria-hidden="true">&#171;</span>
                                     <span class="sr-only">Previous</span>
                                 </a>
                             </li>
                         <% } %>
-                        <% for (var i=(currentSecNum[0].currentSecNum-1)*5+1; i <= (currentSecNum[0].currentSecNum-1)*5+currentPageTotalNum[0].currentPageTotalNum; i++) { %>
-                            <li class="page-item paginated-number"  style="display: inline-block;"><a class="page-link" href="/catalog/<%= fieldAc[0].fieldAc %>/<%= courseAc[0].courseAc %>/<%= currentSecNum[0].currentSecNum %>/<%= i %>"><%= i %></a></li>
+                        <% for (var i=(currentSecNum-1)*5+1; i <= (currentSecNum-1)*5+currentPageTotalNum; i++) { %>
+                            <li class="page-item paginated-number"  style="display: inline-block;"><a class="page-link" href="/catalog/<%= fieldAc %>/<%= courseAc %>/<%= currentSecNum %>/<%= i %>"><%= i %></a></li>
                         <% } %>
-                        <% if (currentSecNum[0].currentSecNum !== totalSecNum) { %> 
+                        <% if (currentSecNum !== totalSecNum) { %> 
                             <li class="page-item">
-                                <a class="page-link" href="/catalog/<%= fieldAc[0].fieldAc %>/<%= courseAc[0].courseAc %>/<%= nextSecNum[0].nextSecNum %>/<%= startNextPageNum %>" aria-label="Next" dataset=<%- nextSecNum[0].nextSecNum %>>
+                                <a class="page-link" href="/catalog/<%= fieldAc %>/<%= courseAc %>/<%= nextSecNum %>/<%= startNextPageNum %>" aria-label="Next" dataset=<%- nextSecNum %>>
                                     <span aria-hidden="true">&#187;</span>
                                     <span class="sr-only">Next</span>
                                 </a>
@@ -287,19 +266,27 @@
       <!-- iCheck JavaScript -->
       <script src="/iCheck/icheck.min.js"></script>
 
-      <!-- JQuery Pagination -->
-      <!-- <script src="/jquery-pagination/jquery.twbsPagination.min.js"></script> -->
-
-      <!-- Navbar.js -->
+      <!-- Custom JavaScript -->
       <script src="/js/navbar.js"></script>
       <script src="/js/courseInfo.js"></script>
       <script src="/js/ratingsNumColor.js"></script>
       <script src="/js/barRatingConfig.js"></script>
       <script src="/js/customRadio.js"></script>
-      <!-- <script src="/js/jquery-pagination-config.js"></script> -->
+      <script src="/js/paginationConfig.js"></script>
       
 
       <script>
+
+        // Current Page Active Handler
+        <% if (currentPageNum !== undefined) { %>
+            $('.paginated-number').each(function(index) {
+                if ("<%= currentPageNum %>" === $(this).text()) {
+                    $(this).addClass('active');
+                };
+            });
+        <% } %>
+
+        // HighCharts Configuration
         <% if (!courseRating) { %>
             $('#chart-container').append('<p style="text-align:center;margin-top: 150px;margin-bottom:150px;color:white;">NO DATA. PLEASE EVALUATE THIS COURSE IF YOU HAVE TAKEN IT.</p>');
         <% } else { %>
@@ -320,9 +307,6 @@
               <% } %>
               <% tmpColor %>
             <% } %>
-
-            // Apply the theme
-            // Highcharts.setOptions(Highcharts.theme);
 
             // HighCharts Constructor
             var chart = Highcharts.chart('chart-container',{
