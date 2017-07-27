@@ -367,7 +367,190 @@ app.get('/catalog/:name',async (req,res) => {
 
 
 
-app.get('/catalog/:fieldAc/:courseAc', async (req,res) => {
+// app.get('/catalog/:fieldAc/:courseAc', async (req,res) => {
+
+//     if (req.user) {
+//         userLoggedIn = true;
+//         username = req.user.username;
+//         image = (req.user.use_google_img) ? req.user.google_image : req.user.custom_image;
+//     } else {
+//         userLoggedIn = false;
+//         username = undefined;
+//         image = undefined;
+//     };
+
+//     sectionNum = req.session.sectionNum;
+//     currentPageNum = req.session.pageNum;
+//     fieldAc = req.params.fieldAc;
+//     courseAc = req.params.courseAc;
+
+//     console.log('sectionNum: ',sectionNum);
+
+//     offset = (currentPageNum-1)*10;
+//     console.log(offset);
+
+
+//     courseComments = await comments_getter(courseAc,offset);
+//     console.log('courseComments: ',courseComments);
+//     console.log('*********************');
+//     courseRating = await ratings_getter(courseAc);
+//     courseRating = (courseRating.length === 0) ? courseRating : courseRating[0];
+//     console.log('courseRating: ',courseRating);
+//     console.log('*********************');
+//     courseInfo = await specific_course_getter(courseAc);
+//     console.log('courseInfo: ',courseInfo);
+//     console.log('*********************');
+//     recommendNum = (courseRating.length === 0) ? undefined : await recommend_number_getter(courseRating.course_id);
+//     console.log('recommendNum: ',recommendNum);
+//     console.log('*********************');
+//     courseOverall = overall_avg_getter(courseRating);
+//     console.log('courseOverall: ',courseOverall);
+
+//     connection.query(`SELECT count(*) as count FROM ratings 
+//                       WHERE course_id=${courseInfo[0].id}`)
+//         .then(totalCount => {
+//             // courseRating = JSON.parse(JSON.stringify(courseRating));
+//             // console.log('*****');
+//             // console.log(data);
+//             // console.log('*****');
+//             totalCount = totalCount[0].count;
+//             let totalSecNum = Math.floor(totalCount/50);
+            
+
+//             // if (totalCount%50 !== 0) {
+//                 totalSecNum += 1;
+//             // };
+
+//             // console.log(totalSecNum);
+
+//             let currentSecNum = parseInt(sectionNum);
+
+//             let prevSecNum = currentSecNum-1;
+//             let nextSecNum = currentSecNum+1;
+
+//             // console.log(currentSecNum);
+//             // console.log(totalSecNum);
+
+//             // console.log(typeof currentSecNum);
+//             // console.log(typeof totalSecNum);
+
+//             // console.log(currentSecNum === totalSecNum);
+
+//             let currentPageTotalNum;
+
+//             if (currentSecNum == totalSecNum) {
+//                 currentPageTotalNum = (totalCount !== 0) ? Math.ceil(totalCount%50/10) : 1;
+//             } else {
+//                 currentPageTotalNum = 5;
+//             };
+            
+
+//             console.log('*********************');
+
+//             console.log("totalSecNum: ",totalSecNum);
+//             console.log("currentSecNum: ",currentSecNum);
+//             console.log("prevSecNum: ",prevSecNum);
+//             console.log("nextSecNum: ",nextSecNum);
+//             console.log("currentPageTotalNum: ",currentPageTotalNum);
+//             console.log("totalCount: ",totalCount);
+//             console.log("currentPageNum ",currentPageNum);
+
+//             console.log('*********************');
+
+//             console.log(req.header('Referer'));
+
+//             delete req.session.sectionNum,
+//                    req.session.pageNum,
+//                    req.session.fieldAc,
+//                    req.session.courseAc;
+
+
+
+//             res.render('specificCourse2',{ courseInfo,
+//                                            courseRating,
+//                                            courseComments, 
+//                                            courseOverall, 
+//                                            recommendNum,
+//                                            totalSecNum,
+//                                            currentSecNum, 
+//                                            prevSecNum, 
+//                                            nextSecNum, 
+//                                            currentPageTotalNum,
+//                                            totalCount,
+//                                            currentPageNum,
+//                                            fieldAc,
+//                                            courseAc,
+//                                            userLoggedIn,
+//                                            username,
+//                                            image });
+//     });
+// });
+
+
+// app.get('/catalog/:fieldAc/:courseAc/:sectionNum/:pageNum', async (req,res) => {
+    
+//     req.session.fieldAc = req.params.fieldAc;
+//     req.session.courseAc = req.params.courseAc;
+//     req.session.sectionNum = req.params.sectionNum;
+//     req.session.pageNum = req.params.pageNum;
+
+
+//     res.redirect(`/catalog/${req.params.fieldAc}/${req.params.courseAc}`);
+      
+// });
+
+const sectionAndPageTypeChecker = (currentSectionNum,currentPageNum) => typeof currentSectionNum === 'number' && typeof currentPageNum === 'number'
+
+const offsetCalc = currentPageNum => (currentPageNum-1)*10
+
+const totalNumPagesCalc = totalNumComments => Math.ceil(totalNumComments/10)
+
+const totalNumSectionsCalc = totalNumPages => Math.ceil(totalNumPages/5)
+
+const currentSectionTotalNumPagesCalc = (currentSectionNum,totalNumSections,totalNumComments) => {
+    if (currentSectionNum !== totalNumSections) {
+        return 5;
+    } else if (currentSectionNum === totalNumSections) {
+        let lastSectionTotalNumComments = totalNumComments - currentSectionNum*50;
+        return Math.ceil(lastSectionTotalNumComments/10);
+    } else {
+        console.log('currentSectionTotalNumPage: Error Occurred!');
+        console.log('currentSectionNum: ',currentSectionNum);
+        console.log('totalNumSections: ',totalNumSections);
+        return;
+    };
+};
+
+const currentSectionPagesNumRangeCalc = (currentSectionNum,currentSectionTotalNumPages) => {
+    let currentSectionPagesNumRange = [];
+    for (var i=(currentSectionNum-1)*5+1; i <= (currentSectionNum-1)*5+currentSectionTotalNumPages; i++) {
+        currentSectionPagesNumRange.push(i);
+    };
+
+    return currentSectionPagesNumRange;
+};
+
+const previousSectionExistsCalc = currentSectionNum => currentSectionNum !== 1
+
+const nextSectionExistsCalc = (currentSectionNum,totalNumSections) => currentSectionNum === totalNumSections
+
+const paginationValidChecker = (currentSectionNum,currentPageNum,totalNumSections,totalNumPages,currentSectionTotalNumPages) => {
+    if (currentPageNum <= 0 || currentPageNum > totalNumPages) {
+        console.log(`currentPageNum (${currentPageNum}) is less than/equal to 0 OR greater than totalNumPages (${totalNumPages})`);
+        return false;
+    } else if (currentSectionNum <= 0 || currentSectionNum > totalNumSections) {
+        console.log(`currentSectionNum (${currentSectionNum}) is less than/equal to 0 OR greater than totalNumSections (${totalNumSections})`);
+        return false;
+    } else if (currentPageNum < (currentSectionNum-1)*5+1 || currentPageNum > (currentSectionNum-1)*5+currentSectionTotalNumPages) {
+        console.log(`currentPageNum (${currentPageNum}) out of range`);
+        return false;
+    } else {
+        console.log(`currentSectionNum (${currentSectionNum}) and currentPageNum (${currentPageNum}) are valid`);
+        return true;
+    };
+};
+
+app.get('/catalog/:fieldAc/:courseAc/1/1',async (req,res) => {
 
     if (req.user) {
         userLoggedIn = true;
@@ -379,215 +562,123 @@ app.get('/catalog/:fieldAc/:courseAc', async (req,res) => {
         image = undefined;
     };
 
-    sectionNum = req.session.sectionNum;
-    pageNum = req.session.pageNum;
-    // courseInfo = req.session.courseInfo;
-    // courseRating = req.session.courseRating;
-    // courseComments = req.session.courseComments;
-    // courseOverall = req.session.courseOverall;
-    // recommendNum = req.session.recommendNum;
-    totalSecNum = req.session.totalSecNum;
-    currentSecNum = req.session.currentSecNum;
-    prevSecNum = req.session.prevSecNum;
-    nextSecNum = req.session.nextSecNum;
-    currentPageTotalNum = req.session.currentPageTotalNum;
-    totalCount = req.session.totalCount;
-    currentPageNum = req.session.currentPageNum;
-    fieldAc = req.params.fieldAc;
     courseAc = req.params.courseAc;
-    pageNum = req.session.pageNum;
+    fieldAc = req.params.fieldAc;
 
-    offset = (pageNum-1)*10;
-    console.log(offset);
-
-    
-    
-
-
-    courseComments = await comments_getter(courseAc,offset);
-    // console.log(courseComments);
-    // console.log('*********************');
+    courseComments = await comments_getter(courseAc,offset(1));
+    console.log('courseComments: ',courseComments);
+    console.log('*********************');
     courseRating = await ratings_getter(courseAc);
-    courseRating = courseRating[0];
-    // console.log(courseRating);
-    // console.log('*********************');
+    courseRating = (courseRating.length === 0) ? courseRating : courseRating[0];
+    console.log('courseRating: ',courseRating);
+    console.log('*********************');
     courseInfo = await specific_course_getter(courseAc);
-    console.log(courseInfo);
+    console.log('courseInfo: ',courseInfo);
     console.log('*********************');
     recommendNum = (courseRating.length === 0) ? undefined : await recommend_number_getter(courseRating.course_id);
-    console.log(recommendNum);
+    console.log('recommendNum: ',recommendNum);
     console.log('*********************');
     courseOverall = overall_avg_getter(courseRating);
-    console.log(courseOverall);
+    console.log('courseOverall: ',courseOverall);
 
-    delete req.session.sectionNum,
-           req.session.pageNum,
-           // req.session.courseInfo,
-           // req.session.courseRating,
-           // req.session.courseComments,
-           // req.session.courseOverall,
-           // req.session.recommendNum,
-           req.session.totalSecNum,
-           req.session.currentSecNum,
-           req.session.prevSecNum,
-           req.session.nextSecNum,
-           req.session.currentPageTotalNum,
-           req.session.totalCount,
-           req.session.currentPageNum,
-           req.session.pageNum;
+    let currentSectionNum = 1,
+        currentPageNum = 1,
+        totalNumComments = courseComments.length,
+        offset = offsetCalc(1),
+        totalNumPages = totalNumPagesCalc(totalNumComments),
+        totalNumSections = totalNumSectionsCalc(totalNumPages),
+        currentSectionTotalNumPages = currentSectionTotalNumPagesCalc(1,totalNumSections,totalNumComments),
+        currentSectionPagesNumRange = currentSectionPagesNumRangeCalc(currentSectionNum,currentSectionTotalNumPages),
+        previousSectionExists = previousSectionExistsCalc(currentSectionNum),
+        nextSectionExists = nextSectionExistsCalc(currentSectionNum,totalNumSections);
+
+    
 
 
-    res.render('specificCourse2',{ courseInfo,
+        
+
+    res.render('specificCourse2',{ courseComments,
                                    courseRating,
-                                   courseComments, 
-                                   courseOverall, 
+                                   courseInfo,
                                    recommendNum,
-                                   totalSecNum,
-                                   currentSecNum, 
-                                   prevSecNum, 
-                                   nextSecNum, 
-                                   currentPageTotalNum,
-                                   totalCount,
-                                   currentPageNum,
-                                   fieldAc,
-                                   courseAc,
-                                   pageNum,
-                                   userLoggedIn,
-                                   username,
-                                   image });
-
+                                   courseOverall
+                                    });
 });
 
+app.get('/specific-course-pagination',async (req,res) => {
+    console.log(req.query.selectedState);
+    console.log('routing works');
 
-app.get('/catalog/:fieldAc/:courseAc/:sectionNum/:pageNum', async (req,res) => {
+    let isSectionAndPageTypeValid = sectionAndPageTypeChecker(currentSectionNum,currentPageNum);
 
-    // let offset = (req.params.pageNum-1)*10;
+    if (!isSectionAndPageTypeValid) {
+        let message = "Invalid Section Number Type or Page Number Type";
+        return res.render('invalidPage',{ message });
+    };
 
 
-    // courseComments = await comments_getter(req.params.courseAc,offset);
+    let selectedState = req.query.selectedState,
+        fieldAc = req.query.fieldAc,
+        courseAc = req.query.courseAc,
+        currentSectionNum = req.query.currentSectionNum,
+        currentPageNum = req.query.currentPageNum;
+
+
+
+    if (selectedState === 'first') {
+
+        courseComments = await comments_getter(courseAc,offset(currentPageNum));
+        totalNumComments = courseComments.length;
+        offset = offsetCalc(1),
+        totalNumPages = totalNumPagesCalc(totalNumComments),
+        totalNumSections = totalNumSectionsCalc(totalNumPages),
+        currentSectionTotalNumPages = currentSectionTotalNumPagesCalc(1,totalNumSections,totalNumComments),
+        currentSectionPagesNumRange = currentSectionPagesNumRangeCalc(currentSectionNum,currentSectionTotalNumPages),
+        previousSectionExists = previousSectionExistsCalc(currentSectionNum),
+        nextSectionExists = nextSectionExistsCalc(currentSectionNum,totalNumSections);
+
+    } else if (selectedState === 'previous') {
+        courseComments = await comments_getter(courseAc,offsetCalc(currentPageNum-1));
+        totalNumComments = courseComments.length;
+        offset = offsetCalc(currentPageNum),
+        totalNumPages = totalNumPagesCalc(totalNumComments),
+        totalNumSections = totalNumSectionsCalc(totalNumPages),
+        currentSectionTotalNumPages = currentSectionTotalNumPagesCalc(1,totalNumSections,totalNumComments),
+        currentSectionPagesNumRange = currentSectionPagesNumRangeCalc(currentSectionNum,currentSectionTotalNumPages),
+        previousSectionExists = previousSectionExistsCalc(currentSectionNum),
+        nextSectionExists = nextSectionExistsCalc(currentSectionNum,totalNumSections);
+    } else if (selectedState === 'next') {
+        courseComments = await comments_getter(courseAc,offsetCalc(currentPageNum+1));
+        totalNumComments = courseComments.length;
+        offset = offsetCalc(currentPageNum),
+        totalNumPages = totalNumPagesCalc(totalNumComments),
+        totalNumSections = totalNumSectionsCalc(totalNumPages),
+        currentSectionTotalNumPages = currentSectionTotalNumPagesCalc(1,totalNumSections,totalNumComments),
+        currentSectionPagesNumRange = currentSectionPagesNumRangeCalc(currentSectionNum,currentSectionTotalNumPages),
+        previousSectionExists = previousSectionExistsCalc(currentSectionNum),
+        nextSectionExists = nextSectionExistsCalc(currentSectionNum,totalNumSections);
+    } else if (selectedState === 'last') {
+
+    } else if (typeof parseInt(selectedState) === 'number') {
+        let offset = offsetCalc(parseInt(selectedState));
+        courseComments = await comments_getter(courseAc,offset);
+    } else {
+        console.log('/specific-course-pagination: Error occurred!');
+        console.log('selectedState: ',selectedState);
+    };
+
+
+        isPaginationValid = paginationValidChecker(currentSectionNum,currentPageNum,totalNumSections,totalNumPages,currentSectionTotalNumPages);
+
+    if (!isPaginationValid) {
+        let message = "Invalid Section Number or Page Number";
+        return res.render(`invalidPage`,{ message });
+    };
+
+
     
-    // courseRating = await ratings_getter(req.params.courseAc);
+    res.send('specificCourse2',{  });
 
-    courseInfo = await specific_course_getter(req.params.courseAc);
-    
-    // recommendNum = (courseRating.length === 0) ? undefined : await recommend_number_getter(courseRating[0].course_id);
-
-    // courseOverall = overall_avg_getter(courseRating[0]);
-    
-
-
-    connection.query(`SELECT count(*) as count FROM ratings 
-                      WHERE course_id=${courseInfo[0].id}`)
-        .then((totalCount) => {
-            // courseRating = JSON.parse(JSON.stringify(courseRating));
-            // console.log('*****');
-            // console.log(data);
-            // console.log('*****');
-            totalCount = totalCount[0].count;
-            let totalSecNum = Math.floor(totalCount/50);
-            
-
-            // if (totalCount%50 !== 0) {
-                totalSecNum += 1;
-            // };
-
-            // console.log(totalSecNum);
-
-            let prevSecExist = req.params.sectionNum !== 1 || req.params.sectionNum <= totalSecNum;
-
-            let nextSecExist = req.params.sectionNum !== totalSecNum;
-
-            let currentSecNum = parseInt(req.params.sectionNum);
-
-            let prevSecNum = currentSecNum-1;
-            let nextSecNum = currentSecNum+1;
-
-            // console.log(currentSecNum);
-            // console.log(totalSecNum);
-
-            // console.log(typeof currentSecNum);
-            // console.log(typeof totalSecNum);
-
-            // console.log(currentSecNum === totalSecNum);
-
-            let currentPageTotalNum;
-
-            if (currentSecNum == totalSecNum) {
-                currentPageTotalNum = (totalCount !== 0) ? Math.ceil(totalCount%50/10) : 1;
-            } else {
-                currentPageTotalNum = 5;
-            }
-            
-            // console.log(currentPageTotalNum);
-
-            console.log('*********************');
-
-            console.log("totalSecNum: ",totalSecNum);
-            console.log("currentSecNum: ",currentSecNum);
-            console.log("prevSecNum: ",prevSecNum);
-            console.log("nextSecNum: ",nextSecNum);
-            console.log("currentPageTotalNum: ",currentPageTotalNum);
-            console.log("totalCount: ",totalCount);
-            console.log("req.params.pageNum: ",req.params.pageNum);
-
-            console.log('*********************');
-
-            if (req.user) {
-                userLoggedIn = true;
-                username = req.user.username;
-                image = (req.user.use_google_img) ? req.user.google_image : req.user.custom_image;
-            } else {
-                userLoggedIn = false;
-                username = undefined;
-                image = undefined;
-            };
-            // console.log(courseComments);
-            // console.log(courseRating[0]);
-
-            // req.session.courseInfo = courseInfo;
-            // req.session.courseRating = courseRating[0];
-            // req.session.courseComments = courseComments;
-            // req.session.courseOverall = courseOverall;
-            // req.session.recommendNum = recommendNum;
-            req.session.totalSecNum = totalSecNum;
-            req.session.currentSecNum = currentSecNum;
-            req.session.prevSecNum = prevSecNum;
-            req.session.nextSecNum = nextSecNum;
-            req.session.currentPageTotalNum = currentPageTotalNum;
-            req.session.totalCount = totalCount;
-            req.session.currentPageNum = req.params.currentPageNum;
-            req.session.pageNum = req.params.pageNum;
-
-
-
-
-            res.redirect(`/catalog/${req.params.fieldAc}/${req.params.courseAc}`);
-
-
-
-            // res.render('specificCourse2',{courseInfo,
-            //                               courseRating: courseRating[0], 
-            //                               courseComments, 
-            //                               courseOverall, 
-            //                               recommendNum,
-            //                               totalSecNum,
-            //                               currentSecNum:[{currentSecNum}], 
-            //                               prevSecNum:[{prevSecNum}], 
-            //                               nextSecNum:[{nextSecNum}], 
-            //                               currentPageTotalNum: [{currentPageTotalNum}],
-            //                               totalCount: [{totalCount}],
-            //                               currentPageNum: [{currentPageNum: req.params.pageNum}],
-            //                               fieldAc: [{fieldAc: req.params.fieldAc}],
-            //                               courseAc: [{courseAc: req.params.courseAc}],
-            //                               pageNum: [{pageNum: req.params.pageNum}],
-            //                               userLoggedIn,
-            //                               username,
-            //                               image});
-
-
-        });
-
-      
 });
 
 
@@ -598,7 +689,7 @@ app.get('/checkLogin',(req,res) => {
     if (req.user === undefined) {
         console.log('it is undefined');
         return res.send(false);
-    }
+    };
 
     res.send(true);
 })
