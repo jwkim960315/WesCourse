@@ -305,7 +305,10 @@ const comments_getter = async (courseAcronym,offset) => {
                              WHERE courses.course_acronym="${courseAcronym}"
                              LIMIT ${offset},10`).then((res) => {
         return res;
-    }).catch(e => undefined);
+    }).catch(e => {
+        console.log(e.message);
+        return undefined;
+    });
 };
 
 const overall_avg_getter = data => {
@@ -499,7 +502,7 @@ app.get('/catalog/:name',async (req,res) => {
       
 // });
 
-const sectionAndPageTypeChecker = (currentSectionNum,currentPageNum) => typeof currentSectionNum === 'number' && typeof currentPageNum === 'number'
+const sectionAndPageTypeChecker = (currentSectionNum,currentPageNum) => typeof parseInt(currentSectionNum) === 'number' && typeof parseInt(currentPageNum) === 'number'
 
 const offsetCalc = currentPageNum => (currentPageNum-1)*10
 
@@ -511,7 +514,7 @@ const currentSectionTotalNumPagesCalc = (currentSectionNum,totalNumSections,tota
     if (currentSectionNum !== totalNumSections) {
         return 5;
     } else if (currentSectionNum === totalNumSections) {
-        let lastSectionTotalNumComments = totalNumComments - currentSectionNum*50;
+        let lastSectionTotalNumComments = totalNumComments - (currentSectionNum-1)*50;
         return Math.ceil(lastSectionTotalNumComments/10);
     } else {
         console.log('currentSectionTotalNumPage: Error Occurred!');
@@ -532,7 +535,7 @@ const currentSectionPagesNumRangeCalc = (currentSectionNum,currentSectionTotalNu
 
 const previousSectionExistsCalc = currentSectionNum => currentSectionNum !== 1
 
-const nextSectionExistsCalc = (currentSectionNum,totalNumSections) => currentSectionNum === totalNumSections
+const nextSectionExistsCalc = (currentSectionNum,totalNumSections) => currentSectionNum !== totalNumSections
 
 const paginationValidChecker = (currentSectionNum,currentPageNum,totalNumSections,totalNumPages,currentSectionTotalNumPages) => {
     if (currentPageNum <= 0 || currentPageNum > totalNumPages) {
@@ -550,7 +553,13 @@ const paginationValidChecker = (currentSectionNum,currentPageNum,totalNumSection
     };
 };
 
-app.get('/catalog/:fieldAc/:courseAc/1/1',async (req,res) => {
+const totalNumCourseCommentsCalc = async (courseId) => {
+    return connection.query(`SELECT COUNT(*) as count FROM ratings WHERE ratings.course_id="${courseId}"`).then(data => {
+        return data[0].count;
+    })
+}
+
+app.get('/catalog/:fieldAc/:courseAc',async (req,res) => {
 
     if (req.user) {
         userLoggedIn = true;
@@ -562,10 +571,31 @@ app.get('/catalog/:fieldAc/:courseAc/1/1',async (req,res) => {
         image = undefined;
     };
 
+    if (String(req.session.fieldAc) === "true" || String(req.session.courseAc) === "true" || String(req.session.fieldAc) === "false" || String(req.session.courseAc) === "false") {
+        let message = "Invalid field acronym or course acronym";
+        return res.render('invalidPage',{ message });
+    }
+
     courseAc = req.params.courseAc;
     fieldAc = req.params.fieldAc;
 
-    courseComments = await comments_getter(courseAc,offset(1));
+    if (!req.session.currentSectionNum && !req.session.currentPageNum) {
+        console.log('Session does not hold section and page');
+        currentPageNum = 1;
+        currentSectionNum = 1;
+    } else if (req.session.currentSectionNum && req.session.currentPageNum) {
+        console.log('Session does hold section and page');
+        currentSectionNum = req.session.currentSectionNum;
+        currentPageNum = req.session.currentPageNum;
+        delete req.session.currentSectionNum;
+        delete req.session.currentPageNum;
+    } else {
+        let message = "Invalid section number or page number";
+        console.log(message);
+        return res.render('invalidPage',{ message });
+    };
+
+    courseComments = await comments_getter(courseAc,offsetCalc(currentPageNum));
     console.log('courseComments: ',courseComments);
     console.log('*********************');
     courseRating = await ratings_getter(courseAc);
@@ -581,104 +611,79 @@ app.get('/catalog/:fieldAc/:courseAc/1/1',async (req,res) => {
     courseOverall = overall_avg_getter(courseRating);
     console.log('courseOverall: ',courseOverall);
 
-    let currentSectionNum = 1,
-        currentPageNum = 1,
-        totalNumComments = courseComments.length,
-        offset = offsetCalc(1),
+    console.log('currentSectionNum: ',req.session.currentSectionNum);
+    console.log('currentPageNum: ',req.session.currentPageNum);
+    
+
+    let totalNumComments = await totalNumCourseCommentsCalc(courseInfo[0].id),
+        offset = offsetCalc(currentPageNum),
         totalNumPages = totalNumPagesCalc(totalNumComments),
         totalNumSections = totalNumSectionsCalc(totalNumPages),
-        currentSectionTotalNumPages = currentSectionTotalNumPagesCalc(1,totalNumSections,totalNumComments),
+        currentSectionTotalNumPages = currentSectionTotalNumPagesCalc(currentSectionNum,totalNumSections,totalNumComments),
         currentSectionPagesNumRange = currentSectionPagesNumRangeCalc(currentSectionNum,currentSectionTotalNumPages),
         previousSectionExists = previousSectionExistsCalc(currentSectionNum),
         nextSectionExists = nextSectionExistsCalc(currentSectionNum,totalNumSections);
 
-    
-
+    console.log('currentSectionNum: ',currentSectionNum);
+    console.log('currentPageNum: ',currentPageNum);
+    console.log('totalNumComments: ',totalNumComments);
+    console.log('offset: ',offset);
+    console.log('totalNumPages: ',totalNumPages);
+    console.log('totalNumSections: ',totalNumSections);
+    console.log('currentSectionTotalNumPages: ',currentSectionTotalNumPages);
+    console.log('currentSectionPagesNumRange: ',currentSectionPagesNumRange);
+    console.log('previousSectionExists: ',previousSectionExists);
+    console.log('nextSectionExists: ',nextSectionExists);
+    console.log('*********************************************');
+    console.log('*********************************************');
+    console.log('*********************************************');
 
         
 
-    res.render('specificCourse2',{ courseComments,
+    res.render('specificCourse2',{ fieldAc,
+                                   courseAc,
+                                   courseComments,
                                    courseRating,
                                    courseInfo,
                                    recommendNum,
-                                   courseOverall
-                                    });
+                                   courseOverall,
+                                   currentSectionNum,
+                                   currentPageNum,
+                                   totalNumPages,
+                                   totalNumSections,
+                                   currentSectionTotalNumPages,
+                                   currentSectionPagesNumRange,
+                                   previousSectionExists,
+                                   nextSectionExists,
+                                   userLoggedIn,
+                                   username,
+                                   image });
 });
 
-app.get('/specific-course-pagination',async (req,res) => {
-    console.log(req.query.selectedState);
+app.get('/catalog/:fieldAc/:courseAc/:selectedSectionNum/:selectedPageNum',async (req,res) => {
     console.log('routing works');
 
-    let isSectionAndPageTypeValid = sectionAndPageTypeChecker(currentSectionNum,currentPageNum);
+    selectedPageNum = parseInt(req.params.selectedPageNum),
+    selectedSectionNum = Math.ceil(selectedPageNum/5),
+    isSectionAndPageTypeValid = sectionAndPageTypeChecker(selectedSectionNum,selectedPageNum);
 
     if (!isSectionAndPageTypeValid) {
         let message = "Invalid Section Number Type or Page Number Type";
+        console.log(message);
         return res.render('invalidPage',{ message });
     };
 
-
-    let selectedState = req.query.selectedState,
-        fieldAc = req.query.fieldAc,
-        courseAc = req.query.courseAc,
-        currentSectionNum = req.query.currentSectionNum,
-        currentPageNum = req.query.currentPageNum;
+    console.log('selectedSectionNum: ',selectedSectionNum);
+    console.log('selectedPageNum: ',selectedPageNum);
 
 
+    fieldAc = req.params.fieldAc;
+    courseAc = req.params.courseAc;
 
-    if (selectedState === 'first') {
+    req.session.currentSectionNum = selectedSectionNum;
+    req.session.currentPageNum = selectedPageNum;
 
-        courseComments = await comments_getter(courseAc,offset(currentPageNum));
-        totalNumComments = courseComments.length;
-        offset = offsetCalc(1),
-        totalNumPages = totalNumPagesCalc(totalNumComments),
-        totalNumSections = totalNumSectionsCalc(totalNumPages),
-        currentSectionTotalNumPages = currentSectionTotalNumPagesCalc(1,totalNumSections,totalNumComments),
-        currentSectionPagesNumRange = currentSectionPagesNumRangeCalc(currentSectionNum,currentSectionTotalNumPages),
-        previousSectionExists = previousSectionExistsCalc(currentSectionNum),
-        nextSectionExists = nextSectionExistsCalc(currentSectionNum,totalNumSections);
-
-    } else if (selectedState === 'previous') {
-        courseComments = await comments_getter(courseAc,offsetCalc(currentPageNum-1));
-        totalNumComments = courseComments.length;
-        offset = offsetCalc(currentPageNum),
-        totalNumPages = totalNumPagesCalc(totalNumComments),
-        totalNumSections = totalNumSectionsCalc(totalNumPages),
-        currentSectionTotalNumPages = currentSectionTotalNumPagesCalc(1,totalNumSections,totalNumComments),
-        currentSectionPagesNumRange = currentSectionPagesNumRangeCalc(currentSectionNum,currentSectionTotalNumPages),
-        previousSectionExists = previousSectionExistsCalc(currentSectionNum),
-        nextSectionExists = nextSectionExistsCalc(currentSectionNum,totalNumSections);
-    } else if (selectedState === 'next') {
-        courseComments = await comments_getter(courseAc,offsetCalc(currentPageNum+1));
-        totalNumComments = courseComments.length;
-        offset = offsetCalc(currentPageNum),
-        totalNumPages = totalNumPagesCalc(totalNumComments),
-        totalNumSections = totalNumSectionsCalc(totalNumPages),
-        currentSectionTotalNumPages = currentSectionTotalNumPagesCalc(1,totalNumSections,totalNumComments),
-        currentSectionPagesNumRange = currentSectionPagesNumRangeCalc(currentSectionNum,currentSectionTotalNumPages),
-        previousSectionExists = previousSectionExistsCalc(currentSectionNum),
-        nextSectionExists = nextSectionExistsCalc(currentSectionNum,totalNumSections);
-    } else if (selectedState === 'last') {
-
-    } else if (typeof parseInt(selectedState) === 'number') {
-        let offset = offsetCalc(parseInt(selectedState));
-        courseComments = await comments_getter(courseAc,offset);
-    } else {
-        console.log('/specific-course-pagination: Error occurred!');
-        console.log('selectedState: ',selectedState);
-    };
-
-
-        isPaginationValid = paginationValidChecker(currentSectionNum,currentPageNum,totalNumSections,totalNumPages,currentSectionTotalNumPages);
-
-    if (!isPaginationValid) {
-        let message = "Invalid Section Number or Page Number";
-        return res.render(`invalidPage`,{ message });
-    };
-
-
-    
-    res.send('specificCourse2',{  });
-
+    return res.redirect(`/catalog/${fieldAc}/${courseAc}`);
 });
 
 

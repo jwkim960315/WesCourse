@@ -30,6 +30,8 @@
       <link rel="stylesheet" type="text/css" href="/css/navbar.css">
       <link rel="stylesheet" type="text/css" href="/css/courseInfo.css">
       <link rel="stylesheet" type="text/css" href="/css/specificCourse2.css">
+      <link rel="stylesheet" type="text/css" href="/css/pagination.css">
+      <link rel="stylesheet" type="text/css" href="/css/loading.css">
 
     </head>
 
@@ -102,6 +104,16 @@
             </div><!-- /.navbar-collapse -->
           </div><!-- /.container-fluid -->
         </nav>
+
+        <!-- Loader -->
+        <div class="row text-center">
+          <div id="loading"></div>
+        </div>
+      </div>
+
+
+      <div class="container body" style="display:none;">
+        
 
         <!-- Header -->
         <div class="row header">
@@ -216,27 +228,33 @@
         <div class="row text-center">
             <nav aria-label="Page navigation">
               <ul class="pagination">
-                <li>
-                  <a href="javascript:pageNavOnClick('first',<%= fieldAc %>,<%= courseAc %>,1,1)" aria-label="First">
-                    <span aria-hidden="true">&Lang;</span>
+              <% if (previousSectionExists) { %>
+                <li id="page-first">
+                  <a href="/catalog/<%= fieldAc %>/<%= courseAc %>/<%= 1 %>/<%= 1 %>" aria-label="First">
+                    <span aria-hidden="true">First</span>
                   </a>
                 </li>
-                <li>
-                  <a href="javascript:pageNavOnClick('previous',<%= fieldAc %>,<%= courseAc %>,<%= currentSectionNum %>,<%= currentPageNum-1 %>)" aria-label="Previous">
-                    <span aria-hidden="true">&lang;</span>
+                <li id="page-previous">
+                  <a href="/catalog/<%= fieldAc %>/<%= courseAc %>/<%= currentSectionNum %>/<%= currentPageNum-1 %>" aria-label="Previous">
+                    <span aria-hidden="true">Previous</span>
                   </a>
                 </li>
-                <li><a href="javascript:pageNavOnClick(1,<%= fieldAc %>,<%= courseAc %>,<%= currentSectionNum %>,<%= currentPageNum %>)">1</a></li>
-                <li>
-                  <a href="javascript:pageNavOnClick('next',<%= fieldAc %>,<%= courseAc %>,<%= currentSectionNum %>,<%= currentPageNum+1 %>)" aria-label="Next">
-                    <span aria-hidden="true">&rang;</span>
+              <% } %>
+              <% for (var i=0; i < currentSectionPagesNumRange.length; i++) {%>
+                <li class="page-item"><a href="/catalog/<%= fieldAc %>/<%= courseAc %>/<%= currentSectionNum %>/<%= currentSectionPagesNumRange[i] %>"><%= currentSectionPagesNumRange[i] %></a></li>
+              <% } %>
+              <% if (nextSectionExists) { %>
+                <li id="page-next">
+                  <a href="/catalog/<%= fieldAc %>/<%= courseAc %>/<%= currentSectionNum %>/<%= currentPageNum+1 %>" aria-label="Next">
+                    <span aria-hidden="true">Next</span>
                   </a>
                 </li>
-                <li>
-                  <a href="javascript:pageNavOnClick('last',<%= fieldAc %>,<%= courseAc %>,<%= totalNumSections %>,<%= totalNumPages %>)" aria-label="Last">
-                    <span aria-hidden="true">&Rang;</span>
+                <li id="page-last">
+                  <a href="/catalog/<%= fieldAc %>/<%= courseAc %>/<%= totalNumSections %>/<%= totalNumPages %>" aria-label="Last">
+                    <span aria-hidden="true">Last</span>
                   </a>
                 </li>
+              <% } %>
               </ul>
             </nav>
         </div>
@@ -275,141 +293,160 @@
 
       <script>
 
-        // Current Page Active Handler
         
-
-        // HighCharts Configuration
         $(document).ready(function() {
+          // Current Page Active Handler
+          $('.page-item').each(function(index) {
+              if ("<%= currentPageNum %>" === $(this).children().text()) {
+                  $(this).addClass('active');
+              };
+          });
 
-
-        <% if (courseRating.length === 0) { %>
-            $('div#chart-container').html('<p style="text-align:center;margin-top: 250px;margin-bottom:250px;color:rgb(119,119,119);">NO DATA. PLEASE EVALUATE THIS COURSE IF YOU HAVE TAKEN IT.</p>');
-        <% } else { %>
-            <% var tmp = []; %>
-            <% for (var i=0;i < Object.keys(courseRating).length-3; ++i) { %>
-                <% tmp.push(courseRating[Object.keys(courseRating)[i]]) %>
-            <% } %>
-            <% var tmpColor = [] %>
-            <% for (var i=0; i < tmp.length; i++) { %>
-              <% if (0 <= tmp[i] && tmp[i] < 2) { %>
-                <% tmpColor.push('#d9534f') %>
-              <% } else if (2 <= tmp[i] && tmp[i] < 3) { %>
-                <% tmpColor.push('#f0ad4e') %>
-              <% } else if (3 <= tmp[i] && tmp[i] < 4) { %>
-                <% tmpColor.push('#0275d8') %>
-              <% } else if (4 <= tmp[i] && tmp[i] <= 5) { %>
-                <% tmpColor.push('#5cb85c') %>
+          // HighCharts Configuration
+          <% if (courseRating.length === 0) { %>
+              $('div#chart-container').html('<p style="text-align:center;margin-top: 250px;margin-bottom:250px;color:rgb(119,119,119);">NO DATA. PLEASE EVALUATE THIS COURSE IF YOU HAVE TAKEN IT.</p>');
+          <% } else { %>
+              <% var tmp = []; %>
+              <% for (var i=0;i < Object.keys(courseRating).length-3; ++i) { %>
+                  <% tmp.push(courseRating[Object.keys(courseRating)[i]]) %>
               <% } %>
-              <% tmpColor %>
-            <% } %>
+              <% var tmpColor = [] %>
+              <% for (var i=0; i < tmp.length; i++) { %>
+                <% if (0 <= tmp[i] && tmp[i] < 2) { %>
+                  <% tmpColor.push('#d9534f') %>
+                <% } else if (2 <= tmp[i] && tmp[i] < 3) { %>
+                  <% tmpColor.push('#f0ad4e') %>
+                <% } else if (3 <= tmp[i] && tmp[i] < 4) { %>
+                  <% tmpColor.push('#0275d8') %>
+                <% } else if (4 <= tmp[i] && tmp[i] <= 5) { %>
+                  <% tmpColor.push('#5cb85c') %>
+                <% } %>
+                <% tmpColor %>
+              <% } %>
 
-            // HighCharts Constructor
-            var chart = Highcharts.chart('chart-container',{
-                credits: {
-                    enabled: false
-                },
-                chart: {
-                    type: 'column',
-                    backgroundColor: {
-                       linearGradient: { x1: 0, y1: 0, x2: 1, y2: 1 },
-                       stops: [
-                          [0, '#e5e5e5'],
-                          [1, '#f9f9f9']
-                       ]
-                    },
-                    style: {
-                       fontFamily: '\'Unica One\', sans-serif'
-                    },
-                    plotBorderColor: '#606063'
-                },
-                colors: <%- JSON.stringify(tmpColor) %>,
-                title: {
-                    text: 'Course Ratings',
-                    style: {
-                       color: '#777777',
-                       textTransform: 'uppercase',
-                       fontSize: '30px'
-                    }
-                },
-                xAxis: {
-                    categories: ["Difficulty","Organization","Effort Required","Professor Rating"],
-                    fontSize: '20px',
-                    gridLineColor: '#777777',
-                    labels: {
-                       style: {
-                          color: '#777777',
-                          fontSize: '18px'
-                       }
-                    },
-                    lineColor: '#777777',
-                    minorGridLineColor: '#777777',
-                    tickColor: '#777777',
-                    title: {
-                       style: {
-                          color: '#777777'
-
-                       }
-                    }
-                },
-                yAxis: {
-                    title: {
-                        text: 'Avg Ratings',
-                        style: {
+              // HighCharts Constructor
+              var chart = Highcharts.chart('chart-container',{
+                  credits: {
+                      enabled: false
+                  },
+                  chart: {
+                      type: 'column',
+                      backgroundColor: {
+                         linearGradient: { x1: 0, y1: 0, x2: 1, y2: 1 },
+                         stops: [
+                            [0, '#e5e5e5'],
+                            [1, '#f9f9f9']
+                         ]
+                      },
+                      style: {
+                         fontFamily: '\'Unica One\', sans-serif'
+                      },
+                      plotBorderColor: '#606063'
+                  },
+                  colors: <%- JSON.stringify(tmpColor) %>,
+                  title: {
+                      text: 'Course Ratings',
+                      style: {
+                         color: '#777777',
+                         textTransform: 'uppercase',
+                         fontSize: '30px'
+                      }
+                  },
+                  xAxis: {
+                      categories: ["Difficulty","Organization","Effort Required","Professor Rating"],
+                      fontSize: '20px',
+                      gridLineColor: '#777777',
+                      labels: {
+                         style: {
                             color: '#777777',
                             fontSize: '18px'
-                        }
-                    },
-                    gridLineColor: '#777777',
-                    labels: {
-                       style: {
-                          color: '#777777'
-
-                       }
-                    },
-                    lineColor: '#777777',
-                    minorGridLineColor: '#777777',
-                    tickColor: '#777777',
-                    tickWidth: 1,
-                    max: 5
-                },
-                tooltip: {
-                   useHTML: true,
-                   backgroundColor: 'rgba(255, 255, 255, 1)',
-                   style: {
-                      color: '#777777'
-                   },
-                   formatter: function() {
-                     return `<p style="width: 200px !important;font-size: 20px;text-align:center;">${this.x}: <span style="color: ${this.point.color}">${this.y}</span></p>`;
-                   }
-                },
-                plotOptions: {
-                   column: {
-                      colorByPoint: true
-                   },
-                   series: {
-                      dataLabels: {
-                         color: '#777777'
+                         }
                       },
-                      marker: {
-                         lineColor: '#777777'
+                      lineColor: '#777777',
+                      minorGridLineColor: '#777777',
+                      tickColor: '#777777',
+                      title: {
+                         style: {
+                            color: '#777777'
+
+                         }
                       }
-                   },
-                   boxplot: {
-                      fillColor: '#990000'
-                   },
-                   candlestick: {
-                      lineColor: 'white'
-                   },
-                   errorbar: {
-                      color: 'white'
-                   }
-                },
-                series: [{
-                    showInLegend: false,
-                    data: <%- JSON.stringify(tmp) %>
-                }]
-            })
-        <% } %>
+                  },
+                  yAxis: {
+                      title: {
+                          text: 'Avg Ratings',
+                          style: {
+                              color: '#777777',
+                              fontSize: '18px'
+                          }
+                      },
+                      gridLineColor: '#777777',
+                      labels: {
+                         style: {
+                            color: '#777777'
+
+                         }
+                      },
+                      lineColor: '#777777',
+                      minorGridLineColor: '#777777',
+                      tickColor: '#777777',
+                      tickWidth: 1,
+                      max: 5
+                  },
+                  tooltip: {
+                     useHTML: true,
+                     backgroundColor: 'rgba(255, 255, 255, 1)',
+                     style: {
+                        color: '#777777'
+                     },
+                     formatter: function() {
+                       return `<p style="width: 200px !important;font-size: 20px;text-align:center;">${this.x}: <span style="color: ${this.point.color}">${this.y}</span></p>`;
+                     }
+                  },
+                  plotOptions: {
+                     column: {
+                        colorByPoint: true
+                     },
+                     series: {
+                        dataLabels: {
+                           color: '#777777'
+                        },
+                        marker: {
+                           lineColor: '#777777'
+                        }
+                     },
+                     boxplot: {
+                        fillColor: '#990000'
+                     },
+                     candlestick: {
+                        lineColor: 'white'
+                     },
+                     errorbar: {
+                        color: 'white'
+                     }
+                  },
+                  series: [{
+                      showInLegend: false,
+                      data: <%- JSON.stringify(tmp) %>
+                  }]
+              })
+          <% } %>
+          $(window).on('load',function() {
+            setInterval(function() {
+
+              // Loading Handler
+                 $('#loading').hide(0,function() {
+                  $('.container.body').show();
+                 });
+
+              
+            }, 2000);  
+          })
+          
+          
+          
+
+          
         })
       </script>
     </body>
