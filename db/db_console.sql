@@ -52,7 +52,6 @@ create table ratings (
   anonymous BOOLEAN not null,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   likes int DEFAULT 0,
-  dislikes int DEFAULT 0,
   FOREIGN KEY (course_id) REFERENCES courses(id) on delete cascade,
   FOREIGN KEY (user_id) REFERENCES users(id) on delete cascade
 );

@@ -1,19 +1,33 @@
-.pagination > li > span {
+.pagination li span, .pagination li a {
     color: rgb(149,149,149) !important;
     border-color: #dddddd;
     border: none;
     border-radius: 5px;
 }
 
-.pagination > li > span:hover {
+.pagination li span:hover, .pagination li a:hover {
     color: rgb(119,119,119) !important;
     background-color: #dddddd !important;
 }
 
-.pagination > li.active > span {
+.pagination > li.active > a {
     background-color: rgb(225,0,0) !important;
 }
 
-.pagination > li.active > span > a {
+.pagination > li.active > a {
 	color: white !important;
+}
+
+.pagination li.left,
+.pagination li.left a,
+.pagination li.left a:hover,
+.pagination li.left span,
+.pagination li.left span:hover,
+.pagination li.right,
+.pagination li.right a,
+.pagination li.right a:hover,
+.pagination li.right span,
+.pagination li.right span:hover {
+    color: rgba(119,119,119,.3) !important;
+    background: none !important;
 }

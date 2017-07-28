@@ -279,17 +279,20 @@ const specific_course_getter = async (courseAcronym) => {
 };
 
 const comments_getter = async (courseAcronym,category,offset) => {
-    return connection.query(`SELECT CASE 
+    return connection.query(`SELECT ratings.id,
+                                    CASE 
                                         WHEN ratings.anonymous=true THEN "Anonymous"
                                         ELSE username
                                     END as username,
-                                    comment,
+                                    users.username as realUsername,
+                                    ratings.comment,
                                     DATE_FORMAT(ratings.created_at,"%b %d, %Y") as created_at,
                                     ratings.difficulty,
                                     ratings.organization,
                                     ratings.effort,
                                     ratings.professors,
                                     (ratings.difficulty+ratings.organization+ratings.effort+ratings.professors)/4 as overall_rating,
+                                    ratings.likes,
                                     users.custom_image,
                                     users.google_image,
                                     users.use_google_img,
@@ -522,7 +525,7 @@ app.get('/catalog/:fieldAc/:courseAc/:category',async (req,res) => {
 
     switch(category) {
         case "likes DESC":
-            categoryDisplay = "Popularity";
+            categoryDisplay = "Likes";
             break;
         case "overall_rating DESC":
             categoryDisplay = "Overall Rating";
@@ -543,6 +546,9 @@ app.get('/catalog/:fieldAc/:courseAc/:category',async (req,res) => {
             categoryDisplay = "Recent";
             break;
     };
+
+    category = category.slice(0,category.length-5);
+
 
 
 
