@@ -51,6 +51,8 @@ create table ratings (
   comment TEXT,
   anonymous BOOLEAN not null,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  likes int DEFAULT 0,
+  dislikes int DEFAULT 0,
   FOREIGN KEY (course_id) REFERENCES courses(id) on delete cascade,
   FOREIGN KEY (user_id) REFERENCES users(id) on delete cascade
 );
@@ -191,20 +193,31 @@ select * from ratings;
 SELECT * FROM ratings;
 
 SELECT CASE
-                                        WHEN ratings.anonymous=1 THEN "Anonymous"
+                                        WHEN ratings.anonymous=true THEN "Anonymous"
                                         ELSE username
                                     END as username,
                                     comment,
-                                    ratings.created_at,
+                                    DATE_FORMAT(ratings.created_at,"%b %d, %Y") as created_at,
                                     ratings.difficulty,
                                     ratings.organization,
                                     ratings.effort,
                                     ratings.professors,
+                                    (ratings.difficulty+ratings.organization+ratings.effort+ratings.professors)/4 as overall_rating,
+                                    users.custom_image,
+                                    users.google_image,
+                                    users.use_google_img,
                                     CASE
-                                        WHEN ratings.recommend=1 THEN "Yes"
+                                        WHEN ratings.recommend=true THEN "Yes"
                                         ELSE "No"
                                     END as recommend
-                             FROM ratings RIGHT JOIN courses ON ratings.course_id = courses.id RIGHT JOIN users ON ratings.user_id = users.id where course_acronym="AMST119-01";
+                             FROM ratings
+                             INNER JOIN courses
+                                ON ratings.course_id = courses.id
+                             INNER JOIN users
+                                ON ratings.user_id = users.id
+                             WHERE courses.course_acronym="ARAB101-01"
+                             ORDER BY overall_rating
+                             LIMIT 0,10
 SELECT AVG(recommend) FROM ratings GROUP BY recommend WHERE course_acronym="ARAB101-01";
 SELECT recommend FROM ratings WHERE course_acronym="ARAB101-01";
 select case when anonymous=1 then "Anonymous" ELSE username END as username FROM ratings INNER JOIN courses ON ratings.course_id = courses.id INNER JOIN users ON ratings.user_id = users.id WHERE courses.course_acronym="ARAB101-01";
@@ -233,7 +246,7 @@ SELECT id,username,email,first_name,last_name,image,DATE_FORMAT(created_at,"%b %
 delete from users;
 
 
-
+SELECT * from ratings ORDER BY ratings.difficulty desc ;
 
 
 DROP DATABASE wes_course_test;
