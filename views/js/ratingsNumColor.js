@@ -35,10 +35,13 @@ $(document).ready(function() {
            .children()
            .children()
            .children('.indiv-ratings-num')
-           .each(function() {
-      totalScore += parseFloat($(this).text());
+           .each(function(index) {
+      if (index !== 4) {
+        totalScore += parseFloat($(this).text());  
+      };
     });
-    avgScore = totalScore/4.0;
+
+    avgScore = (totalScore/4.0).toFixed(2);
     if (0 <= avgScore && avgScore < 2) {
       $(elem).css('color','rgb(217, 83, 79)');
     } else if (2 <= avgScore && avgScore < 3) {

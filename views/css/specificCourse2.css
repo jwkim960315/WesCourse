@@ -116,5 +116,20 @@ div.comments-content-cont pre {
 
 
 
+/* Button Group */
 
+div[aria-label="buttons-group"] {
+	margin-bottom: 100px;
+}
+
+div.btn-group > div.btn-group > button {
+	color: rgb(119,119,119);
+}
+
+
+div.btn-group > div.btn-group > button:focus,
+div.btn-group > div.btn-group > button:hover {
+	background-color: rgb(217, 83, 79);
+	color: white;
+}
 

@@ -236,7 +236,6 @@ app.get('/catalog',(req,res) => {
 
     connection.query('SELECT category,name FROM fields ORDER BY 1,2').then(data => {
         data = catalogDataManipulator(data);
-        console.log(data);
         res.render('catalog2',{data,
                               userLoggedIn,
                               username,
@@ -279,17 +278,18 @@ const specific_course_getter = async (courseAcronym) => {
     });
 };
 
-const comments_getter = async (courseAcronym,offset) => {
+const comments_getter = async (courseAcronym,category,offset) => {
     return connection.query(`SELECT CASE 
                                         WHEN ratings.anonymous=true THEN "Anonymous"
                                         ELSE username
                                     END as username,
                                     comment,
-                                    ratings.created_at,
+                                    DATE_FORMAT(ratings.created_at,"%b %d, %Y") as created_at,
                                     ratings.difficulty,
                                     ratings.organization,
                                     ratings.effort,
                                     ratings.professors,
+                                    (ratings.difficulty+ratings.organization+ratings.effort+ratings.professors)/4 as overall_rating,
                                     users.custom_image,
                                     users.google_image,
                                     users.use_google_img,
@@ -303,6 +303,7 @@ const comments_getter = async (courseAcronym,offset) => {
                              INNER JOIN users 
                                 ON ratings.user_id = users.id 
                              WHERE courses.course_acronym="${courseAcronym}"
+                             ORDER BY ${category}
                              LIMIT ${offset},10`).then((res) => {
         return res;
     }).catch(e => {
@@ -367,141 +368,6 @@ app.get('/catalog/:name',async (req,res) => {
 });
 
 
-
-
-
-// app.get('/catalog/:fieldAc/:courseAc', async (req,res) => {
-
-//     if (req.user) {
-//         userLoggedIn = true;
-//         username = req.user.username;
-//         image = (req.user.use_google_img) ? req.user.google_image : req.user.custom_image;
-//     } else {
-//         userLoggedIn = false;
-//         username = undefined;
-//         image = undefined;
-//     };
-
-//     sectionNum = req.session.sectionNum;
-//     currentPageNum = req.session.pageNum;
-//     fieldAc = req.params.fieldAc;
-//     courseAc = req.params.courseAc;
-
-//     console.log('sectionNum: ',sectionNum);
-
-//     offset = (currentPageNum-1)*10;
-//     console.log(offset);
-
-
-//     courseComments = await comments_getter(courseAc,offset);
-//     console.log('courseComments: ',courseComments);
-//     console.log('*********************');
-//     courseRating = await ratings_getter(courseAc);
-//     courseRating = (courseRating.length === 0) ? courseRating : courseRating[0];
-//     console.log('courseRating: ',courseRating);
-//     console.log('*********************');
-//     courseInfo = await specific_course_getter(courseAc);
-//     console.log('courseInfo: ',courseInfo);
-//     console.log('*********************');
-//     recommendNum = (courseRating.length === 0) ? undefined : await recommend_number_getter(courseRating.course_id);
-//     console.log('recommendNum: ',recommendNum);
-//     console.log('*********************');
-//     courseOverall = overall_avg_getter(courseRating);
-//     console.log('courseOverall: ',courseOverall);
-
-//     connection.query(`SELECT count(*) as count FROM ratings 
-//                       WHERE course_id=${courseInfo[0].id}`)
-//         .then(totalCount => {
-//             // courseRating = JSON.parse(JSON.stringify(courseRating));
-//             // console.log('*****');
-//             // console.log(data);
-//             // console.log('*****');
-//             totalCount = totalCount[0].count;
-//             let totalSecNum = Math.floor(totalCount/50);
-            
-
-//             // if (totalCount%50 !== 0) {
-//                 totalSecNum += 1;
-//             // };
-
-//             // console.log(totalSecNum);
-
-//             let currentSecNum = parseInt(sectionNum);
-
-//             let prevSecNum = currentSecNum-1;
-//             let nextSecNum = currentSecNum+1;
-
-//             // console.log(currentSecNum);
-//             // console.log(totalSecNum);
-
-//             // console.log(typeof currentSecNum);
-//             // console.log(typeof totalSecNum);
-
-//             // console.log(currentSecNum === totalSecNum);
-
-//             let currentPageTotalNum;
-
-//             if (currentSecNum == totalSecNum) {
-//                 currentPageTotalNum = (totalCount !== 0) ? Math.ceil(totalCount%50/10) : 1;
-//             } else {
-//                 currentPageTotalNum = 5;
-//             };
-            
-
-//             console.log('*********************');
-
-//             console.log("totalSecNum: ",totalSecNum);
-//             console.log("currentSecNum: ",currentSecNum);
-//             console.log("prevSecNum: ",prevSecNum);
-//             console.log("nextSecNum: ",nextSecNum);
-//             console.log("currentPageTotalNum: ",currentPageTotalNum);
-//             console.log("totalCount: ",totalCount);
-//             console.log("currentPageNum ",currentPageNum);
-
-//             console.log('*********************');
-
-//             console.log(req.header('Referer'));
-
-//             delete req.session.sectionNum,
-//                    req.session.pageNum,
-//                    req.session.fieldAc,
-//                    req.session.courseAc;
-
-
-
-//             res.render('specificCourse2',{ courseInfo,
-//                                            courseRating,
-//                                            courseComments, 
-//                                            courseOverall, 
-//                                            recommendNum,
-//                                            totalSecNum,
-//                                            currentSecNum, 
-//                                            prevSecNum, 
-//                                            nextSecNum, 
-//                                            currentPageTotalNum,
-//                                            totalCount,
-//                                            currentPageNum,
-//                                            fieldAc,
-//                                            courseAc,
-//                                            userLoggedIn,
-//                                            username,
-//                                            image });
-//     });
-// });
-
-
-// app.get('/catalog/:fieldAc/:courseAc/:sectionNum/:pageNum', async (req,res) => {
-    
-//     req.session.fieldAc = req.params.fieldAc;
-//     req.session.courseAc = req.params.courseAc;
-//     req.session.sectionNum = req.params.sectionNum;
-//     req.session.pageNum = req.params.pageNum;
-
-
-//     res.redirect(`/catalog/${req.params.fieldAc}/${req.params.courseAc}`);
-      
-// });
-
 const sectionAndPageTypeChecker = (currentSectionNum,currentPageNum) => typeof parseInt(currentSectionNum) === 'number' && typeof parseInt(currentPageNum) === 'number'
 
 const offsetCalc = currentPageNum => (currentPageNum-1)*10
@@ -556,10 +422,14 @@ const paginationValidChecker = (currentSectionNum,currentPageNum,totalNumSection
 const totalNumCourseCommentsCalc = async (courseId) => {
     return connection.query(`SELECT COUNT(*) as count FROM ratings WHERE ratings.course_id="${courseId}"`).then(data => {
         return data[0].count;
-    })
-}
+    });
+};
 
-app.get('/catalog/:fieldAc/:courseAc',async (req,res) => {
+
+
+
+
+app.get('/catalog/:fieldAc/:courseAc/:category',async (req,res) => {
 
     if (req.user) {
         userLoggedIn = true;
@@ -573,8 +443,43 @@ app.get('/catalog/:fieldAc/:courseAc',async (req,res) => {
 
     if (String(req.session.fieldAc) === "true" || String(req.session.courseAc) === "true" || String(req.session.fieldAc) === "false" || String(req.session.courseAc) === "false") {
         let message = "Invalid field acronym or course acronym";
-        return res.render('invalidPage',{ message });
-    }
+        return res.status(404).render('invalidPage',{ message });
+    };
+
+    category = req.params.category;
+    console.log(`category: ${category}\ntype: ${typeof category}`);
+
+    
+    if (!category) {
+        category = "likes";
+    } else {
+        categoryList = ["likes","overall_rating","difficulty","organization","effort","professors","created_at"]
+        if (!categoryList.some((catItem,index,arr) => catItem === category)) {
+            console.log(`Sorting Category is invalid: ${category}`);
+            return res.status(404).send();
+        };
+
+        switch(category) {
+            case "likes":
+                category = "likes DESC";
+                break;
+            case "overall_rating":
+                category = "overall_rating DESC";
+                break;
+            case "organization":
+                category = "organization DESC";
+                break;
+            case "professors":
+                category = "professors DESC";
+                break;
+            case "created_at":
+                category = "created_at DESC";
+                break;
+        };
+    };
+
+    
+
 
     courseAc = req.params.courseAc;
     fieldAc = req.params.fieldAc;
@@ -595,25 +500,51 @@ app.get('/catalog/:fieldAc/:courseAc',async (req,res) => {
         return res.render('invalidPage',{ message });
     };
 
-    courseComments = await comments_getter(courseAc,offsetCalc(currentPageNum));
-    console.log('courseComments: ',courseComments);
-    console.log('*********************');
+    courseComments = await comments_getter(courseAc,category,offsetCalc(currentPageNum));
+    // console.log('courseComments: ',courseComments);
+    // console.log('*********************');
     courseRating = await ratings_getter(courseAc);
     courseRating = (courseRating.length === 0) ? courseRating : courseRating[0];
-    console.log('courseRating: ',courseRating);
-    console.log('*********************');
+    // console.log('courseRating: ',courseRating);
+    // console.log('*********************');
     courseInfo = await specific_course_getter(courseAc);
-    console.log('courseInfo: ',courseInfo);
-    console.log('*********************');
+    // console.log('courseInfo: ',courseInfo);
+    // console.log('*********************');
     recommendNum = (courseRating.length === 0) ? undefined : await recommend_number_getter(courseRating.course_id);
-    console.log('recommendNum: ',recommendNum);
-    console.log('*********************');
+    // console.log('recommendNum: ',recommendNum);
+    // console.log('*********************');
     courseOverall = overall_avg_getter(courseRating);
-    console.log('courseOverall: ',courseOverall);
+    // console.log('courseOverall: ',courseOverall);
 
-    console.log('currentSectionNum: ',req.session.currentSectionNum);
-    console.log('currentPageNum: ',req.session.currentPageNum);
-    
+    // console.log('currentSectionNum: ',req.session.currentSectionNum);
+    // console.log('currentPageNum: ',req.session.currentPageNum);
+    categoryDisplay = "";
+
+    switch(category) {
+        case "likes DESC":
+            categoryDisplay = "Popularity";
+            break;
+        case "overall_rating DESC":
+            categoryDisplay = "Overall Rating";
+            break;
+        case "difficulty":
+            categoryDisplay = "Difficulty";
+            break;
+        case "organization DESC":
+            categoryDisplay = "Organization";
+            break;
+        case "effort":
+            categoryDisplay = "Effort Required";
+            break;
+        case "professors DESC":
+            categoryDisplay = "Professor(s)";
+            break;
+        case "created_at DESC":
+            categoryDisplay = "Recent";
+            break;
+    };
+
+
 
     let totalNumComments = await totalNumCourseCommentsCalc(courseInfo[0].id),
         offset = offsetCalc(currentPageNum),
@@ -624,19 +555,19 @@ app.get('/catalog/:fieldAc/:courseAc',async (req,res) => {
         previousSectionExists = previousSectionExistsCalc(currentSectionNum),
         nextSectionExists = nextSectionExistsCalc(currentSectionNum,totalNumSections);
 
-    console.log('currentSectionNum: ',currentSectionNum);
-    console.log('currentPageNum: ',currentPageNum);
-    console.log('totalNumComments: ',totalNumComments);
-    console.log('offset: ',offset);
-    console.log('totalNumPages: ',totalNumPages);
-    console.log('totalNumSections: ',totalNumSections);
-    console.log('currentSectionTotalNumPages: ',currentSectionTotalNumPages);
-    console.log('currentSectionPagesNumRange: ',currentSectionPagesNumRange);
-    console.log('previousSectionExists: ',previousSectionExists);
-    console.log('nextSectionExists: ',nextSectionExists);
-    console.log('*********************************************');
-    console.log('*********************************************');
-    console.log('*********************************************');
+    // console.log('currentSectionNum: ',currentSectionNum);
+    // console.log('currentPageNum: ',currentPageNum);
+    // console.log('totalNumComments: ',totalNumComments);
+    // console.log('offset: ',offset);
+    // console.log('totalNumPages: ',totalNumPages);
+    // console.log('totalNumSections: ',totalNumSections);
+    // console.log('currentSectionTotalNumPages: ',currentSectionTotalNumPages);
+    // console.log('currentSectionPagesNumRange: ',currentSectionPagesNumRange);
+    // console.log('previousSectionExists: ',previousSectionExists);
+    // console.log('nextSectionExists: ',nextSectionExists);
+    // console.log('*********************************************');
+    // console.log('*********************************************');
+    // console.log('*********************************************');
 
         
 
@@ -657,14 +588,19 @@ app.get('/catalog/:fieldAc/:courseAc',async (req,res) => {
                                    nextSectionExists,
                                    userLoggedIn,
                                    username,
-                                   image });
+                                   image,
+                                   category,
+                                   categoryDisplay });
 });
 
-app.get('/catalog/:fieldAc/:courseAc/:selectedSectionNum/:selectedPageNum',async (req,res) => {
-    console.log('routing works');
 
-    selectedPageNum = parseInt(req.params.selectedPageNum),
-    selectedSectionNum = Math.ceil(selectedPageNum/5),
+
+app.get('/catalog/:fieldAc/:courseAc/:selectedSectionNum/:selectedPageNum/:category',async (req,res) => {
+    // console.log('routing works');
+
+    selectedPageNum = parseInt(req.params.selectedPageNum);
+    selectedSectionNum = Math.ceil(selectedPageNum/5);
+    category = req.params.category;
     isSectionAndPageTypeValid = sectionAndPageTypeChecker(selectedSectionNum,selectedPageNum);
 
     if (!isSectionAndPageTypeValid) {
@@ -673,8 +609,8 @@ app.get('/catalog/:fieldAc/:courseAc/:selectedSectionNum/:selectedPageNum',async
         return res.render('invalidPage',{ message });
     };
 
-    console.log('selectedSectionNum: ',selectedSectionNum);
-    console.log('selectedPageNum: ',selectedPageNum);
+    // console.log('selectedSectionNum: ',selectedSectionNum);
+    // console.log('selectedPageNum: ',selectedPageNum);
 
 
     fieldAc = req.params.fieldAc;
@@ -683,7 +619,7 @@ app.get('/catalog/:fieldAc/:courseAc/:selectedSectionNum/:selectedPageNum',async
     req.session.currentSectionNum = selectedSectionNum;
     req.session.currentPageNum = selectedPageNum;
 
-    return res.redirect(`/catalog/${fieldAc}/${courseAc}`);
+    return res.redirect(`/catalog/${fieldAc}/${courseAc}/${category}`);
 });
 
 
@@ -705,7 +641,22 @@ app.get('/checkLogin',(req,res) => {
 
 
 
+app.get('/comment-submit',(req,res) => {
 
+    if (req.user) {
+        userLoggedIn = true;
+        username = req.user.username;
+        image = (req.user.use_google_img) ? req.user.google_image : req.user.custom_image;
+    } else {
+        userLoggedIn = false;
+        username = undefined;
+        image = undefined;
+    };
+
+    res.render('commentSubmit',{ userLoggedIn,
+                                 username,
+                                 image });
+});
 
 
 

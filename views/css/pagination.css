@@ -1,15 +1,19 @@
-.pagination > li > a {
+.pagination > li > span {
     color: rgb(149,149,149) !important;
-    border: 0;
-    border-radius: 5px !important;
+    border-color: #dddddd;
+    border: none;
+    border-radius: 5px;
 }
 
-.pagination > li > a:hover {
+.pagination > li > span:hover {
     color: rgb(119,119,119) !important;
     background-color: #dddddd !important;
 }
 
-.pagination > li.active > a {
-    color: white !important;
+.pagination > li.active > span {
     background-color: rgb(225,0,0) !important;
+}
+
+.pagination > li.active > span > a {
+	color: white !important;
 }
