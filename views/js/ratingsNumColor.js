@@ -42,6 +42,7 @@ $(document).ready(function() {
     });
 
     avgScore = (totalScore/4.0).toFixed(2);
+    console.log(avgScore);
     if (0 <= avgScore && avgScore < 2) {
       $(elem).css('color','rgb(217, 83, 79)');
     } else if (2 <= avgScore && avgScore < 3) {

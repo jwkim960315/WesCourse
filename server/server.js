@@ -286,7 +286,7 @@ const comments_getter = async (courseAcronym,category,offset) => {
                                     END as username,
                                     users.username as realUsername,
                                     ratings.comment,
-                                    DATE_FORMAT(ratings.created_at,"%b %d, %Y") as created_at,
+                                    DATE_FORMAT(ratings.created_at,"%b %d, %Y  %H:%i:%s") as created_at,
                                     ratings.difficulty,
                                     ratings.organization,
                                     ratings.effort,
@@ -639,7 +639,42 @@ app.get('/checkLogin',(req,res) => {
     };
 
     res.send(true);
-})
+});
+
+
+const likeInfoGetter = async (ratingId,userId) => {
+    return connection.query(`SELECT * FROM likes WHERE rating_id=${ratingId} AND user_id="${userId}"`)
+};
+
+const insertNewLike = async (ratingId,userId) => {
+    return connection.query(`INSERT INTO likes (rating_id,user_id) VALUES (${ratingId},"${userId}")`)
+}
+
+const updateLike = async (ratingId,incOrDec) => {
+    return connection.query(`UPDATE ratings SET likes = likes ${incOrDec} WHERE id=${ratingId}`);
+}
+
+app.get('/like/:fieldAc/:courseAc/:ratingId',async (req,res) => {
+    
+    
+
+    if (!req.user) {
+        return res.status(404).send();
+    };
+
+    let ratingId = parseInt(req.params.ratingId),
+        userId = req.user.id,
+        inc = '+ 1';
+
+    console.log(ratingId);
+    console.log(userId);
+
+    let inserting = await insertNewLike(ratingId,userId),
+        updating = await updateLike(ratingId,inc); 
+
+    res.send(true);
+
+});
 
 
 

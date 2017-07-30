@@ -133,3 +133,31 @@ div.btn-group > div.btn-group > button:hover {
 	color: white;
 }
 
+
+/* Likes */
+
+div.like-group > h3 {
+	display: inline-block !important;
+}
+
+div.like-group > h3 > a {
+	padding-right: 7px !important;
+}
+
+@media (max-width: 991px) {
+	div.created-at.text-right {
+		text-align: left;
+	}
+}
+
+div.like-group > h3 > a > i.liked {
+	color: rgb(225,0,0);
+}
+
+div.like-group > h3 > a > i.not-liked {
+	color: rgb(119,119,119);
+}
+
+div.like-group > h3 > a:hover {
+	color: rgb(225,0,0);
+}

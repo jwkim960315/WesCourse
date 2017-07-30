@@ -56,7 +56,13 @@ create table ratings (
   FOREIGN KEY (user_id) REFERENCES users(id) on delete cascade
 );
 
-
+create table likes (
+  id int AUTO_INCREMENT PRIMARY KEY,
+  rating_id INT not null,
+  user_id VARCHAR(255) not null,
+  FOREIGN KEY (rating_id) REFERENCES ratings(id) on delete cascade,
+  FOREIGN KEY (user_id) REFERENCES users(id) on delete cascade
+);
 
 
 # show tables;
