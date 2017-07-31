@@ -286,7 +286,7 @@ const comments_getter = async (courseAcronym,category,offset) => {
                                     END as username,
                                     users.username as realUsername,
                                     ratings.comment,
-                                    DATE_FORMAT(ratings.created_at,"%b %d, %Y  %H:%i:%s") as created_at,
+                                    DATE_FORMAT(ratings.created_at,"%b %d, %Y %H:%i:%s") as created_at,
                                     ratings.difficulty,
                                     ratings.organization,
                                     ratings.effort,
@@ -429,7 +429,18 @@ const totalNumCourseCommentsCalc = async (courseId) => {
 };
 
 
-
+const ratingLikesChecker = async (userId,courseId,category,offset) => {
+    return connection.query(`SELECT *,CASE 
+                                            WHEN likes.user_id="${userId}"
+                                            THEN TRUE
+                                            ELSE FALSE
+                                            END AS haveLiked,
+                                      (ratings.difficulty+ratings.organization+ratings.effort+ratings.professors)/4 as overall_rating
+                                      FROM ratings LEFT JOIN likes ON ratings.id = likes.rating_id
+                                      WHERE ratings.course_id=${courseId}
+                                      ORDER BY ${category}
+                                      LIMIT ${offset},10`);
+};
 
 
 app.get('/catalog/:fieldAc/:courseAc/:category',async (req,res) => {
@@ -521,6 +532,11 @@ app.get('/catalog/:fieldAc/:courseAc/:category',async (req,res) => {
 
     // console.log('currentSectionNum: ',req.session.currentSectionNum);
     // console.log('currentPageNum: ',req.session.currentPageNum);
+    console.log(courseInfo);
+    console.log(req.user);
+
+    
+    
     categoryDisplay = "";
 
     switch(category) {
@@ -547,7 +563,7 @@ app.get('/catalog/:fieldAc/:courseAc/:category',async (req,res) => {
             break;
     };
 
-    category = category.slice(0,category.length-5);
+    
 
 
 
@@ -560,6 +576,15 @@ app.get('/catalog/:fieldAc/:courseAc/:category',async (req,res) => {
         currentSectionPagesNumRange = currentSectionPagesNumRangeCalc(currentSectionNum,currentSectionTotalNumPages),
         previousSectionExists = previousSectionExistsCalc(currentSectionNum),
         nextSectionExists = nextSectionExistsCalc(currentSectionNum,totalNumSections);
+
+    if (req.user) {
+        haveLiked = await ratingLikesChecker(req.user.id,courseInfo[0].id,category,offset);
+        console.log(haveLiked);
+    } else {
+        haveLiked = [];
+    };
+
+    category = category.slice(0,category.length-5);
 
     // console.log('currentSectionNum: ',currentSectionNum);
     // console.log('currentPageNum: ',currentPageNum);
@@ -596,7 +621,8 @@ app.get('/catalog/:fieldAc/:courseAc/:category',async (req,res) => {
                                    username,
                                    image,
                                    category,
-                                   categoryDisplay });
+                                   categoryDisplay,
+                                   haveLiked });
 });
 
 
@@ -643,19 +669,22 @@ app.get('/checkLogin',(req,res) => {
 
 
 const likeInfoGetter = async (ratingId,userId) => {
-    return connection.query(`SELECT * FROM likes WHERE rating_id=${ratingId} AND user_id="${userId}"`)
+    return connection.query(`SELECT * FROM likes WHERE rating_id=${ratingId} AND user_id="${userId}"`);
 };
 
 const insertNewLike = async (ratingId,userId) => {
-    return connection.query(`INSERT INTO likes (rating_id,user_id) VALUES (${ratingId},"${userId}")`)
-}
+    return connection.query(`INSERT INTO likes (rating_id,user_id) VALUES (${ratingId},"${userId}")`);
+};
+
+const deleteLike = async (ratingId,userId) => {
+    return connection.query(`DELETE FROM likes WHERE user_id="${userId}" AND rating_id=${ratingId}`);
+};
 
 const updateLike = async (ratingId,incOrDec) => {
     return connection.query(`UPDATE ratings SET likes = likes ${incOrDec} WHERE id=${ratingId}`);
-}
+};
 
 app.get('/like/:fieldAc/:courseAc/:ratingId',async (req,res) => {
-    
     
 
     if (!req.user) {
@@ -676,6 +705,25 @@ app.get('/like/:fieldAc/:courseAc/:ratingId',async (req,res) => {
 
 });
 
+
+app.get(`/unlike/:fieldAc/:courseAc/:ratingId`,async (req,res) => {
+
+    if (!req.user) {
+        return res.status(404).send();
+    };
+
+    let ratingId = parseInt(req.params.ratingId),
+        userId = req.user.id,
+        dec = '- 1';
+
+    console.log(ratingId);
+    console.log(userId);
+
+    let deleting = await deleteLike(ratingId,userId),
+        updating = await updateLike(ratingId,dec); 
+
+    res.send(true);
+})
 
 
 

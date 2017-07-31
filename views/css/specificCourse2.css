@@ -150,14 +150,55 @@ div.like-group > h3 > a {
 	}
 }
 
-div.like-group > h3 > a > i.liked {
+div.like-group > h3 > a.liked {
 	color: rgb(225,0,0);
 }
 
-div.like-group > h3 > a > i.not-liked {
+div.like-group > h3 > a.unliked,
+div.like-group > h3 > a.unliked:focus {
 	color: rgb(119,119,119);
 }
 
-div.like-group > h3 > a:hover {
+div.like-group > h3 > a.unliked:hover {
 	color: rgb(225,0,0);
+}
+
+
+/* Key Group */
+
+div.key-group {
+	border: 1px solid rgb(139,139,139);
+	margin-right: 3px;
+	margin-left: 3px;
+	margin-bottom: 15px;
+	border-radius: 5px;
+}
+
+div.key-group p.keys {
+	font-size: 25px;
+	color: rgb(119,119,119);
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+
+div.key-group p.keys span.indicator-red {
+	color: rgb(217, 83, 79);
+}
+div.key-group p.keys span.indicator-yellow {
+	color: rgb(240, 173, 78);
+}
+div.key-group p.keys span.indicator-blue {
+	color: rgb(2, 117, 216);
+}
+div.key-group p.keys span.indicator-green {
+	color: rgb(92, 184, 92);
+}
+
+
+
+/* Submitted Ratings */
+
+div.submitted-ratings div.panel-heading > div.row > div > h3.username,
+div.submitted-ratings div.panel-heading > div.row > div.created-at > h3 {
+	color: rgb(99,99,99) !important;
 }

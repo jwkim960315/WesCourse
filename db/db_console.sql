@@ -194,8 +194,23 @@ delete from ratings where user_id=20;
 
 select * from ratings;
 
+delete from likes;
 
 SELECT * FROM ratings;
+
+UPDATE ratings SET ratings.likes=0 WHERE id=2;
+
+SELECT *, CASE
+              WHEN likes.user_id="115870424843024280095"
+              THEN TRUE
+              ELSE FALSE  
+              END AS HaveLiked
+        FROM ratings RIGHT JOIN likes ON ratings.id = likes.rating_id
+        WHERE ratings.course_id=196
+        LIMIT 0,10;
+
+DELETE FROM likes WHERE likes.user_id="" AND likes.rating_id=1
+
 
 SELECT CASE
                                         WHEN ratings.anonymous=true THEN "Anonymous"
@@ -204,6 +219,7 @@ SELECT CASE
                                     comment,
                                     DATE_FORMAT(ratings.created_at,"%b %d, %Y") as created_at,
                                     ratings.difficulty,
+                                    courses.id,
                                     ratings.organization,
                                     ratings.effort,
                                     ratings.professors,
@@ -211,6 +227,8 @@ SELECT CASE
                                     users.custom_image,
                                     users.google_image,
                                     users.use_google_img,
+                                    likes.user_id,
+                                    likes.rating_id,
                                     CASE
                                         WHEN ratings.recommend=true THEN "Yes"
                                         ELSE "No"
@@ -220,9 +238,11 @@ SELECT CASE
                                 ON ratings.course_id = courses.id
                              INNER JOIN users
                                 ON ratings.user_id = users.id
+                             LEFT JOIN likes
+                                ON ratings.id = likes.rating_id
                              WHERE courses.course_acronym="ARAB101-01"
                              ORDER BY overall_rating
-                             LIMIT 0,10
+                             LIMIT 0,10;
 SELECT AVG(recommend) FROM ratings GROUP BY recommend WHERE course_acronym="ARAB101-01";
 SELECT recommend FROM ratings WHERE course_acronym="ARAB101-01";
 select case when anonymous=1 then "Anonymous" ELSE username END as username FROM ratings INNER JOIN courses ON ratings.course_id = courses.id INNER JOIN users ON ratings.user_id = users.id WHERE courses.course_acronym="ARAB101-01";
