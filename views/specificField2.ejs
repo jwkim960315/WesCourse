@@ -1,9 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
     <head>
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-      <html lang="en">
         
       <title>WesCourse</title>
 
@@ -107,7 +106,7 @@
             <div class="row">
             <% for (var i=0;i < fallCourses.length; ++i) { %>
               
-              <a href="/catalog/<%= fallCourses[i].field_acronym %>/<%= fallCourses[i].course_acronym %>/likes%>">
+              <a href="/catalog/<%= fallCourses[i].field_acronym %>/<%= fallCourses[i].course_acronym %>/likes">
                 <div class="infos class-time col-xs-12 col-md-6 text-right">
                   <p>Class Time: <%= fallCourses[i].class_date %></p>
                 </div>
@@ -132,7 +131,7 @@
           <div role="tabpanel" class="tab-pane" id="spring">
             <div class="row">
               <% for (var i=0;i < springCourses.length; ++i) { %>
-                <a href="/catalog/<%= springCourses[i].field_acronym %>/<%= springCourses[i].course_acronym %>/1/1">
+                <a href="/catalog/<%= springCourses[i].field_acronym %>/<%= springCourses[i].course_acronym %>/likes">
                   <div class="infos class-time col-xs-12 col-md-6 text-right">
                     <p>Class Time: <%= springCourses[i].class_date %></p>
                   </div>

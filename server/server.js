@@ -730,7 +730,7 @@ app.get(`/unlike/:fieldAc/:courseAc/:ratingId`,async (req,res) => {
 
 
 
-app.get('/comment-submit',(req,res) => {
+app.get('/comment-submit/:fieldAc/:courseAc/',(req,res) => {
 
     if (req.user) {
         userLoggedIn = true;
@@ -742,7 +742,7 @@ app.get('/comment-submit',(req,res) => {
         image = undefined;
     };
 
-    res.render('commentSubmit',{ userLoggedIn,
+    res.render('submitRating',{ userLoggedIn,
                                  username,
                                  image });
 });
