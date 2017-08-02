@@ -487,7 +487,7 @@ app.get('/catalog/:fieldAc/:courseAc/:category',async (req,res) => {
                 category = "professors DESC";
                 break;
             case "created_at":
-                category = "created_at DESC";
+                category = "ratings.created_at DESC";
                 break;
         };
     };
@@ -558,7 +558,7 @@ app.get('/catalog/:fieldAc/:courseAc/:category',async (req,res) => {
         case "professors DESC":
             categoryDisplay = "Professor(s)";
             break;
-        case "created_at DESC":
+        case "ratings.created_at DESC":
             categoryDisplay = "Recent";
             break;
     };
