@@ -17,7 +17,7 @@ create table courses (
   course_name varchar(255) not null,
   section int not null,
   professors varchar(255)  not null,
-  course_acronym varchar(15) not NULL,
+  course_acronym varchar(15) not NULL UNIQUE,
   class_date varchar(255) not null,
   term int not null,
   term_name varchar(100) not null,
