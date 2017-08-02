@@ -1,0 +1,128 @@
+
+/* Rows */
+
+.row {
+	margin-bottom: 15px;
+}
+
+
+
+/* Labels */
+
+label {
+	color: rgb(119,119,119);
+}
+
+
+/* Course ID */
+
+input#course-acronym {
+	border: 1.1px solid rgb(119,119,119);
+	box-shadow: none;
+	border-radius: 2px;
+	color: rgb(99,99,99);
+}
+
+input#course-acronym:focus {
+	outline-color: rgb(119,119,119);
+	outline-offset: -1.6px;
+	outline-style: auto;
+	outline-width: 4.8px;
+}
+
+
+/* Recommend */
+
+div#recommend {
+	padding: 10px;
+}
+
+div#recommend div label {
+	padding-right: 10px;
+}
+
+
+/* Comment */
+
+textarea {
+	width: 100%;
+	height: 150px;
+	border: 1.1px solid rgb(119,119,119);
+	border-radius: 3px;
+	color: rgb(99,99,99);
+	padding: 6px 12px 6px 12px;
+}
+
+textarea:focus {
+	outline-color: rgb(119,119,119);
+}
+
+textarea::-webkit-scrollbar {
+    width: 12px;
+}
+ 
+textarea::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
+    border-radius: 10px;
+}
+ 
+textarea::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
+}
+
+
+/* Submit Button */
+
+button.form-submit {
+	border: 1.1px solid rgb(119,119,119);
+	margin-bottom: 50px;
+	text-align: right;
+	color: rgb(99,99,99);
+}
+
+button.form-submit:hover,
+button.form-submit:focus {
+	border: 1.1px solid white;
+	background-color: rgb(225,0,0);
+	color: white;
+	transition: .2s all ease;
+}
+
+
+
+/* Placeholder */
+
+::-webkit-input-placeholder { /* WebKit browsers */
+    color:    rgb(131,131,131);
+}
+:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+    color:    rgb(131,131,131);
+}
+::-moz-placeholder { /* Mozilla Firefox 19+ */
+    color:    rgb(131,131,131);
+}
+:-ms-input-placeholder { /* Internet Explorer 10+ */
+    color:    rgb(131,131,131);
+}
+
+
+/* Anonymous */
+
+div.anonymous div.icheckbox_flat-red {
+	margin-left: 10px;
+}
+
+/* JQuery Validator Error Message */
+
+div.err > label {
+	color: red;
+}
+
+
+
+/* Hidden FieldAc Input */
+
+input[name="fieldAc"] {
+	display: none;
+}

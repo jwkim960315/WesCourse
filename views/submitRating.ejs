@@ -22,12 +22,15 @@
         <link rel="stylesheet" href="/dist/themes/bars-square.css">
 
         <!-- iCheck CSS -->
-        <link rel="stylesheet" href="/iCheck/skins/line/green.css">
+        <link rel="stylesheet" href="/iCheck/skins/square/red.css">
+        <link rel="stylesheet" href="/iCheck/skins/flat/red.css">
 
         <!-- Custom CSS -->
         <link rel="stylesheet" type="text/css" href="/css/container.css">
         <link rel="stylesheet" type="text/css" href="/css/navbar.css">
         <link rel="stylesheet" type="text/css" href="/css/loading.css">
+        <link rel="stylesheet" type="text/css" href="/css/jqueryBarRating.css">
+        <link rel="stylesheet" type="text/css" href="/css/submitRating.css">
 	</head>
 	<body>
 		<div class="container">
@@ -54,7 +57,7 @@
 	                <li class="nav-item">
 	                  <a class="nav-link" href="/">Home</a>
 	                </li>
-	                <li class="nav-item">
+	                <li class="nav-item active">
 	                  <a class="nav-link" href="/catalog">Catalog</a>
 	                </li>
 	                <li class="nav-item">
@@ -98,35 +101,120 @@
 	          </div><!-- /.container-fluid -->
 	        </nav>
 
+
 	        <!-- Ratings Submit Form -->
 	        <form action="/submittingRating" method="POST">
+
+	        	<!-- Field Acronym -->
+	        	<input name="fieldAc" value="<%= fieldAc %>">
+
+	        	<!-- Course Acronym -->
 	        	<div class="row">
-	        		<div class="col-xs-3">
+	        		<div class="col-lg-4 col-sm-6 col-xs-12">
 	        			<div class="form-group">
 						    <label for="course-acronym">Course ID</label>
 						    <% if (courseAc) { %>
-							    <input type="text" class="form-control" id="course-acronym" placeholder="Enter a valid Course ID:   Ex. ARAB101-01" value="<%= courseAc %>">
+							    <input type="text" class="form-control" name="courseId" id="course-acronym" placeholder="Enter a valid Course ID  (ex. ARAB101-01)" value="<%= courseAc %>" autocomplete="off">
 							<% } else { %>
-								<input type="text" class="form-control" id="course-acronym" placeholder="Enter a valid Course ID:   Ex. ARAB101-01">
+								<input type="text" class="form-control" name="courseId" id="course-acronym" placeholder="Enter a valid Course ID  (ex. ARAB101-01)" autocomplete="off">
 							<% } %>
-						  </div>
+							<div class="err"></div>
+					    </div>
 	        		</div>
 	        	</div>
-			  <div class="form-group">
-			    <label for="exampleInputPassword1">Password</label>
-			    <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
-			  </div>
-			  <div class="form-group">
-			    <label for="exampleInputFile">File input</label>
-			    <input type="file" id="exampleInputFile">
-			    <p class="help-block">Example block-level help text here.</p>
-			  </div>
-			  <div class="checkbox">
-			    <label>
-			      <input type="checkbox"> Check me out
-			    </label>
-			  </div>
-			  <button type="submit" class="btn btn-default">Submit</button>
+			  	
+			    
+
+	        	<!-- Category Ratings -->
+				<div class="row">
+					<div class="col-xs-12">
+						<div class="form-group">
+							<div class="row">
+								<% categoryList = ["difficulty","organization","effort","professors"] %>
+								<% categoryDisplayList = ["Difficulty","Organization","Effort Required","Professor(s)"] %>
+								<% for (var i=0; i < 4; i++) { %>
+									<div class="col-xs-12 col-md-3">
+										<div class="rating-category">
+											<div class="row">
+												<div class="col-xs-12">
+													<label for="<%= categoryList[i] %>"><%= categoryDisplayList[i] %></label>
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-xs-12">
+													<select id="<%= categoryList[i] %>" name="<%= categoryList[i] %>">
+														<% for (var j=1; j <= 5; j++) { %>
+															<option value="<%= j %>"><%= j %></option>
+														<% } %>
+													</select>
+												</div>
+											</div>
+										</div>
+									</div>
+								<% } %>
+							</div>
+						</div>
+					</div>
+				</div>
+
+
+				<!-- Recommend -->
+				<div class="row">
+				    <div class="col-xs-12">
+					    <div class="form-group">
+						  	<div class="row">
+						  		<div class="col-lg-4 col-sm-6 col-xs-12">
+							  		<label for="recommend">Do You Recommend This Course to Other Students?</label>
+						  		</div>
+						  	</div>
+						  	<div class="row" id="recommend">
+						  		<div class="col-lg-4 col-sm-6 col-xs-12">
+						  			<% yesNoList = ["Yes","No"] %>
+						  			<% for (var i=0; i < yesNoList.length; i++) { %>
+								  		<input type="radio" name="option" value="<%= yesNoList[i] %>">
+										<label><%= yesNoList[i] %></label>
+									<% } %>
+								</div>	
+						  	</div>
+						  	<div class="err"></div>
+						</div>
+					</div>
+				</div>
+				
+				
+				
+				<!-- Comment -->
+				<div class="row">
+					<div class="col-xs-12">
+						<div class="form-group">
+							<div class="row">
+								<div class="col-sm-6 col-xs-12">
+									<label for="comment">Comment</label>		
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-sm-6 col-xs-12">
+									<textarea id="comment" name="comment" width="150" height="150" placeholder="Write your comment here..."></textarea>	
+								</div>
+							</div>
+							
+							
+						</div>
+					</div>
+				</div>
+				
+				<!-- Anonymous -->
+				<div class="row">
+					<div class="col-xs-12">
+						<div class="form-group anonymous">
+					    	<label for="anonymous">I would like to be anonymous</label>
+					    	<input type="checkbox" id="anonymous" name="anonymous">
+					    </div>		
+					</div>
+				</div>
+
+				<!-- Submit Button -->
+			    <button type="submit" class="btn btn-default form-submit">Submit</button>
 			</form>
         </div>
 
@@ -152,10 +240,19 @@
         <!-- iCheck JavaScript -->
         <script src="/iCheck/icheck.min.js"></script>
 
+        <!-- jQuery Validator -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.16.0/jquery.validate.min.js"></script>
+
         <!-- Custom JavaScript -->
         <script src="/js/navbar.js"></script>
         <script src="/js/barRatingConfig.js"></script>
-        <script src="/js/customRadio.js"></script>
         <script src="/js/likesRatings.js"></script>
+        <script src="/js/iCheckConfig.js"></script>
+        <script src="/js/submitRating.js"></script>
+
+        <!-- Custom JavaScript With EJS -->
+        <script>
+        	
+        </script>
 	</body>
 </html>

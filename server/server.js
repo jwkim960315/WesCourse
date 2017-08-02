@@ -732,19 +732,64 @@ app.get(`/unlike/:fieldAc/:courseAc/:ratingId`,async (req,res) => {
 
 app.get('/comment-submit/:fieldAc/:courseAc/',(req,res) => {
 
-    if (req.user) {
-        userLoggedIn = true;
-        username = req.user.username;
-        image = (req.user.use_google_img) ? req.user.google_image : req.user.custom_image;
-    } else {
-        userLoggedIn = false;
-        username = undefined;
-        image = undefined;
+    if (!req.user) {
+        return res.redirect('/login');
     };
+
+    userLoggedIn = true;
+    username = req.user.username;
+    image = (req.user.use_google_img) ? req.user.google_image : req.user.custom_image;
 
     res.render('submitRating',{ userLoggedIn,
                                  username,
                                  image });
+});
+
+const courseIdFinder = async (courseAc) => {
+    return connection.query(`SELECT id FROM courses WHERE course_acronym="${courseAc}"`);
+};
+
+const insertRating = async (courseId,userId,difficulty,organization,effort,professors,recommend,comment,anonymous) => {
+    return connection.query(`INSERT INTO ratings (difficulty,organization,effort,professors,recommend,course_id,user_id,comment,anonymous) VALUES (${difficulty},${organization},${effort},${professors},${recommend},${courseId},"${userId}","${comment}",${anonymous})`);
+};
+
+app.post('/submittingRating',async (req,res) => {
+    
+    if (!req.user) {
+        return res.redirect('/login');
+    };
+
+    let fieldAc = req.body.fieldAc,
+        courseAc = req.body.courseId,
+        difficulty = req.body.difficulty,
+        organization = req.body.organization,
+        effort = req.body.effort,
+        professors = req.body.professors,
+        recommend = (req.body.option === "Yes") ? true : false,
+        comment = (req.body.comment.trim().length === 0) ? "None" : req.body.comment.replace(/\s*$/,""),
+        anonymous = (req.body.anonymous === "on") ? true : false,
+        userId = req.user.id;
+
+    let courseId = await courseIdFinder(courseAc);
+    courseId = courseId[0].id;
+    console.log(courseId);
+
+    await insertRating(courseId,userId,difficulty,organization,effort,professors,recommend,comment,anonymous);
+
+    console.log(req.query);
+    console.log(req.params);
+    console.log(req.body);
+    console.log(fieldAc);
+    console.log(courseAc);
+    console.log(difficulty);
+    console.log(organization);
+    console.log(effort);
+    console.log(professors);
+    console.log(recommend);
+    console.log(comment);
+    console.log(anonymous);
+    // res.status(404).send();
+    return res.redirect(`/catalog/${fieldAc}/${courseAc}/likes`);
 });
 
 
@@ -1203,7 +1248,7 @@ app.get('/profile',(req,res) => {
     let fullName = `${req.user.last_name}, ${req.user.first_name}`
 
     delete req.session.image;
-    res.render('profile',{ userLoggedIn,
+    res.render('profile2',{ userLoggedIn,
                            username,
                            image,
                            email: req.user.email,

@@ -1,0 +1,65 @@
+
+/* User Info */
+
+.user-info-container {
+	font-family: 'Merriweather', serif !important;
+	background-color: white;
+	margin-top: 250px;
+	border-radius: 5px;
+    padding: 20px;
+    border: 2px solid rgb(221,221,221);
+}
+
+.user-info-container .header {
+	margin-bottom: -10px;
+}
+
+
+.user-info-container .header h1 {
+	font-family: 'Merriweather', serif !important;
+	padding-left: 10px;
+	display: inline-block;
+	font-size: 30px;
+	color: rgb(99,99,99);
+}
+
+.user-info-container .header img {
+	border-radius: 50%;
+	margin-left: 10px;
+	margin-bottom: 10px;
+	width: 50px;
+	height: 50px;
+	border: 1px solid rgb(221,221,221);
+}
+
+#header-user-info {
+	border: 1.2px solid rgb(221,221,221);
+	background-color: rgb(221,221,221);
+}
+
+#user-info-header-user-info-content {
+	border: 1.2px solid rgb(221,221,221);
+	background-color: rgb(221,221,221);
+}
+
+
+.user-info {
+	font-family: 'Merriweather', serif !important;
+	border-radius: .25rem;
+    padding: 20px;
+    margin-left: 15px;
+}
+
+.user-info * {
+	padding-left: 7px;
+}
+
+.user-info .title-user-info {
+	color: rgb(99,99,99);
+}
+
+.user-info-content {
+	font-family: 'Merriweather', serif !important;
+	font-weight: normal;
+	vertical-align: middle !important;
+}

@@ -1,0 +1,50 @@
+
+.br-theme-bars-square .br-widget a[data-rating-value="1"] {
+    color: rgba(217, 83, 79,.3);
+    border-color: rgba(217, 83, 79,.3);
+}
+.br-theme-bars-square .br-widget a[data-rating-value="2"] {
+    color: rgba(240, 173, 78,.3);
+    border-color: rgba(240, 173, 78,.3);
+}
+.br-theme-bars-square .br-widget a[data-rating-value="3"] {
+    color: rgba(2, 117, 216, .3);
+    border-color: rgba(2, 117, 216, .3);
+}
+.br-theme-bars-square .br-widget a[data-rating-value="4"] {
+    color: rgba(92, 184, 92, .3);
+    border-color: rgba(92, 184, 92, .3);
+}
+.br-theme-bars-square .br-widget a[data-rating-value="5"] {
+    color: rgba(92, 184, 92, .3);
+    border-color: rgba(92, 184, 92, .3);
+}
+
+
+
+
+.br-theme-bars-square .br-widget a.br-active[data-rating-value="1"],
+.br-theme-bars-square .br-widget a.br-selected[data-rating-value="1"] {
+    color: rgb(217, 83, 79);
+    border-color: rgb(217, 83, 79);
+}
+.br-theme-bars-square .br-widget a.br-active[data-rating-value="2"],
+.br-theme-bars-square .br-widget a.br-selected[data-rating-value="2"] {
+    color: rgb(240, 173, 78);
+    border-color: rgb(240, 173, 78);
+}
+.br-theme-bars-square .br-widget a.br-active[data-rating-value="3"],
+.br-theme-bars-square .br-widget a.br-selected[data-rating-value="3"] {
+    color: rgb(2, 117, 216);
+    border-color: rgb(2, 117, 216);
+}
+.br-theme-bars-square .br-widget a.br-active[data-rating-value="4"],
+.br-theme-bars-square .br-widget a.br-selected[data-rating-value="4"] {
+    color: rgb(92, 184, 92);
+    border-color: rgb(92, 184, 92);
+}
+.br-theme-bars-square .br-widget a.br-active[data-rating-value="5"],
+.br-theme-bars-square .br-widget a.br-selected[data-rating-value="5"] {
+    color: rgb(92, 184, 92);
+    border-color: rgb(92, 184, 92);
+}

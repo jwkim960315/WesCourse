@@ -2,21 +2,21 @@
 
 $(document).ready(function() {
     // Current Page Navigation Indication Event Handler
-    $('.navbar-nav .nav-item').each(function(val,elem) {
-        navItem = $(this).find('a').attr('href').toLowerCase().slice(1);
-        currentLocation = window.location.pathname;
-        slashIndex = currentLocation.slice(1).indexOf('/');
+    // $('.navbar-nav .nav-item').each(function(val,elem) {
+    //     navItem = $(this).find('a').attr('href').toLowerCase().slice(1);
+    //     currentLocation = window.location.pathname;
+    //     slashIndex = currentLocation.slice(1).indexOf('/');
 
-        if (slashIndex !== -1) {
-            currentLocation = currentLocation.slice(1,slashIndex+1);
-        } else {
-            currentLocation = currentLocation.slice(1);    
-        };
+    //     if (slashIndex !== -1) {
+    //         currentLocation = currentLocation.slice(1,slashIndex+1);
+    //     } else {
+    //         currentLocation = currentLocation.slice(1);    
+    //     };
         
-        if (navItem === currentLocation) {
-          $(this).addClass('active');
-        };
-    });
+    //     if (navItem === currentLocation) {
+    //       $(this).addClass('active');
+    //     };
+    // });
 
     // Prevent Empty Input Submittion Event Handler
     $('.navbar-form').submit(function(e) {

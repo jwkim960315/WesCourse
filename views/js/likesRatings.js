@@ -6,7 +6,7 @@ $(document).ready(function() {
             url: '/checkLogin',
             success: function(isLoggedIn) {
                 if (!isLoggedIn) {
-                    alert('You must login to evaluate this course');
+                    alert('You must login to "like" a rating');
                     window.location.href = '/login';
                     return;
                 };
