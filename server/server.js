@@ -738,7 +738,7 @@ app.get('/comment-submit/:fieldAc/:courseAc/',(req,res) => {
 
     userLoggedIn = true;
     username = req.user.username;
-    image = (req.user.use_google_img) ? req.user.google_image : req.user.custom_image;
+    image = (req.user.use_google_img) ? req.user.google_image : req.user.custom_image; 
 
     res.render('submitRating',{ userLoggedIn,
                                  username,
@@ -749,8 +749,8 @@ const courseIdFinder = async (courseAc) => {
     return connection.query(`SELECT id FROM courses WHERE course_acronym="${courseAc}"`);
 };
 
-const insertRating = async (courseId,userId,difficulty,organization,effort,professors,recommend,comment,anonymous) => {
-    return connection.query(`INSERT INTO ratings (difficulty,organization,effort,professors,recommend,course_id,user_id,comment,anonymous) VALUES (${difficulty},${organization},${effort},${professors},${recommend},${courseId},"${userId}","${comment}",${anonymous})`);
+const insertRating = async (courseId,userId,difficulty,organization,effort,professors,recommend,comment,anonymous,fieldAc) => {
+    return connection.query(`INSERT INTO ratings (difficulty,organization,effort,professors,recommend,course_id,user_id,comment,anonymous,field_acronym) VALUES (${difficulty},${organization},${effort},${professors},${recommend},${courseId},"${userId}","${comment}",${anonymous},"${fieldAc}")`);
 };
 
 app.post('/submittingRating',async (req,res) => {
@@ -773,8 +773,9 @@ app.post('/submittingRating',async (req,res) => {
     let courseId = await courseIdFinder(courseAc);
     courseId = courseId[0].id;
     console.log(courseId);
+    console.log(fieldAc);
 
-    await insertRating(courseId,userId,difficulty,organization,effort,professors,recommend,comment,anonymous);
+    await insertRating(courseId,userId,difficulty,organization,effort,professors,recommend,comment,anonymous,fieldAc);
 
     console.log(req.query);
     console.log(req.params);
@@ -792,61 +793,6 @@ app.post('/submittingRating',async (req,res) => {
     return res.redirect(`/catalog/${fieldAc}/${courseAc}/likes`);
 });
 
-
-
-app.post('/comment/submit/:fieldAc/:courseAc/:courseId/:sectionNum/:pageNum',(req,res) => {
-    
-    
-
-    if (!req.user) {
-        return res.redirect('/login');
-    };
-
-
-    let difficulty = req.body.difficulty,
-        organization = req.body.organization,
-        effort = req.body.effort,
-        professors = req.body.professors,
-        anonymous = req.body.optionsRadios1,
-        recommend = req.body.optionsRadios2,
-        comment = req.body.comment,
-        userId = req.user.id,
-        username = req.user.username,
-        courseId = req.params.courseId,
-        courseAc = req.params.courseAc,
-        fieldAc = req.params.fieldAc;
-
-        // console.log(difficulty);
-        // console.log(organization);
-        // console.log(effort);
-        // console.log(professors);
-        console.log(anonymous);
-        console.log(recommend);
-        // console.log(comment);
-        // console.log(userId);
-        // console.log(username);
-        // console.log(courseId);
-        // console.log(courseAc);
-        // console.log(fieldAc);
-
-    
-
-    if (comment.trim() === "") {
-        comment = "None";
-    };
-
-    recommend = (recommend ==="yes") ? 1 : 0;
-    anonymous = (anonymous === "yes") ? 1 : 0;
-    
-    connection.query(`INSERT INTO ratings (difficulty,organization,effort,professors,recommend,comment,anonymous,course_id,user_id) VALUES (${difficulty},${organization},${effort},${professors},${recommend},"${comment}",${anonymous},${courseId},${userId})`).then((success) => {
-        res.redirect(`/catalog/${fieldAc}/${courseAc}/${req.params.sectionNum}/${req.params.pageNum}`);
-    });
-
-
-    
-
-
-});
 
 
 
@@ -877,7 +823,7 @@ app.get('/createUser',(req,res) => {
     let invalidMessage = req.session.invalidMessage;
     delete req.session.success;
     delete req.session.invalidMessage;
-    res.render('createUser',{success: [{success}], 
+    res.render('createUser2',{success: [{success}], 
                              invalidMessage: [{invalidMessage}],
                              isSignIn: [{isSignIn: false}],
                              userLoggedIn,
@@ -913,7 +859,7 @@ app.get('/login',(req,res) => {
     let invalidMessage = req.session.invalidMessage;
     delete req.session.success;
     delete req.session.invalidMessage;
-    res.render('createUser',{success: [{success}], 
+    res.render('createUser2',{success: [{success}], 
                              invalidMessage: [{invalidMessage}],
                              isSignIn: [{isSignIn: true}],
                              userLoggedIn,
@@ -1226,13 +1172,31 @@ app.get('/search/query/:sectionNum/:pageNum/:searchParam',(req,res) => {
 
 
 
+const user_ratings_getter = async (userId,category,offset) => {
+    return connection.query(`SELECT *, DATE_FORMAT(ratings.created_at,"%b %d, %Y %H:%i:%s") as created_at 
+                             FROM ratings 
+                             WHERE user_id="${userId}"
+                             ORDER BY ${category}
+                             LIMIT ${offset},10`);
+};
+
+const user_ratings_like_checker = async (userId,category,offset) => {
+    return connection.query(`SELECT CASE 
+                                         WHEN likes.user_id="${userId}"
+                                         THEN TRUE
+                                         ELSE FALSE
+                                         END AS haveLiked
+                             FROM ratings LEFT JOIN likes ON ratings.id = likes.rating_id
+                             WHERE ratings.user_id="${userId}"
+                             ORDER BY ${category}
+                             LIMIT ${offset},10`);
+};
 
 // Profile
-app.get('/profile',(req,res) => {
+app.get('/profile',async (req,res) => {
     
 
     if (req.user) { 
-
 
         userLoggedIn = true;
         username = req.user.username;
@@ -1245,7 +1209,11 @@ app.get('/profile',(req,res) => {
         return res.redirect('/');
     };
 
-    let fullName = `${req.user.last_name}, ${req.user.first_name}`
+    let fullName = `${req.user.last_name}, ${req.user.first_name}`;
+
+
+    let userRatings = await user_ratings_getter(req.user.id);
+    console.log(userRatings);
 
     delete req.session.image;
     res.render('profile2',{ userLoggedIn,
@@ -1254,7 +1222,8 @@ app.get('/profile',(req,res) => {
                            email: req.user.email,
                            fullName,
                            created_date: req.user.created_date,
-                           usingGoogleImg: req.user.use_google_img })
+                           usingGoogleImg: req.user.use_google_img,
+                           userRatings });
 });
 
 

@@ -176,25 +176,170 @@
 					        			<div class="row">
 					        				<div class="col-xs-12">
 					        					<div class="user-image-mod-inside">
-						                        	<a href="#" onclick="imgChangeOptionsExpand()">
+						                        	<a href="#" id="img-toggle">
 						                          		<img src="<%= image %>"/>
 						                        	</a>
 							                    </div>
 					        				</div>
 					        			</div>
-				        				<div class="row">
-				        					<div class="col-xs-12">
-				        						<form class="form-inline">
-				        							<span class="btn btn-primary btn-file">
-					        							<input type="file" style="display: none;"/>
-				        							</span>
-				        						</form>
+				        				<div class="row img-mod-buttons">
+				        					<div class="col-xs-12 text-center">
+				        						<div class="btn-group">
+				        							<button type="button" class="btn btn-default upload-options" data-toggle="modal" data-target="#uploadImg">Upload Image</button>
+				        							<a href="/profile/updateToGoogleImg" class="btn btn-default updateToGoogleImg-options">Google Image</a>
+				        							<a href="/profile/updateToCustomImg" class="btn btn-default updateToCustomImg-options">Custom Image</a>		
+				        						</div>
 				        					</div>
 				        				</div>
 				        			</div>
+
+				        			<!-- Upload Image Modal -->
+				        			<div class="modal fade" id="uploadImg" tabindex="-1" role="dialog" aria-labelledby="uploadImgLabel">
+									  <div class="modal-dialog" role="document">
+									    <div class="modal-content">
+									      <div class="modal-header">
+									        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+									        <h4 class="modal-title" id="uploadImgLabel">Upload Image</h4>
+									      </div>
+									      <div class="modal-body image-preview">
+									      	<div class="row">
+									      		<div class="col-xs-12">
+									      			<div class="user-image-mod-inside">
+										      			<img width="150" height="150" src="<%= image %>"/>
+										      		</div>
+									      		</div>
+									      	</div>
+									      	<div class="row">
+										      	<div class="col-xs-12">
+										      		<form class="form text-center" action="/profile/uploadCustomImg" method="POST" enctype="multipart/form-data">
+										      			<span class="btn btn-default btn-file">
+										      				Upload... <input type="file" name="image" accept="image/*"/>
+										      			</span>
+										      			<div class="modal-footer">
+													   		<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+													        <button type="submit" class="btn btn-primary">Save changes</button>
+													    </div>
+										      		</form>
+										      	</div>
+									      	</div>
+									      </div>
+									      
+									    </div>
+									  </div>
+									</div>
+				        		</div>
+				        		<div class="row">
+				        			<div class="col-xs-12 title-user-info ratings-header">
+				        				<h2>Ratings</h3>
+				        				<hr id="header-user-info" />
+				        			</div>
+				        			<div class="row">
+				        				<div class="col-xs-12">
+				        					<% if (userRatings) { %>
+									          <% for (var i=0; i < userRatings.length; i++) { %>
+									            <div class="panel submitted-ratings">
+									              <div class="panel-heading">
+									                <div class="row">
+									                  <% if (userRatings[i].username !== 'Anonymous') { %>
+									                    <% if (userRatings[i].use_google_img) { %>
+									                      <div class="col-xs-12 col-md-2">
+									                        <h3 class="username"><img src="<%= userRatings[i].google_image %>" width="30" height="30"/>  <%= userRatings[i].username %></h3>
+									                      </div>
+									                    <% } else { %>
+									                      <div class="col-xs-12 col-md-2">
+									                        <h3 class="username"><img src="<%= userRatings[i].custom_image %>" width="30" height="30"/>  <%= userRatings[i].username %></h3>
+									                      </div>
+									                    <% } %>
+									                  <% } else { %>
+									                    <div class="col-xs-12 col-md-2">
+									                      <h3 class="username"><%= userRatings[i].username %></h3>
+									                    </div>
+									                  <% } %>
+									                  <div class="col-xs-12 col-md-7 like-group">
+									                    <h3 class="">
+									                      <% if (haveLiked.length) { %>
+									                        <% if (haveLiked[i].haveLiked) { %>
+									                          <a href="#" class="liked" id="<%= i %>" data-like-link="/like/<%= fieldAc %>/<%= courseAc %>/<%= userRatings[i].id %>">
+									                            <i class="fa fa-heart" aria-hidden="true"></i>
+									                          </a>
+									                        <% } else { %>
+									                          <a href="#" class="unliked" id="<%= i %>" data-like-link="/unlike/<%= fieldAc %>/<%= courseAc %>/<%= userRatings[i].id %>">
+									                            <i class="fa fa-heart" aria-hidden="true"></i>
+									                          </a>
+									                        <% } %>
+									                      <% } else { %>
+									                        <a href="#" class="unliked" id="<%= i %>" data-like-link="/unlike/<%= fieldAc %>/<%= courseAc %>/<%= userRatings[i].id %>">
+									                          <i class="fa fa-heart" aria-hidden="true"></i>
+									                        </a>
+									                      <% } %>
+									                      <h3>: <span><%= userRatings[i].likes %></span></h3>
+									                    </h3>
+									                  </div>
+									                  <div class="col-xs-12 col-md-3 created-at text-right">
+									                    <h3><%= userRatings[i].created_at %></h3>
+									                  </div>
+									                </div>
+									              </div>
+									              <div class="panel-body">
+									                <div class="col-lg-4 all-ratings">
+									                  <div class="row all-ratings-row">
+									                    <div class="col-lg-12 difficulty">
+									                      <h4 class="ratings-header">
+									                        Difficulty: <span class="indiv-ratings-num"><%= userRatings[i].difficulty %></span>  
+									                      </h4>
+									                    </div>
+									                    <div class="col-lg-12 organization">
+									                      <h4 class="ratings-header">
+									                        Organization: <span class="indiv-ratings-num"><%= userRatings[i].organization %></span>
+									                      </h4>
+									                    </div>
+									                    <div class="col-lg-12 effort">
+									                      <h4 class="ratings-header">
+									                        Effort Required: <span class="indiv-ratings-num"><%= userRatings[i].effort %></span>
+									                      </h4>
+									                    </div>
+									                    <div class="col-lg-12 professors">
+									                      <h4 class="ratings-header">
+									                        Professor(s): <span class="indiv-ratings-num"><%= userRatings[i].professors %></span>
+									                      </h4>
+									                    </div>
+									                    <div class="col-lg-12 overall-avg">
+									                      <h4 class="ratings-header">
+									                        Overall Average: <span class="indiv-ratings-num"><%= ((userRatings[i].difficulty + userRatings[i].organization + userRatings[i].effort + userRatings[i].professors)/4).toFixed(2)  %></span>
+									                      </h4>
+									                    </div>
+									                    <div class="col-lg-12 recommend">
+									                      <h4 class="ratings-header">
+									                        Recommend: <span class="indiv-ratings-yes-no">
+									                          <% if (userRatings[i].recommend === "Yes") { %>
+									                            <i class="fa fa-thumbs-up" style="color: rgb(92, 184, 92)" aria-hidden="true"></i>
+									                          <% } else { %>
+									                            <i class="fa fa-thumbs-down" style="color: rgb(217, 83, 79);" aria-hidden="true"></i>
+									                          <% } %>
+									                        </span>
+									                      </h4>
+									                    </div>
+									                  </div>
+									                </div>
+									                <div class="col-lg-8 comments">
+									                  <div class="row comments-row">
+									                    <div class="col-lg-12 comments-content-cont">
+									                      <pre><%= userRatings[i].comment %></pre>
+									                    </div>
+									                  </div>
+									                </div>
+									              </div>
+									            </div>
+									          <% } %>
+									        <% } %>
+				        				</div>
+				        			</div>
+				        			
 				        		</div>
 				        	</div>
 		        		</div>
+
+
 		        	</div>
 		        </div>
 	        </div>
@@ -221,6 +366,6 @@
         <!-- Custom JavaScript -->
         <script src="/js/navbar.js"></script>
         <script src="/js/profile2.js"></script>
- 
+ 		
 	</body>
 </html>

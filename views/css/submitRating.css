@@ -94,16 +94,16 @@ button.form-submit:focus {
 /* Placeholder */
 
 ::-webkit-input-placeholder { /* WebKit browsers */
-    color:    rgb(131,131,131);
+    color:    rgba(131,131,131,.7);
 }
 :-moz-placeholder { /* Mozilla Firefox 4 to 18 */
-    color:    rgb(131,131,131);
+    color:    rgba(131,131,131,.7);
 }
 ::-moz-placeholder { /* Mozilla Firefox 19+ */
-    color:    rgb(131,131,131);
+    color:    rgba(131,131,131,.7);
 }
 :-ms-input-placeholder { /* Internet Explorer 10+ */
-    color:    rgb(131,131,131);
+    color:    rgba(131,131,131,.7);
 }
 
 

@@ -17,7 +17,7 @@ create table courses (
   course_name varchar(255) not null,
   section int not null,
   professors varchar(255)  not null,
-  course_acronym varchar(15) not NULL UNIQUE,
+  course_acronym varchar(15) not NULL,
   class_date varchar(255) not null,
   term int not null,
   term_name varchar(100) not null,
@@ -52,6 +52,7 @@ create table ratings (
   anonymous BOOLEAN not null,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   likes int DEFAULT 0,
+  field_acronym VARCHAR(4) NOT NULL,
   FOREIGN KEY (course_id) REFERENCES courses(id) on delete cascade,
   FOREIGN KEY (user_id) REFERENCES users(id) on delete cascade
 );
@@ -196,6 +197,8 @@ select * from ratings;
 
 delete from likes;
 
+SELECT * FROM likes;
+
 SELECT * FROM ratings;
 
 UPDATE ratings SET ratings.likes=0 WHERE id=2;
@@ -203,7 +206,7 @@ UPDATE ratings SET ratings.likes=0 WHERE id=2;
 SELECT *, CASE
               WHEN likes.user_id="115870424843024280095"
               THEN TRUE
-              ELSE FALSE  
+              ELSE FALSE
               END AS HaveLiked
         FROM ratings RIGHT JOIN likes ON ratings.id = likes.rating_id
         WHERE ratings.course_id=196

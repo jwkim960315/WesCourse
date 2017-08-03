@@ -34,7 +34,7 @@ $(document).ready(function() {
   });
 
   // Radio Empty Input Error Message Disappear on Click
-  $('ins').click(function() {
+  $('div.iradio_square-red ins').click(function() {
     console.log('HERE')
     $('div#recommend').closest('.form-group').find('div.err').hide();
   })

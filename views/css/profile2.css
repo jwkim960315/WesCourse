@@ -4,7 +4,7 @@
 .user-info-container {
 	font-family: 'Merriweather', serif !important;
 	background-color: white;
-	margin-top: 250px;
+	margin-top: 100px;
 	border-radius: 5px;
     padding: 20px;
     border: 2px solid rgb(221,221,221);
@@ -50,7 +50,7 @@
     margin-left: 15px;
 }
 
-.user-info * {
+.user-info .title-user-info, .user-info ul.list-inline {
 	padding-left: 7px;
 }
 
@@ -68,18 +68,16 @@
 
 
 
-.user-image-mod * {
-	padding-left: 0;
-}
+
 
 .user-image-mod img {
 	width: 100%;
 	height: 100%;
 	border-radius: 50%;
-
+	padding-left: 0;
 }
 
-.user-image-mod .user-image-mod-inside {
+.user-image-mod-inside {
 	border-radius: 50%;
 	height: 150px;
 	width: 150px;
@@ -99,9 +97,19 @@
 
 
 
+.img-mod-buttons {
+	margin-top: 30px;
+}
+
+
+
+/* Image Input */
+
 .btn-file {
     position: relative;
     overflow: hidden;
+    margin-top: 20px;
+    margin-bottom: 20px;
 }
 .btn-file input[type=file] {
     position: absolute;
@@ -117,4 +125,28 @@
     background: white;
     cursor: inherit;
     display: block;
+}
+
+
+
+
+/* Modal Image Preview */
+
+.image-preview div.row div.col-xs-12 div.user-image-mod-inside img {
+	width: 100%;
+	height: 100%;
+	border-radius: 50%;
+	padding-left: 0;
+	border: none;
+}
+
+
+
+
+/* Ratings List */
+
+.ratings-header h2 {
+	
+	padding: 10px;
+	padding-left: 15px;
 }
