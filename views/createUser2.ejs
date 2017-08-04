@@ -70,7 +70,7 @@
 	                  </li>
 	                <% } else { %>
 	                  <li class="nav-item profile-button">
-	                      <a class="nav-link" href="/profile">
+	                      <a class="nav-link" href="/profile/likes">
 	                        <img class="user-image" src="<%= image %>" width="20" height="20"/>
 	                        <p><%= username %></p>
 	                      </a>
@@ -97,14 +97,13 @@
 	          </div><!-- /.container-fluid -->
 	        </nav>
 
-	        <!-- <button class="loginBtn loginBtn--google">Login with Google</button> -->
+	        
 
 	        <div class="row">
-	        	<div class="center-block">
 					<div class="input-cont">
 						<ul class="nav nav-tabs nav-justified" role="tablist">
 						    <li role="presentation"><a href="#login" aria-controls="login" role="tab" data-toggle="tab">Sign In</a></li>
-						    <li role="presentation"><a href="#createuser" aria-controls="createuser" role="tab" data-toggle="tab">Create An Account</a></li>
+						    <li role="presentation"><a href="#createUser" aria-controls="createUser" role="tab" data-toggle="tab">Create An Account</a></li>
 						</ul>
 
 
@@ -119,14 +118,13 @@
 					                  	</div>
 					                <% } %>
 					                <div class="form-group">
-					                  	<div class="d-flex justify-content-center buttons">
+					                  	<div class="d-flex justify-content-center buttons text-center">
 					                    	<button class="loginBtn loginBtn--google">Login with Google</button>  
 					                  	</div>
-					                	</div>
-					                  
+					                </div>
 					            </form>
 						    </div>
-						    <div role="tabpanel" class="tab-pane" id="createuser">
+						    <div role="tabpanel" class="tab-pane" id="createUser">
 						    	<form class="createUser" action="createUser/auth/google" method="GET">
 					                <div class="form-group username">
 					                  	<label for="inputUsername1" class="col-form-label">Username</label>
@@ -134,7 +132,7 @@
 					                  	<label id="inputUsername1-err" class="errors inputUsername1-err" for="inputUsername1" style=""></label>
 					                </div>
 					                <div class="form-group">
-					                  	<div class="d-flex justify-content-center buttons">
+					                  	<div class="d-flex justify-content-center buttons text-center">
 					                    	<button class="loginBtn loginBtn--google">Login with Google</button>
 					                  	</div>
 					                </div>
@@ -142,7 +140,6 @@
 						    </div>
 						</div>
 					</div>
-	        	</div>
 	        </div>
 
         </div>
@@ -165,5 +162,27 @@
         <!-- Custom JavaScript -->
         <script src="/js/navbar.js"></script>
         <script src="/js/createUser2.js"></script>
+
+        <!-- Custom JavaScript with EJS -->
+        <script>
+        	// Current State Handler (Create An Account VS. Sign In)
+	        $(document).ready(function() {
+	          <% if (!isSignIn[0].isSignIn) { %>
+	            $('a[href="#createUser"]').parent().addClass('active');
+	            $('.tab-content #createUser').addClass('active');
+	          <% } else { %>
+	            $('a[href="#login"]').parent().addClass('active');
+	            $('.tab-content #login').addClass('active');
+	          <% } %>
+
+	          <% if (!(success[0].success) && !(isSignIn[0].isSignIn)) { %>
+	            $('#inputUsername1-err').show();
+	            $('#inputUsername1-err').text("<%= invalidMessage[0].invalidMessage %>");
+	          <% } %>
+	        });
+
+
+
+        </script>
 	</body>
 </html>

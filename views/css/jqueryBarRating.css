@@ -12,13 +12,14 @@
     border-color: rgba(2, 117, 216, .3);
 }
 .br-theme-bars-square .br-widget a[data-rating-value="4"] {
-    color: rgba(92, 184, 92, .3);
-    border-color: rgba(92, 184, 92, .3);
+    color: rgba(91, 192, 222, .3);
+    border-color: rgba(91, 192, 222, .3);
 }
 .br-theme-bars-square .br-widget a[data-rating-value="5"] {
     color: rgba(92, 184, 92, .3);
     border-color: rgba(92, 184, 92, .3);
 }
+
 
 
 
@@ -40,8 +41,8 @@
 }
 .br-theme-bars-square .br-widget a.br-active[data-rating-value="4"],
 .br-theme-bars-square .br-widget a.br-selected[data-rating-value="4"] {
-    color: rgb(92, 184, 92);
-    border-color: rgb(92, 184, 92);
+    color: rgb(91, 192, 222);
+    border-color: rgb(91, 192, 222);
 }
 .br-theme-bars-square .br-widget a.br-active[data-rating-value="5"],
 .br-theme-bars-square .br-widget a.br-selected[data-rating-value="5"] {

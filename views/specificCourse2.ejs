@@ -77,7 +77,7 @@
                   </li>
                 <% } else { %>
                   <li class="nav-item profile-button">
-                      <a class="nav-link" href="/profile">
+                      <a class="nav-link" href="/profile/likes">
                         <img class="user-image" src="<%= image %>" width="20" height="20"/>
                         <p><%= username %></p>
                       </a>
@@ -193,16 +193,16 @@
         <!-- Keys for Categories -->
         <div class="row key-group">
           <div class="col-xs-12 col-md-3 text-center">
-            <p class="keys" id="..."><span class="indicator-red">0</span> &le; <span class="indicator-red">score</span> &lt; <span class="indicator-yellow">2</span> : ...</p>
+            <p class="keys" id="..."><span class="indicator-red">1</span> &le; <span class="indicator-red">score</span> &lt; <span class="indicator-yellow">2</span> : ...</p>
           </div>
           <div class="col-xs-12 col-md-3 text-center">
             <p class="keys" id="warning"><span class="indicator-yellow">2</span> &le; <span class="indicator-yellow">score</span> &lt; <span class="indicator-blue">3</span> : Warning!</p>
           </div>
           <div class="col-xs-12 col-md-3 text-center">
-            <p class="keys" id="do-able"><span class="indicator-blue">3</span> &le; <span class="indicator-blue">score</span> &lt; <span class="indicator-green">4</span> : Do-able</p>
+            <p class="keys" id="do-able"><span class="indicator-blue">3</span> &le; <span class="indicator-blue">score</span> &lt; <span class="indicator-lightBlue">4</span> : Do-able</p>
           </div>
           <div class="col-xs-12 col-md-3 text-center">
-            <p class="keys" id="excellent"><span class="indicator-green">4</span> &le; <span class="indicator-green">score</span> &lt; <span class="indicator-green">5</span> : Excellent!</p>
+            <p class="keys" id="excellent"><span class="indicator-lightBlue">4</span> &le; <span class="indicator-lightBlue">score</span> &lt; <span class="indicator-green">5</span> : Excellent!</p>
           </div>
         </div>
 
@@ -502,10 +502,11 @@
                   <% tmpColor.push('#f0ad4e') %>
                 <% } else if (3 <= tmp[i] && tmp[i] < 4) { %>
                   <% tmpColor.push('#0275d8') %>
-                <% } else if (4 <= tmp[i] && tmp[i] <= 5) { %>
+                <% } else if (4 <= tmp[i] && tmp[i] < 5) { %>
+                  <% tmpColor.push('#5bc0de') %>
+                <% } else if (tmp[i] === 5) { %>
                   <% tmpColor.push('#5cb85c') %>
                 <% } %>
-                <% tmpColor %>
               <% } %>
 
               // HighCharts Constructor

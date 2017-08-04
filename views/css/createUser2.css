@@ -1,23 +1,46 @@
 /* Bootstrap CSS Modification */
 
+
+
+.container .input-cont {
+  margin: 0 auto;
+  margin-top: 80px;
+}
+
+.row {
+  margin-top: 0;
+}
+
+@media (max-width: 768px) {
+  .nav-justified > li {
+    display: table-cell;
+    width: 1%;
+  }
+  .nav-justified > li > a  {
+    border-bottom: 1px solid #ddd !important;
+    border-radius: 4px 4px 0 0 !important;
+    margin-bottom: 0 !important;
+  }
+}
+
+
+
+
 /* Active Tab Content */
 
 .tab-content > .active {
   border: 1px solid rgb(221,221,221);
   border-top: none;
   padding: 10px;
-  margin-bottom: 50px;
-
+  margin-bottom: 10px;
 }
 
-.nav-tabs li > a {
-  font-size: 18px;
-}
 
 .nav-tabs > li.active a:hover,
 .nav-tabs > li.active a:focus,
 .nav-tabs > li.active a {
   color: rgb(225,0,0);
+  border-bottom: transparent !important;
 }
 
 
@@ -25,7 +48,7 @@
 /* Both Container */
 
 .input-cont {
-    width: 600px !important;
+    width: 400px !important;
     color: black;
     margin-top: 180px;
     background: white;
@@ -46,14 +69,10 @@ ul.nav.nav-tabs {
   margin-bottom: 0;
 }
 
-div.tab-content-outside {
-  border: 1px solid rgb(221,221,221);
-  border-top: none;
-  margin-top: 0;
-}
 
 .input-cont form input:focus {
   border-color: red;
+  box-shadow: none;
 }
 
 ul.nav.nav-tabs li a {
@@ -64,7 +83,7 @@ ul.nav.nav-tabs li a:hover {
   color: red;
 }
 
-ul.nav.nav-tabs li a.active {
+ul.nav.nav-tabs li.active a {
   color: red;
 }
 
@@ -142,3 +161,4 @@ label.inputUsername1-success {
 label#login-err {
   color: red !important;
 }
+

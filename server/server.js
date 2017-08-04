@@ -694,7 +694,7 @@ app.get('/like/:fieldAc/:courseAc/:ratingId',async (req,res) => {
     let ratingId = parseInt(req.params.ratingId),
         userId = req.user.id,
         inc = '+ 1';
-
+    console.log('Liking...');
     console.log(ratingId);
     console.log(userId);
 
@@ -715,7 +715,7 @@ app.get(`/unlike/:fieldAc/:courseAc/:ratingId`,async (req,res) => {
     let ratingId = parseInt(req.params.ratingId),
         userId = req.user.id,
         dec = '- 1';
-
+    console.log('Unliking...');
     console.log(ratingId);
     console.log(userId);
 
@@ -1171,10 +1171,15 @@ app.get('/search/query/:sectionNum/:pageNum/:searchParam',(req,res) => {
 });
 
 
-
 const user_ratings_getter = async (userId,category,offset) => {
-    return connection.query(`SELECT *, DATE_FORMAT(ratings.created_at,"%b %d, %Y %H:%i:%s") as created_at 
-                             FROM ratings 
+    return connection.query(`SELECT *, 
+                                    DATE_FORMAT(ratings.created_at,"%b %d, %Y %H:%i:%s") as created_at,
+                                    ratings.professors as professors,
+                                    (ratings.difficulty+ratings.organization+ratings.effort+ratings.professors)/4 as overall_rating,
+                                    ratings.id as id
+                             FROM ratings
+                             INNER JOIN courses
+                                   ON courses.id = ratings.course_id 
                              WHERE user_id="${userId}"
                              ORDER BY ${category}
                              LIMIT ${offset},10`);
@@ -1185,16 +1190,22 @@ const user_ratings_like_checker = async (userId,category,offset) => {
                                          WHEN likes.user_id="${userId}"
                                          THEN TRUE
                                          ELSE FALSE
-                                         END AS haveLiked
+                                    END AS haveLiked,
+                                    (ratings.difficulty+ratings.organization+ratings.effort+ratings.professors)/4 as overall_rating
                              FROM ratings LEFT JOIN likes ON ratings.id = likes.rating_id
                              WHERE ratings.user_id="${userId}"
                              ORDER BY ${category}
                              LIMIT ${offset},10`);
 };
 
+const totalNumUserRatingsCalc = async userId => {
+    return connection.query(`SELECT COUNT(*) AS count FROM ratings WHERE user_id="${userId}"`);
+};
+
+
 // Profile
-app.get('/profile',async (req,res) => {
-    
+app.get('/profile/:category',async (req,res) => {
+
 
     if (req.user) { 
 
@@ -1212,21 +1223,183 @@ app.get('/profile',async (req,res) => {
     let fullName = `${req.user.last_name}, ${req.user.first_name}`;
 
 
-    let userRatings = await user_ratings_getter(req.user.id);
+    category = req.params.category;
+    currentSectionNum = req.session.currentSectionNum;
+    currentPageNum = req.session.currentPageNum;
+
+
+    if (!category) {
+        category = "likes";
+    } else {
+        
+        categoryList = ["likes","overall_rating","difficulty","organization","effort","ratings.professors","created_at"];
+
+        if (!categoryList.some((catItem,index,arr) => catItem === category)) {
+            console.log(`Sorting Category is invalid: ${category}`);
+            return res.status(404).send();
+        };
+
+        switch(category) {
+            case "likes":
+                category = "likes DESC";
+                break;
+            case "overall_rating":
+                category = "overall_rating DESC";
+                break;
+            case "organization":
+                category = "organization DESC";
+                break;
+            case "ratings.professors":
+                category = "ratings.professors DESC";
+                break;
+            case "created_at":
+                category = "ratings.created_at DESC";
+                break;
+        };
+    };
+
+    console.log(category);
+
+    if (!req.session.currentSectionNum && !req.session.currentPageNum) {
+        console.log('Session does not hold section and page');
+        currentPageNum = 1;
+        currentSectionNum = 1;
+    } else if (req.session.currentSectionNum && req.session.currentPageNum) {
+        console.log('Session does hold section and page');
+        currentSectionNum = req.session.currentSectionNum;
+        currentPageNum = req.session.currentPageNum;
+        delete req.session.currentSectionNum;
+        delete req.session.currentPageNum;
+    } else {
+        let message = "Invalid section number or page number";
+        console.log(message);
+        return res.render('invalidPage',{ message });
+    };
+
+    categoryDisplay = "";
+
+    switch(category) {
+        case "likes DESC":
+            categoryDisplay = "Likes";
+            break;
+        case "overall_rating DESC":
+            categoryDisplay = "Overall Rating";
+            break;
+        case "difficulty":
+            categoryDisplay = "Difficulty";
+            break;
+        case "organization DESC":
+            categoryDisplay = "Organization";
+            break;
+        case "effort":
+            categoryDisplay = "Effort Required";
+            break;
+        case "ratings.professors DESC":
+            categoryDisplay = "Professor(s)";
+            break;
+        case "ratings.created_at DESC":
+            categoryDisplay = "Recent";
+            break;
+    };
+
+
+
+    let offset = offsetCalc(currentPageNum),
+        userRatings = await user_ratings_getter(req.user.id,category,offset),
+        totalNumUserRatings = await totalNumUserRatingsCalc(req.user.id),
+        totalNumPages = totalNumPagesCalc(totalNumUserRatings[0].count),
+        totalNumSections = totalNumSectionsCalc(totalNumPages),
+        currentSectionTotalNumPages = currentSectionTotalNumPagesCalc(currentSectionNum,totalNumSections,totalNumUserRatings[0].count),
+        currentSectionPagesNumRange = currentSectionPagesNumRangeCalc(currentSectionNum,currentSectionTotalNumPages),
+        previousSectionExists = previousSectionExistsCalc(currentSectionNum),
+        nextSectionExists = nextSectionExistsCalc(currentSectionNum,totalNumSections);
+
+    totalNumUserRatings = totalNumUserRatings[0].count;
+
+    if (req.user) {
+        haveLiked = await user_ratings_like_checker(req.user.id,category,offset);
+        console.log(haveLiked);
+    } else {
+        haveLiked = [];
+    };
+
+        
+
     console.log(userRatings);
+    console.log(haveLiked);
+    console.log('currentSectionNum: ',currentSectionNum);
+    console.log('currentPageNum: ',currentPageNum);
+    console.log('totalNumUserRatings: ',totalNumUserRatings);
+    console.log('offset: ',offset);
+    console.log('totalNumPages: ',totalNumPages);
+    console.log('totalNumSections: ',totalNumSections);
+    console.log('currentSectionTotalNumPages: ',currentSectionTotalNumPages);
+    console.log('currentSectionPagesNumRange: ',currentSectionPagesNumRange);
+    console.log('previousSectionExists: ',previousSectionExists);
+    console.log('nextSectionExists: ',nextSectionExists);
+    console.log('*********************************************');
+    console.log('*********************************************');
+    console.log('*********************************************');
+
+    
+
+
+    category = category.slice(0,category.length-5);
+
+
 
     delete req.session.image;
     res.render('profile2',{ userLoggedIn,
-                           username,
-                           image,
-                           email: req.user.email,
-                           fullName,
-                           created_date: req.user.created_date,
-                           usingGoogleImg: req.user.use_google_img,
-                           userRatings });
+                            username,
+                            image,
+                            email: req.user.email,
+                            fullName,
+                            created_date: req.user.created_date,
+                            usingGoogleImg: req.user.use_google_img,
+                            userRatings,
+                            totalNumUserRatings,
+                            totalNumPages,
+                            currentSectionNum,
+                            currentPageNum,
+                            totalNumSections,
+                            currentSectionTotalNumPages,
+                            currentSectionPagesNumRange,
+                            previousSectionExists,
+                            nextSectionExists,
+                            haveLiked,
+                            category,
+                            categoryDisplay
+                          }
+              );
 });
 
+app.get('/profile/:selectedSectionNum/:selectedPageNum/:category',(req,res) => {
 
+
+    selectedPageNum = parseInt(req.params.selectedPageNum);
+    selectedSectionNum = Math.ceil(selectedPageNum/5);
+    category = req.params.category;
+    isSectionAndPageTypeValid = sectionAndPageTypeChecker(selectedSectionNum,selectedPageNum);
+
+    if (!isSectionAndPageTypeValid) {
+        let message = "Invalid Section Number Type or Page Number Type";
+        console.log(message);
+        return res.render('invalidPage',{ message });
+    };
+
+    // console.log('selectedSectionNum: ',selectedSectionNum);
+    // console.log('selectedPageNum: ',selectedPageNum);
+
+
+    // fieldAc = req.params.fieldAc;
+    // courseAc = req.params.courseAc;
+
+    req.session.currentSectionNum = selectedSectionNum;
+    req.session.currentPageNum = selectedPageNum;
+
+    return res.redirect(`/profile/${category}`);
+
+})
 
 
 app.post('/checkUsername',(req,res) => {
@@ -1242,11 +1415,11 @@ app.post('/checkUsername',(req,res) => {
         };
 
         return res.send(false);
-    })
+    });
 });
 
 
-app.post('/profile/uploadCustomImg',upload.single('image'),(req,res) => {
+app.post('/profile/upload/customImg',upload.single('image'),(req,res) => {
     
     if (!req.user) { 
         return res.redirect('/');
@@ -1259,14 +1432,6 @@ app.post('/profile/uploadCustomImg',upload.single('image'),(req,res) => {
     console.log('*****************');
     console.log(req.user.custom_image);
 
-    params = {
-        s3Params: {
-            Bucket: "wescourse",
-            Key: ""
-        }
-
-    }
-
     DataURI(req.file.path).then(content => {
         fs.readdir(path.join(__dirname, '../uploads'), (err,files) => {
             fs.unlink(path.join(__dirname,`../uploads/${files[0]}`),(err) => {
@@ -1276,37 +1441,36 @@ app.post('/profile/uploadCustomImg',upload.single('image'),(req,res) => {
 
                 connection.query(`UPDATE users SET custom_image="${content}",use_google_img=false WHERE id=${req.user.id}`).then(() => {
                     req.session.image = content;
-                    res.redirect('/profile');
+                    res.redirect('/profile/likes');
                 });    
             })
         })
             
         
     }).catch(e => console.log(e));
-
 });
 
 
-app.get('/profile/updateToCustomImg',(req,res) => {
+app.get('/profile/update/customImg',(req,res) => {
 
     if (!req.user) { 
         return res.redirect('/');
     };
 
     connection.query(`UPDATE users SET use_google_img=false WHERE id=${req.user.id}`).then(() => {
-        res.redirect('/profile');
+        res.redirect('/profile/likes');
     });
 })
 
 
-app.get('/profile/updateToGoogleImg',(req,res) => {
+app.get('/profile/update/googleImg',(req,res) => {
 
     if (!req.user) { 
         return res.redirect('/');
     };
 
     connection.query(`UPDATE users SET use_google_img=true WHERE id=${req.user.id}`).then(() => {
-        res.redirect('/profile');
+        res.redirect('/profile/likes');
     });
 })
 
