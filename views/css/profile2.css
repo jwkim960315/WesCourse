@@ -6,8 +6,19 @@
 	border: 2px solid rgb(221,221,221);
 }
 
-div.panel-heading {
+@media (min-width: 992px) {
+	.text-left {
+		text-align: right;
+	}
 
+	.dropdown-menu.pull-left {
+		right: 0;
+		left: auto;
+	}
+}
+
+.title-user-info h2 {
+	margin-bottom: 0;
 }
 
 /* User Info */
@@ -49,12 +60,16 @@ div.panel-heading {
 #header-user-info {
 	border: 1.2px solid rgb(221,221,221);
 	background-color: rgb(221,221,221);
+	margin-top: 10px;
 }
 
 #user-info-header-user-info-content {
 	border: 1.2px solid rgb(221,221,221);
 	background-color: rgb(221,221,221);
 }
+
+
+/* Panel Heading */
 
 div.panel.submitted-ratings div.panel-heading {
 	background-color: rgb(229, 229, 229);
@@ -64,11 +79,6 @@ div.submitted-ratings div.panel-heading h3 {
 	margin-top:10px;
 	margin-bottom:10px;
 }
-
-/*#user-ratings-divider {
-	border: 1.2px solid rgb(221,221,221);
-	background-color: rgb(221,221,221);
-}*/
 
 
 .user-info {
@@ -84,6 +94,10 @@ div.submitted-ratings div.panel-heading h3 {
 
 .user-info .title-user-info {
 	color: rgb(99,99,99);
+}
+
+.dropdown-btn {
+	margin-top: 30px;
 }
 
 .user-info-content {
@@ -286,6 +300,20 @@ div.key-group p.keys span.indicator-green {
 /* Submitted Ratings */
 
 div.submitted-ratings div.panel-heading > div.row > div > h3.username,
-div.submitted-ratings div.panel-heading > div.row > div.created-at > h3 {
+div.submitted-ratings div.panel-heading > div.row > div.created-at > p {
 	color: rgb(99,99,99) !important;
+}
+
+div.submitted-ratings div.panel-heading > div.row > div.created-at > p {
+	margin-top: 10px;
+}
+
+
+
+
+
+/* Edit & Delete */
+
+div.edit-delete > div.row > div.col-md-6 {
+	margin-top: 10px;
 }

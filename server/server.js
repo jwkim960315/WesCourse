@@ -1472,7 +1472,47 @@ app.get('/profile/update/googleImg',(req,res) => {
     connection.query(`UPDATE users SET use_google_img=true WHERE id=${req.user.id}`).then(() => {
         res.redirect('/profile/likes');
     });
-})
+});
+
+
+const userRatingGetter = async (ratingId,userId) => {
+    return connection.query(`SELECT * FROM ratings WHERE ratings.id=${ratingId} AND user_id="${userId}"`);
+};
+
+const deleteUserRating = async (ratingId,userId) => {
+    return connection.query(`DELETE FROM ratings WHERE user_id="${userId}" AND ratings.id=${ratingId}`);
+};
+
+app.get('/profile/rating/edit/:ratingId',async (req,res) => {
+
+    if (!req.user){
+        return res.status(404).send();
+    };
+
+    let ratingId = req.params.ratingId,
+        userId = req.user.id;
+
+    let userRating = await userRatingGetter(ratingId,userId);
+
+    res.render('submitRating',{ userRating });
+});
+
+
+
+app.get('/profile/rating/delete/:category/:ratingId',async (req,res) => {
+    console.log('SDFJLDSJFLSJDFLJSDFJDSJFLDSKJFKDSJFLSD');
+    if (!req.user){
+        return res.status(404).send();
+    };
+
+    let ratingId = req.params.ratingId,
+        userId = req.user.id,
+        category = req.params.category;
+
+    await deleteUserRating(ratingId,userId);
+
+    res.redirect(`/profile/${category}`);
+});
 
 
 
