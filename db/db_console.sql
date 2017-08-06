@@ -72,6 +72,10 @@ create table likes (
 
 select * from fields;
 
+
+SET GLOBAL max_allowed_packet=1073741824;
+
+
 update fields set category='OTHERS' where category='N/A';
 
 select * from courses where char_length(field_acronym)=3;
@@ -195,9 +199,11 @@ delete from ratings where user_id=20;
 
 select * from ratings;
 
-delete from likes;
+select * from likes;
 
-SELECT * FROM likes;
+UPDATE ratings SET likes=0 WHERE ratings.id=3;
+
+delete from likes;
 
 SELECT * FROM ratings;
 

@@ -98,7 +98,6 @@
 	                  	</div>
 	              	</form>
 	              </ul>
-
 	            </div><!-- /.navbar-collapse -->
 	          </div><!-- /.container-fluid -->
 	        </nav>
@@ -110,10 +109,21 @@
 		        <div class="row">
 		        	<div class="col-xs-12">
 		        		<div class="panel-heading header">
-		        			<img src="<%= image %>" width="50" height="50"/>
-		        			<h1 class="panel-title"><%= username %></h1>
-		        			<hr id="header-user-info" />
+		        			<div class="col-xs-12 col-md-6">
+			        			<img src="<%= image %>" width="50" height="50"/>
+			        			<h1 class="panel-title"><%= username %></h1>
+		        			</div>
+		        			<div class="col-xs-12 col-md-6 text-left account-delete-btn">
+	    						<button class="btn btn-danger" type="button" data-toggle="modal" data-target="#accountDelete">Delete Account</button>
+    						</div>
 		        		</div>
+		        		
+		        		<div class="row">
+		        			<div class="col-xs-12">
+		        				<hr id="header-user-info" />		
+		        			</div>
+		        		</div>
+		        		
 		        		<div class="panel-body user-info row">
 		        			<div class="col-xs-12">
 				        		<div class="row">
@@ -136,6 +146,32 @@
 				        						</div>
 				        					</div>
 				        				</div>
+
+				        				<!-- Account Delete Modal -->
+				        				<div class="modal fade" id="accountDelete" tabindex="-1" role="dialog" aria-labelledby="accountDeleteLabel">
+										  <div class="modal-dialog" role="document">
+										    <div class="modal-content">
+										      <div class="modal-header">
+										        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+										        <h4 class="modal-title" id="accountDeleteLabel">Delete Account</h4>
+										      </div>
+										      <div class="modal-body account-delete">
+										      	<div class="row">
+										      		<div class="col-xs-12">
+										      			<form class="form" action="/profile/account/delete" method="GET">
+													      	<p>Are you sure you want to delete this account?</p>
+													      	<div class="text-right">
+														      	<button type="submit" class="btn btn-danger">Yes</button>
+														   		<button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+														    </div>
+													    </form>		
+										      		</div>
+										      	</div>
+										      </div>
+										    </div>
+										  </div>
+										</div>
+
 				        				<div class="row">
 				        					<div class="col-xs-12">
 				        						<div class="row">
@@ -217,8 +253,8 @@
 										      				Upload... <input type="file" name="image" accept="image/*"/>
 										      			</span>
 										      			<div class="modal-footer">
+										      				<button type="submit" class="btn btn-danger">Save changes</button>
 													   		<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-													        <button type="submit" class="btn btn-primary">Save changes</button>
 													    </div>
 										      		</form>
 										      	</div>
@@ -256,7 +292,11 @@
 							            </div>
 				        			</div>
 				        		</div>
-				        		<hr id="header-user-info" />
+
+
+				        		
+
+				        		<hr id="ratings-info" />
 			        			<div class="row">
 			        				<div class="col-xs-12">
 			        					<% if (userRatings) { %>
@@ -292,12 +332,12 @@
 								                  <div class="col-xs-12 col-md-1 edit-delete">
 								                  	<div class="row">
 								                  		<div class="col-md-6 col-xs-1">
-								                  			<a href="/profile/rating/edit/<%= userRatings[i].id %>">
+								                  			<a href="/profile/rating/edit/<%= category %>/<%= userRatings[i].id %>">
 								                  				<i class="fa fa-lg fa-pencil" aria-hidden="true"></i>
 								                  			</a>
 								                  		</div>
 								                  		<div class="col-md-6 col-xs-1">
-								                  			<a href="/profile/rating/delete/<%= category %>/<%= userRatings[i].id %>">
+								                  			<a class="" data-toggle="modal" data-target="#ratingDelete">
 								                  				<i class="fa fa-lg fa-trash" aria-hidden="true"></i>
 								                  			</a>
 								                  		</div>
@@ -358,11 +398,36 @@
 								                </div>
 								              </div>
 								            </div>
+								            <!-- Delete Modal -->
+							        		<div class="modal fade" id="ratingDelete" tabindex="-1" role="dialog" aria-labelledby="ratingDeleteLabel">
+											  <div class="modal-dialog" role="document">
+											    <div class="modal-content">
+											      <div class="modal-header">
+											        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+											        <h4 class="modal-title" id="ratingDeleteLabel">Delete Rating</h4>
+											      </div>
+											      <div class="modal-body rating-delete">
+											      	<div class="row">
+											      		<div class="col-xs-12">
+											      			<form class="form" action="/profile/rating/delete/<%= category %>/<%= userRatings[i].id %>" method="GET">
+														      	<p>Are you sure you want to delete this rating?</p>
+														      	<div class="text-right">
+															      	<button type="submit" class="btn btn-danger">Yes</button>
+															   		<button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+															    </div>
+														    </form>		
+											      		</div>
+											      	</div>
+											      </div>
+											    </div>
+											  </div>
+											</div>
 								          <% } %>
 								        <% } %>
 			        				</div>
 			        			</div>
-				        			
+				        		
+				        		
 				        	</div>
 		        		</div>
 

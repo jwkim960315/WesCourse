@@ -750,7 +750,19 @@ const courseIdFinder = async (courseAc) => {
 };
 
 const insertRating = async (courseId,userId,difficulty,organization,effort,professors,recommend,comment,anonymous,fieldAc) => {
-    return connection.query(`INSERT INTO ratings (difficulty,organization,effort,professors,recommend,course_id,user_id,comment,anonymous,field_acronym) VALUES (${difficulty},${organization},${effort},${professors},${recommend},${courseId},"${userId}","${comment}",${anonymous},"${fieldAc}")`);
+    return connection.query(`INSERT INTO ratings (difficulty,organization,effort,professors,recommend,course_id,user_id,comment,anonymous,field_acronym) 
+                             VALUES (${difficulty},${organization},${effort},${professors},${recommend},${courseId},"${userId}","${comment}",${anonymous},"${fieldAc}")`);
+};
+
+const updateRating = async (courseId,userId,difficulty,organization,effort,professors,recommend,comment,anonymous,fieldAc) => {
+    return connection.query(`UPDATE ratings SET difficulty=${difficulty},
+                                                organization=${organization},
+                                                effort=${effort},
+                                                professors=${professors},
+                                                recommend=${recommend},
+                                                comment="${comment}",
+                                                anonymous=${anonymous}
+                             WHERE user_id="${userId}" AND course_id=${courseId}`);
 };
 
 app.post('/submittingRating',async (req,res) => {
@@ -775,7 +787,14 @@ app.post('/submittingRating',async (req,res) => {
     console.log(courseId);
     console.log(fieldAc);
 
-    await insertRating(courseId,userId,difficulty,organization,effort,professors,recommend,comment,anonymous,fieldAc);
+    if (req.session.editing) {
+        await updateRating(courseId,userId,difficulty,organization,effort,professors,recommend,comment,anonymous,fieldAc);
+        delete req.session.editing;
+    } else {
+        await insertRating(courseId,userId,difficulty,organization,effort,professors,recommend,comment,anonymous,fieldAc);    
+    };
+
+    
 
     console.log(req.query);
     console.log(req.params);
@@ -1476,25 +1495,42 @@ app.get('/profile/update/googleImg',(req,res) => {
 
 
 const userRatingGetter = async (ratingId,userId) => {
-    return connection.query(`SELECT * FROM ratings WHERE ratings.id=${ratingId} AND user_id="${userId}"`);
+    return connection.query(`SELECT 
+                                    difficulty,
+                                    organization,
+                                    effort,
+                                    ratings.professors as professors,
+                                    recommend,
+                                    anonymous,
+                                    comment,
+                                    courses.course_acronym,
+                                    ratings.field_acronym
+                             FROM ratings 
+                             INNER JOIN courses 
+                                ON ratings.course_id=courses.id 
+                             WHERE ratings.id=${ratingId} AND user_id="${userId}"`);
 };
 
 const deleteUserRating = async (ratingId,userId) => {
     return connection.query(`DELETE FROM ratings WHERE user_id="${userId}" AND ratings.id=${ratingId}`);
 };
 
-app.get('/profile/rating/edit/:ratingId',async (req,res) => {
+app.get('/profile/rating/edit/:category/:ratingId',async (req,res) => {
 
     if (!req.user){
         return res.status(404).send();
     };
 
     let ratingId = req.params.ratingId,
-        userId = req.user.id;
+        userId = req.user.id,
+        category = req.params.category;
 
-    let userRating = await userRatingGetter(ratingId,userId);
+    let userRating = (await userRatingGetter(ratingId,userId))[0];
+    console.log(userRating);
 
-    res.render('submitRating',{ userRating });
+    req.session.editing = true;
+
+    res.render('editRating',{ userRating });
 });
 
 
@@ -1512,6 +1548,24 @@ app.get('/profile/rating/delete/:category/:ratingId',async (req,res) => {
     await deleteUserRating(ratingId,userId);
 
     res.redirect(`/profile/${category}`);
+});
+
+
+const deleteUser = async userId => {
+    return connection.query(`DELETE FROM users WHERE id="${userId}"`);
+};
+
+app.get('/profile/account/delete',async (req,res) => {
+
+    if (!req.user) {
+        return res.status(404).send();
+    };
+
+    let userId = req.user.id;
+
+    await deleteUser(userId);
+    req.logout();
+    res.redirect('/');
 });
 
 

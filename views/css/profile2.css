@@ -61,11 +61,18 @@
 	border: 1.2px solid rgb(221,221,221);
 	background-color: rgb(221,221,221);
 	margin-top: 10px;
+	width: 97%;
 }
 
 #user-info-header-user-info-content {
 	border: 1.2px solid rgb(221,221,221);
 	background-color: rgb(221,221,221);
+}
+
+#ratings-info {
+	border: 1.2px solid rgb(221,221,221);
+	background-color: rgb(221,221,221);
+	margin-top: 10px;
 }
 
 
@@ -314,6 +321,7 @@ div.submitted-ratings div.panel-heading > div.row > div.created-at > p {
 
 /* Edit & Delete */
 
-div.edit-delete > div.row > div.col-md-6 {
+div.edit-delete > div.row > div.col-md-6,
+div.account-delete-btn {
 	margin-top: 10px;
 }
