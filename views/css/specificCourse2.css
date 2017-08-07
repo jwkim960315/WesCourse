@@ -205,3 +205,9 @@ div.submitted-ratings div.panel-heading > div.row > div > h3.username,
 div.submitted-ratings div.panel-heading > div.row > div.created-at > h3 {
 	color: rgb(99,99,99) !important;
 }
+
+
+div.edit-delete > div.row > div.col-md-6,
+.created-at p {
+	margin-top: 10px;
+}

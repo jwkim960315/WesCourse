@@ -278,7 +278,48 @@ const specific_course_getter = async (courseAcronym) => {
     });
 };
 
-const comments_getter = async (courseAcronym,category,offset) => {
+const comments_getter = async (userId,courseAcronym,category,offset) => {
+    return connection.query(`SELECT ratings.id,
+                                    CASE 
+                                        WHEN ratings.anonymous=true THEN "Anonymous"
+                                        ELSE username
+                                    END as username,
+                                    users.username as realUsername,
+                                    ratings.comment,
+                                    DATE_FORMAT(ratings.created_at,"%b %d, %Y %H:%i:%s") as created_at,
+                                    ratings.difficulty,
+                                    ratings.organization,
+                                    ratings.effort,
+                                    ratings.professors,
+                                    (ratings.difficulty+ratings.organization+ratings.effort+ratings.professors)/4 as overall_rating,
+                                    ratings.likes,
+                                    users.custom_image,
+                                    users.google_image,
+                                    users.use_google_img,
+                                    CASE
+                                        WHEN ratings.recommend=true THEN "Yes"
+                                        ELSE "No"
+                                    END as recommend,
+                                    CASE
+                                        WHEN ratings.user_id="${userId}" THEN 1
+                                        ELSE 0
+                                    END as canEditOrDelete
+                             FROM ratings 
+                             INNER JOIN courses 
+                                ON ratings.course_id = courses.id 
+                             INNER JOIN users 
+                                ON ratings.user_id = users.id 
+                             WHERE courses.course_acronym="${courseAcronym}"
+                             ORDER BY ${category}
+                             LIMIT ${offset},10`).then((res) => {
+        return res;
+    }).catch(e => {
+        console.log(e.message);
+        return undefined;
+    });
+};
+
+const comments_getter_not_logged_in = async (courseAcronym,category,offset) => {
     return connection.query(`SELECT ratings.id,
                                     CASE 
                                         WHEN ratings.anonymous=true THEN "Anonymous"
@@ -307,12 +348,7 @@ const comments_getter = async (courseAcronym,category,offset) => {
                                 ON ratings.user_id = users.id 
                              WHERE courses.course_acronym="${courseAcronym}"
                              ORDER BY ${category}
-                             LIMIT ${offset},10`).then((res) => {
-        return res;
-    }).catch(e => {
-        console.log(e.message);
-        return undefined;
-    });
+                             LIMIT ${offset},10`);
 };
 
 const overall_avg_getter = data => {
@@ -449,6 +485,7 @@ app.get('/catalog/:fieldAc/:courseAc/:category',async (req,res) => {
         userLoggedIn = true;
         username = req.user.username;
         image = (req.user.use_google_img) ? req.user.google_image : req.user.custom_image;
+        userId = req.user.id;
     } else {
         userLoggedIn = false;
         username = undefined;
@@ -497,6 +534,7 @@ app.get('/catalog/:fieldAc/:courseAc/:category',async (req,res) => {
 
     courseAc = req.params.courseAc;
     fieldAc = req.params.fieldAc;
+    
 
     if (!req.session.currentSectionNum && !req.session.currentPageNum) {
         console.log('Session does not hold section and page');
@@ -514,7 +552,13 @@ app.get('/catalog/:fieldAc/:courseAc/:category',async (req,res) => {
         return res.render('invalidPage',{ message });
     };
 
-    courseComments = await comments_getter(courseAc,category,offsetCalc(currentPageNum));
+    if (!req.user) {
+        courseComments = await comments_getter_not_logged_in(courseAc,category,offsetCalc(currentPageNum));        
+    } else {
+        courseComments = await comments_getter(userId,courseAc,category,offsetCalc(currentPageNum));
+    };
+
+    
     // console.log('courseComments: ',courseComments);
     // console.log('*********************');
     courseRating = await ratings_getter(courseAc);
@@ -809,10 +853,31 @@ app.post('/submittingRating',async (req,res) => {
     console.log(comment);
     console.log(anonymous);
     // res.status(404).send();
-    return res.redirect(`/catalog/${fieldAc}/${courseAc}/likes`);
+    console.log('*************');
+    console.log(req.header('Referer'));
+    console.log('*************');
+    if (req.header('Referer').slice(22,29) === 'catalog') {
+        return res.redirect(`/catalog/${fieldAc}/${courseAc}/likes`);
+    };
+
+    res.redirect(`profile/${category}`);
+    
 });
 
+const course_acronym_checker = async courseAc => {
+    return connection.query(`SELECT * FROM courses WHERE course_acronym="${courseAc}"`);
+};
 
+app.get('/checkCourseAcronym',async (req,res) => {
+
+    let course = await course_acronym_checker(req.query.courseAc);
+
+    if (course.length === 0) {
+        return res.send(false)
+    };
+
+    res.send(true);
+});
 
 
 
@@ -878,6 +943,9 @@ app.get('/login',(req,res) => {
     let invalidMessage = req.session.invalidMessage;
     delete req.session.success;
     delete req.session.invalidMessage;
+
+
+
     res.render('createUser2',{success: [{success}], 
                              invalidMessage: [{invalidMessage}],
                              isSignIn: [{isSignIn: true}],
@@ -1566,6 +1634,39 @@ app.get('/profile/account/delete',async (req,res) => {
     await deleteUser(userId);
     req.logout();
     res.redirect('/');
+});
+
+
+app.get('/catalog/rating/edit/:fieldAc/:courseAc/:category/:ratingId',async (req,res) => {
+
+    if (!req.user){
+        return res.status(404).send();
+    };
+
+    let ratingId = req.params.ratingId,
+        userId = req.user.id,
+        category = req.params.category;
+
+    let userRating = (await userRatingGetter(ratingId,userId))[0];
+    console.log(userRating);
+
+    req.session.editing = true;
+
+    res.render('editRating',{ userRating });
+});
+
+app.get('/catalog/rating/delete/:fieldAc/:courseAc/:category/:ratingId',async (req,res) => {
+    if (!req.user){
+        return res.status(404).send();
+    };
+
+    let ratingId = req.params.ratingId,
+        userId = req.user.id,
+        category = req.params.category;
+
+    await deleteUserRating(ratingId,userId);
+
+    res.redirect(`/catalog/${req.params.fieldAc}/${req.params.courseAc}/${category}`);
 });
 
 

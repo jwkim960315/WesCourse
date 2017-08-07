@@ -257,11 +257,12 @@
 
                 // Setting Recommend Value
                 <% if (userRating.recommend === 1) { %>
-                    $('.iradio_square-red').first().next().find('input').iCheck('uncheck');
+                    $('.iradio_square-red').last().find('input').iCheck('uncheck');
                     $('.iradio_square-red').first().find('input').iCheck('check');
                 <% } else { %>
                     $('.iradio_square-red').first().find('input').iCheck('uncheck');
-                    $('.iradio_square-red').first().next().find('input').iCheck('check');
+                    $('.iradio_square-red').last().find('input').iCheck('check');
+
                 <% } %>
 
                 // Setting Anonymous Value
