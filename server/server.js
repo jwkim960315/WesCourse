@@ -868,12 +868,17 @@ const course_acronym_checker = async courseAc => {
     return connection.query(`SELECT * FROM courses WHERE course_acronym="${courseAc}"`);
 };
 
-app.get('/checkCourseAcronym',async (req,res) => {
+app.post('/checkCourseAcronym',async (req,res) => {
+    console.log(req.body.courseAc);
 
-    let course = await course_acronym_checker(req.query.courseAc);
+    if (req.body.courseAc.length === 0) {
+        return res.send("noInput");
+    };
 
+    let course = await course_acronym_checker(req.body.courseAc);
+    console.log(course);
     if (course.length === 0) {
-        return res.send(false)
+        return res.send(false);
     };
 
     res.send(true);
@@ -1039,7 +1044,7 @@ app.get('/search',(req,res) => {
         image = undefined;
     };
 
-    res.render('search_test',{data: undefined, 
+    res.render('search2',{data: undefined, 
                               currentPageNum: [{currentPageNum: undefined}],
                               userLoggedIn,
                               username,
@@ -1635,6 +1640,7 @@ app.get('/profile/account/delete',async (req,res) => {
     req.logout();
     res.redirect('/');
 });
+
 
 
 app.get('/catalog/rating/edit/:fieldAc/:courseAc/:category/:ratingId',async (req,res) => {

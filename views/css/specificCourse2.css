@@ -2,6 +2,18 @@
 
 /* Bootstrap CSS Modification */
 
+
+@media (min-width: 992px) {
+	.text-left {
+		text-align: right;
+	}
+
+	/*.dropdown-menu.pull-left {
+		right: 0;
+		left: auto;
+	}*/
+}
+
 /* Panel */
 
 div.panel-heading {
@@ -100,6 +112,12 @@ div.panel-heading h3 img {
 
 #chart-container * {
 	border-radius: 5px !important;
+}
+
+#ratings-info {
+	border: 1.2px solid rgb(221,221,221);
+	background-color: rgb(221,221,221);
+	margin-top: 10px;
 }
 
 
@@ -210,4 +228,13 @@ div.submitted-ratings div.panel-heading > div.row > div.created-at > h3 {
 div.edit-delete > div.row > div.col-md-6,
 .created-at p {
 	margin-top: 10px;
+}
+
+
+
+/* Rating buttons */
+
+button.category-btn,
+a.submit-btn {
+	margin-top: 20px;
 }

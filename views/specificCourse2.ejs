@@ -187,29 +187,30 @@
 
         <!-- Sorted Categories Results -->
         <div class="row">
-          <div class="col-xs-12">
+          <div class="col-md-4 col-xs-12 title-user-info ratings-header">
+            <h2>Ratings</h2>
+          </div>
+          <div class="col-md-8 col-xs-12 dropdown-btn text-left">
             <!-- Single button -->
-            <div class="btn-group">
-              <button type="button" class="btn btn-default dropdown-toggle text-right" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <div class="btn-group text-left">
+              <button type="button" class="category-btn btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <%= categoryDisplay %> <span class="caret"></span>
               </button>
-              <ul class="dropdown-menu">
-                <li><a href="/catalog/<%= fieldAc %>/<%= courseAc %>/1/1/likes">Likes</a></li>
-                <li><a href="/catalog/<%= fieldAc %>/<%= courseAc %>/1/1/overall_rating">Overall Rating</a></li>
-                <li><a href="/catalog/<%= fieldAc %>/<%= courseAc %>/1/1/difficulty">Difficulty</a></li>
-                <li><a href="/catalog/<%= fieldAc %>/<%= courseAc %>/1/1/organization">Organization</a></li>
-                <li><a href="/catalog/<%= fieldAc %>/<%= courseAc %>/1/1/effort">Effort Required</a></li>
-                <li><a href="/catalog/<%= fieldAc %>/<%= courseAc %>/1/1/professors">Professor(s)</a></li>
-                <li><a href="/catalog/<%= fieldAc %>/<%= courseAc %>/1/1/created_at">Recent</a></li>
-                <li role="separator" class="divider"></li>
-                <li><a href="/comments-sorting/<%= fieldAc %>/<%= courseAc %>">Advanced Sorting</a></li>
-                <li><a href="/comment-submit/<%= fieldAc %>/<%= courseAc %>">Submit a New Rating</a></li>
+              <ul class="dropdown-menu pull-left">
+                <li><a href="/profile/likes">Likes</a></li>
+                <li><a href="/profile/overall_rating">Overall Rating</a></li>
+                <li><a href="/profile/difficulty">Difficulty</a></li>
+                <li><a href="/profile/organization">Organization</a></li>
+                <li><a href="/profile/effort">Effort Required</a></li>
+                <li><a href="/profile/ratings.professors">Professor(s)</a></li>
+                <li><a href="/profile/created_at">Recent</a></li>
               </ul>
             </div>
-            
-
+            <a class="submit-btn btn btn-danger" href="/comment-submit/<%= fieldAc %>/<%= courseAc %>">Submit a New Rating</a>      
           </div>
         </div>
+
+        <hr id="ratings-info" />
 
         <!-- Comments Section -->
         <% if (courseComments) { %>
@@ -504,7 +505,7 @@
       <script src="/js/customRadio.js"></script>
       <script src="/js/paginationConfig.js"></script>
       <script src="/js/likesRatings.js"></script>
-
+      
       <script>
 
         

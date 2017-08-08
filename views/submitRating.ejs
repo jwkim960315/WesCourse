@@ -118,7 +118,9 @@
 							<% } else { %>
 								<input type="text" class="form-control" name="courseId" id="course-acronym" placeholder="Enter a valid Course ID  (ex. ARAB101-01)" autocomplete="off">
 							<% } %>
-							<div class="err"></div>
+							<div class="err">
+                                <label id="course-acronym-err" class="errors course-acronym-err" for="course-acronym"></label>                     
+                            </div>
 					    </div>
 	        		</div>
 	        	</div>
@@ -249,7 +251,7 @@
         <script src="/js/likesRatings.js"></script>
         <script src="/js/iCheckConfig.js"></script>
         <script src="/js/submitRating.js"></script>
-
+        <script src="/js/checkCourseAcronym.js"></script>
         <!-- Custom JavaScript With EJS -->
         <script>
 

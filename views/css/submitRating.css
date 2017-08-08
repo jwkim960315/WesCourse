@@ -126,3 +126,14 @@ div.err > label {
 input[name="fieldAc"] {
 	display: none;
 }
+
+
+/* Course Acronym Validator */
+
+div.err > label.course-acronym-err {
+  color: red;  
+}
+
+div.err > label.course-acronym-success {
+  color: rgb(92, 184, 92);
+}
