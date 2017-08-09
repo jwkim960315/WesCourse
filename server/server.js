@@ -1031,8 +1031,29 @@ app.get('/logout',(req,res) => {
     res.redirect(req.header('Referer') || req.protocol + '://' + req.get('host').slice(0,req.get('host').length));
 });
 
+const searched_courses_getter = async (searchParam,offset) => {
+    return connection.query(`SELECT * FROM courses WHERE course_name like "%${searchParam}%" OR
+                                                  professors like "%${searchParam}%" OR
+                                                  course_acronym like "%${searchParam}%" OR
+                                                  field_acronym like "%${searchParam}%"
+                             ORDER BY field_acronym
+                             LIMIT ${offset},10`);
+};
 
-app.get('/search',(req,res) => {
+
+const searched_courses_num_getter = async (searchParam,offset) => {
+    return connection.query(`SELECT COUNT(*) as count 
+                             FROM courses 
+                             WHERE course_name like "%${searchParam}%" OR
+                                   professors like "%${searchParam}%" OR
+                                   course_acronym like "%${searchParam}%" OR
+                                   field_acronym like "%${searchParam}%"`);
+};
+
+
+
+
+app.get('/search',async (req,res) => {
 
     if (req.user) {
         userLoggedIn = true;
@@ -1044,11 +1065,79 @@ app.get('/search',(req,res) => {
         image = undefined;
     };
 
-    res.render('search2',{data: undefined, 
-                              currentPageNum: [{currentPageNum: undefined}],
-                              userLoggedIn,
-                              username,
-                              image});
+    if (!req.session.searchParam) {
+        return res.render('search2',{data: undefined, 
+                                     currentPageNum: [{currentPageNum: undefined}],
+                                     userLoggedIn,
+                                     username,
+                                     image,
+                                     paginationExists: false });
+    };
+
+    let searchParam = req.session.searchParam,
+        currentSectionNum = parseInt(req.session.currentSectionNum),
+        currentPageNum = parseInt(req.session.currentPageNum);
+
+    delete req.session.searchParam;
+    delete req.session.currentSectionNum;
+    delete req.session.currentPageNum;
+
+    console.log(searchParam);
+    console.log(currentSectionNum);
+    console.log(currentPageNum);
+
+    let offset = offsetCalc(currentPageNum),
+        searchedCourses = await searched_courses_getter(searchParam,offset),
+        totalNumCourses = (await searched_courses_num_getter(searchParam,offset))[0].count,
+        totalNumPages = totalNumPagesCalc(totalNumCourses),
+        totalNumSections = totalNumSectionsCalc(totalNumPages),
+        currentSectionTotalNumPages = currentSectionTotalNumPagesCalc(currentSectionNum,totalNumSections,totalNumCourses),
+        currentSectionPagesNumRange = currentSectionPagesNumRangeCalc(currentSectionNum,currentSectionTotalNumPages),
+        previousSectionExists = previousSectionExistsCalc(currentSectionNum),
+        nextSectionExists = nextSectionExistsCalc(currentSectionNum,totalNumSections);
+
+    console.log('currentSectionNum: ',currentSectionNum);
+    console.log('currentPageNum: ',currentPageNum);
+    console.log('totalNumCourses: ',totalNumCourses);
+    console.log('offset: ',offset);
+    console.log('totalNumPages: ',totalNumPages);
+    console.log('totalNumSections: ',totalNumSections);
+    console.log('currentSectionTotalNumPages: ',currentSectionTotalNumPages);
+    console.log('currentSectionPagesNumRange: ',currentSectionPagesNumRange);
+    console.log('previousSectionExists: ',previousSectionExists);
+    console.log('nextSectionExists: ',nextSectionExists);
+    console.log('currentSectionNum: ',typeof currentSectionNum);
+    console.log('totalNumSections: ',typeof totalNumSections);
+    console.log('searchedCourses Length: ', searchedCourses.length);
+    console.log('*********************************************');
+    console.log('*********************************************');
+    console.log('*********************************************');
+
+    if (totalNumCourses === 0) {
+        console.log('WHY??????');
+        return res.render('search2',{ data: undefined,
+                                      currentPageNum: [{currentPageNum: undefined}],
+                                      userLoggedIn,
+                                      username,
+                                      image,
+                                      paginationExists: false });
+    };
+
+    console.log('HERE');
+    let paginationExists = true;
+    res.render('search2', { paginationExists,
+                            searchParam,
+                            currentSectionNum,
+                            currentPageNum,
+                            totalNumCourses,
+                            totalNumPages,
+                            totalNumSections,
+                            currentSectionTotalNumPages,
+                            currentSectionPagesNumRange,
+                            previousSectionExists,
+                            nextSectionExists,
+                            searchedCourses });
+    
 });
 
 app.get('/searching',(req,res) => {
@@ -1079,188 +1168,40 @@ app.get('/searching',(req,res) => {
         }).catch((e) => res.send("-1"));
 });
 
+
+
+
+
 app.post('/search/query/:sectionNum/:pageNum',(req,res) => {
-    console.log(req.params.pageNum);
-    console.log(req.body.searchParam);
-    if (req.body.searchParam === "") {
-        res.render('search_test',{data: -1});
-    };
-
-    let offset = (req.params.pageNum-1)*10;
 
 
-    connection.query(`SELECT * FROM courses WHERE course_name like "%${req.body.searchParam}%" OR
-                                                  professors like "%${req.body.searchParam}%" OR
-                                                  course_acronym like "%${req.body.searchParam}%" OR
-                                                  field_acronym like "%${req.body.searchParam}%"
-                     ORDER BY course_acronym
-                     LIMIT ${offset},10`)
-        .then(data => {
-            if (data.length === 0) {
 
-                return res.render('search_test',{data: -1});
-            };
+    req.session.searchParam = req.body.searchParam;
+    req.session.currentSectionNum = req.params.sectionNum;
+    req.session.currentPageNum = req.params.pageNum;
 
-            connection.query(`SELECT count(*) as count FROM courses WHERE course_name like "%${req.body.searchParam}%" OR
-                                                                 professors like "%${req.body.searchParam}%" OR
-                                                                 course_acronym like "%${req.body.searchParam}%" OR
-                                                                 field_acronym like "%${req.body.searchParam}%"
-                              ORDER BY course_acronym`)
-                .then((totalCount) => {
-                    data = JSON.parse(JSON.stringify(data));
-                    totalCount = totalCount[0].count;
-                    let totalSecNum = Math.floor(totalCount/50);
-                    
 
-                    // if (totalCount%50 !== 0) {
-                        totalSecNum += 1;
-                    // };
 
-                    // console.log(totalSecNum);
+    res.redirect('/search');
 
-                    let prevSecExist = req.params.sectionNum !== 1 || req.params.sectionNum <= totalSecNum;
-
-                    let nextSecExist = req.params.sectionNum !== totalSecNum;
-
-                    let currentSecNum = parseInt(req.params.sectionNum);
-
-                    let prevSecNum = currentSecNum-1;
-                    let nextSecNum = currentSecNum+1;
-
-                    // console.log(currentSecNum);
-                    // console.log(totalSecNum);
-
-                    // console.log(typeof currentSecNum);
-                    // console.log(typeof totalSecNum);
-
-                    // console.log(currentSecNum === totalSecNum);
-
-                    let currentPageTotalNum;
-
-                    if (currentSecNum == totalSecNum) {
-                        currentPageTotalNum = (totalCount !== 0) ? Math.ceil(totalCount%50/10) : 1;
-                    } else {
-                        currentPageTotalNum = 5;
-                    }
-                    
-                    // console.log(currentPageTotalNum);
-
-                    console.log('*********************');
-
-                    console.log("totalSecNum: ",totalSecNum);
-                    console.log("currentSecNum: ",currentSecNum);
-                    console.log("prevSecNum: ",prevSecNum);
-                    console.log("nextSecNum: ",nextSecNum);
-                    console.log("currentPageTotalNum: ",currentPageTotalNum);
-                    console.log("totalCount: ",totalCount);
-                    console.log("req.params.pageNum: ",req.params.pageNum);
-
-                    console.log('*********************');
-
-                    console.log(currentSecNum);
-                    res.render('search_test',{data, 
-                                             totalSecNum, 
-                                             currentSecNum:[{currentSecNum}], 
-                                             prevSecNum:[{prevSecNum}], 
-                                             nextSecNum:[{nextSecNum}], 
-                                             currentPageTotalNum: [{currentPageTotalNum}],
-                                             searchParam: [{searchParam: req.body.searchParam}],
-                                             totalCount: [{totalCount}],
-                                             currentPageNum: [{currentPageNum: req.params.pageNum}]
-                                             });
-                });
-        });
 });
+
 
 app.get('/search/query/:sectionNum/:pageNum/:searchParam',(req,res) => {
 
-    // req.body.searchParam = tmp;
-
-    let offset = (req.params.pageNum-1)*10;
-    // console.log(offset);
-
-    connection.query(`SELECT * FROM courses WHERE course_name like "%${req.params.searchParam}%" OR
-                                                  professors like "%${req.params.searchParam}%" OR
-                                                  course_acronym like "%${req.params.searchParam}%" OR
-                                                  field_acronym like "%${req.params.searchParam}%"
-                     ORDER BY course_acronym
-                     LIMIT ${offset},10`)
-        .then(data => {
-            if (data.length === 0) {
-                return res.render('search_test',{data: -1});
-            };
-            connection.query(`SELECT count(*) as count FROM courses WHERE course_name like "%${req.params.searchParam}%" OR
-                                                                 professors like "%${req.params.searchParam}%" OR
-                                                                 course_acronym like "%${req.params.searchParam}%" OR
-                                                                 field_acronym like "%${req.params.searchParam}%"
-                              ORDER BY course_acronym`)
-                .then((totalCount) => {
-                    data = JSON.parse(JSON.stringify(data));
-                    totalCount = totalCount[0].count;
-                    let totalSecNum = Math.floor(totalCount/50);
-                    
-
-                    // if (totalCount%50 !== 0) {
-                        totalSecNum += 1;
-                    // };
-
-                    // console.log(totalSecNum);
-
-                    let prevSecExist = req.params.sectionNum !== 1 || req.params.sectionNum <= totalSecNum;
-
-                    let nextSecExist = req.params.sectionNum !== totalSecNum;
-
-                    let currentSecNum = parseInt(req.params.sectionNum);
-
-                    let prevSecNum = currentSecNum-1;
-                    let nextSecNum = currentSecNum+1;
-
-                    // console.log(currentSecNum);
-                    // console.log(totalSecNum);
-
-                    // console.log(typeof currentSecNum);
-                    // console.log(typeof totalSecNum);
-
-                    // console.log(currentSecNum === totalSecNum);
-
-                    let currentPageTotalNum;
-
-                    if (currentSecNum == totalSecNum) {
-                        currentPageTotalNum = (totalCount !== 0) ? Math.ceil(totalCount%50/10) : 1;
-                    } else {
-                        currentPageTotalNum = 5;
-                    }
-                    
-                    // console.log(currentPageTotalNum);
-
-                    console.log('*********************');
-
-                    console.log("totalSecNum: ",totalSecNum);
-                    console.log("currentSecNum: ",currentSecNum);
-                    console.log("prevSecNum: ",prevSecNum);
-                    console.log("nextSecNum: ",nextSecNum);
-                    console.log("currentPageTotalNum: ",currentPageTotalNum);
-                    console.log("totalCount: ",totalCount);
-                    console.log("req.params.pageNum: ",req.params.pageNum);
-
-                    console.log('*********************');
 
 
-               
+    req.session.searchParam = req.params.searchParam;
+    req.session.currentSectionNum = req.params.sectionNum;
+    req.session.currentPageNum = req.params.pageNum;
 
-                    res.render('search_test.ejs',{data, 
-                                             totalSecNum, 
-                                             currentSecNum:[{currentSecNum}], 
-                                             prevSecNum:[{prevSecNum}], 
-                                             nextSecNum:[{nextSecNum}], 
-                                             currentPageTotalNum: [{currentPageTotalNum}],
-                                             searchParam: [{searchParam: req.params.searchParam}],
-                                             totalCount: [{totalCount}],
-                                             currentPageNum: [{currentPageNum: req.params.pageNum}]
-                                             });
-                });
-        });
+
+
+    res.redirect('/search');
+
 });
+
+
 
 
 const user_ratings_getter = async (userId,category,offset) => {

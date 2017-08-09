@@ -22,10 +22,10 @@ $(document).ready(function() {
     $('.navbar-form').submit(function(e) {
         if ($('.navbar-form .form-control').val() !== "") {
             console.log($('.navbar-form .form-control').val());
-            $.ajax({
-                url: `/search/query/1/1/${$('.navbar-form .form-control').val()}`,
-                type: "GET"
-            })
+            // $.ajax({
+            //     url: `/search/query/1/1/${$('.navbar-form .form-control').val()}`,
+            //     type: "GET"
+            // })
         } else {
             e.preventDefault(e);
         };

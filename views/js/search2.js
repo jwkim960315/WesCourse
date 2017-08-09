@@ -36,9 +36,9 @@ $('.search-keyword').on('input', function() {
 
             if (data === "-1") {
                 $('.courses-group').fadeIn(400);
-                return $('div.list-group').html(`<div class="categories list-group-item">
+                return $('ul.list-group.inside-courses-group').html(`<li class="list-group-item categories">
                                                     <p>No Matching Results Found</p>
-                                                 </div>`);
+                                                </li>`);
             };
             
             myHilitor = new Hilitor("courses-group");
@@ -47,9 +47,12 @@ $('.search-keyword').on('input', function() {
 
             for (var i=0; i < Object.keys(data.data).length; i++) {
                 
-                template += `<div class="categories list-group-item">
-                                <p>${Object.keys(data.data)[i]}</p>
-                            </div>`;
+                template += `<li class="list-group-item categories">
+                                
+                                    <p>${Object.keys(data.data)[i]}</p>
+                                
+                             </li>`;
+                             
                 data.data[Object.keys(data.data)[i]].forEach((obj,index,arr) => {
 
 
@@ -66,41 +69,45 @@ $('.search-keyword').on('input', function() {
                     };
 
 
-                    template += `<a class="list-group-item action courses" href="/catalog/${obj.field_acronym}/${obj.course_acronym}/1/1">
-                                    <div class="col-6">
-                                        <div class="course-acronyms">
-                                            <p>Course: ${obj.course_acronym}</p>
+                    template += `<li class="list-group-item">
+                                     <a class="action courses" href="/catalog/${obj.field_acronym}/${obj.course_acronym}/likes">
+                                        <div class="row">
+                                            <div class="col-md-6 col-xs-12 course-acronyms">
+                                                <p>Course: ${obj.course_acronym}</p>
+                                            </div>
+                                            <div class="col-md-6 col-xs-12 professors text-left">
+                                                <p>Professor(s): ${obj.professors}</p>
+                                            </div>
                                         </div>
-
-                                        <div class="course-names">
-                                            <p>${obj.course_name}</p>
+                                        <div class="row">
+                                            <div class="col-xs-12 clearfix course-names">
+                                                <p>${obj.course_name}</p>
+                                            </div>
                                         </div>
-
-                                        <div class="sections">
-                                            <p>Section: ${obj.section}</p>
+                                        <div class="row">
+                                            <div class="col-xs-12 sections">
+                                                <p>Section: ${obj.section}</p>
+                                            </div>
                                         </div>
-
-                                        <div class="term-names">
-                                            <p>Term: ${obj.term_name}</p>
+                                        <div class="row">
+                                            <div class="col-xs-12 term-names">
+                                                <p>Term: ${obj.term_name}</p>
+                                            </div>
                                         </div>
-                                    </div>
-
-                                    <div class="col-6 professors">
-                                        
-                                            <p>Professor(s): </p>
-                                            <p>${obj.professors}</p>
-                                    </div>
-                                </a>`;
+                                    </a>
+                                </li>`;
                 });
             };
 
             if (data.dataLength > 10) {
-                template += `<a href="/search/query/1/1/${keyword}" class="list-group-item">
-                                <p id="view-all">View All Results</p>
-                             </a>`;
+                template += `<li class="list-group-item">
+                                 <a href="/search/query/1/1/${keyword}" class="text-center">
+                                    <p id="view-all">View All Results</p>
+                                 </a>
+                             </li>`;
             };
             
-            $('div.list-group').html(template);
+            $('ul.list-group.inside-courses-group').html(template);
 
             myHilitor.setMatchType("open");
             myHilitor.apply(keyword);

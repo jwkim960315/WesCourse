@@ -24,10 +24,8 @@
         <!-- Custom CSS -->
         <link rel="stylesheet" type="text/css" href="/css/container.css">
         <link rel="stylesheet" type="text/css" href="/css/navbar.css">
-        <link rel="stylesheet" type="text/css" href="/css/courseInfo.css">
-        <link rel="stylesheet" type="text/css" href="/css/specificCourse2.css">
         <link rel="stylesheet" type="text/css" href="/css/pagination.css">
-        <link rel="stylesheet" type="text/css" href="/css/loading.css">
+        <link rel="stylesheet" type="text/css" href="/css/search2.css">
     </head>
     <body>
         
@@ -86,12 +84,12 @@
                   </li>
                 <% } %>
                 <form class="navbar-form navbar-right" method="POST" action="/search/query/1/1">
-                  <label class="sr-only" for="search-keyword"></label>
+                  <label class="sr-only" for="search-keyword1"></label>
                   <div class="form-group">
-                      <input type="text" class="form-control" spellcheck="false" autocomplete="off" name="searchParam" id="search-keyword" placeholder="Search any keywords...">
+                      <input type="text" class="form-control" spellcheck="false" autocomplete="off" name="searchParam" id="search-keyword1" placeholder="Search any keyword...">
                       <button type="submit" class="btn">Search</button>
                   </div>
-              </form>
+                </form>
               </ul>
 
             </div><!-- /.navbar-collapse -->
@@ -99,19 +97,183 @@
         </nav>
 
         <!-- Main Search Bar -->
-        <form class="form" method="POST" action="/search/query/1/1">
-            <label class="sr-only" for="search-keyword"></label>
-            <div class="input-group">
-                <input type="text" class="form-control search-keyword" spellcheck="false" autocomplete="off" name="searchParam" id="search-keyword" placeholder="Search any keywords...">
-                <span class="input-group-btn">
-                    <button type="submit" class="btn btn-danger">Search</button>    
-                </span>
+        <div class="row">
+            <div class="col-xs-12">
+                <!-- Search Bar -->
+                <form class="form" method="POST" action="/search/query/1/1">
+                    <label class="sr-only" for="search-keyword"></label>
+                    <div class="input-group">
+                        <input type="text" class="form-control search-keyword" spellcheck="false" autocomplete="off" name="searchParam" id="search-keyword" placeholder="Search any keyword...">
+                        <span class="input-group-btn">
+                            <button type="submit" class="btn btn-danger">Search</button>    
+                        </span>
+                    </div>
+                </form>
             </div>
-        </form>
-        <div class="courses-group" id="courses-group">
-            <div class="list-group inside-courses-group" id="inside-courses-group"></div>
+            <div class="col-xs-12">
+                <div class="courses-group" id="courses-group">
+                    <ul class="list-group inside-courses-group" id="inside-courses-group"></ul>
+                </div>
+            </div>
         </div>
 
+
+        <% if (paginationExists) { %>
+
+            <hr />
+
+            <!-- Searched Courses -->
+            <div class="row">
+                <div class="col-xs-12">
+                    <ul class="list-group">
+                        <% for (var i=0; i < searchedCourses.length; i++) { %>
+                            <a href="/catalog/<%= searchedCourses[i].field_acronym %>/<%= searchedCourses[i].course_acronym %>/likes">
+                            <li class="list-group-item">
+                                <div class="row">
+                                    <div class="col-xs-12 col-md-6">
+                                        <p><%= searchedCourses[i].course_acronym %></p>
+                                    </div>
+                                    <div class="col-xs-12 col-md-6 text-left">
+                                        <p>Professor(s): <%= searchedCourses[i].professors %></p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <p><%= searchedCourses[i].course_name %></p>    
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <p>Section: <%= searchedCourses[i].section %></p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <p>Class Date: <%= searchedCourses[i].class_date %></p>
+                                    </div>
+                                </div>
+                            </li>
+                            </a>
+                        <% } %>
+                    </ul>
+                </div>
+            </div>
+        <% } %>
+        
+        <!-- Pagination -->
+        <% if (paginationExists) { %>
+            <div class="row text-center">
+                <nav aria-label="Page navigation">
+                  <ul class="pagination pagination-lg">
+                  <% if (previousSectionExists) { %>
+                    <li id="page-first" class="hidden-xs">
+                      <a href="/search/query/<%= 1 %>/<%= 1 %>/<%= searchParam %>" aria-label="First">
+                        <span aria-hidden="true">&Larr;</span>
+                      </a>
+                    </li>
+                    <li id="page-prev-section" class="">
+                      <a href="/search/query/<%= currentSectionNum - 1 %>/<%= currentPageNum - currentPageNum%5 - 4 %>/<%= searchParam %>" aria-label="Previous-Section">
+                        <span aria-hidden="true">&laquo;</span>
+                      </a>
+                    </li>
+                    <li id="page-previous" class="">
+                      <a href="/search/query/<%= currentSectionNum %>/<%= currentPageNum - 1 %>/<%= searchParam %>" aria-label="Previous">
+                        <span aria-hidden="true">&lsaquo;</span>
+                      </a>
+                    </li>
+                  <% } else { %>
+                    <% if (currentPageNum === 1) { %>
+                      <li id="page-first" class="disabled hidden-xs left">
+                        <span>
+                          <span aria-hidden="true">&Larr;</span>
+                        </span>
+                      </li>
+                      <li id="page-previous-section" class="disabled left">
+                        <span>
+                          <span aria-hidden="true">&laquo;</span>
+                        </span>
+                      </li>
+                      <li id="page-previous" class="disabled left">
+                        <span>
+                          <span aria-hidden="true">&lsaquo;</span>
+                        </span>
+                      </li>
+                    <% } else { %>
+                      <li id="page-first" class="hidden-xs">
+                        <a href="/search/query/<%= 1 %>/<%= 1 %>/<%= searchParam %>" aria-label="First">
+                          <span aria-hidden="true">&Larr;</span>
+                        </a>
+                      </li>
+                      <li id="page-previous-section" class="disabled left">
+                        <span>
+                          <span aria-hidden="true">&laquo;</span>
+                        </span>
+                      </li>
+                      <li id="page-previous" class="">
+                        <a href="/search/query/<%= currentSectionNum %>/<%= currentPageNum - 1 %>/<%= searchParam %>" aria-label="Previous">
+                          <span aria-hidden="true">&lsaquo;</span>
+                        </a>
+                      </li>
+                    <% } %>
+                  <% } %>
+                  <% for (var i=0; i < currentSectionPagesNumRange.length; i++) {%>
+                    <li class="page-item"><a href="/search/query/<%= currentSectionNum %>/<%= currentSectionPagesNumRange[i] %>/<%= searchParam %>"><%= currentSectionPagesNumRange[i] %></a></li>
+                  <% } %>
+                  <% if (nextSectionExists) { %>
+                    <li id="page-next" class="">
+                      <a href="/search/query/<%= currentSectionNum %>/<%= currentPageNum + 1 %>/<%= searchParam %>" aria-label="Next">
+                        <span aria-hidden="true">&rsaquo;</span>
+                      </a>
+                    </li>
+                    <li id="page-next-section" class="">
+                      <a href="/search/query/<%= currentSectionNum + 1 %>/<%= currentPageNum-currentPageNum%5 + 6 %>/<%= searchParam %>" aria-label="Next-Section">
+                        <span aria-hidden="true">&raquo;</span>
+                      </a>
+                    </li>
+                    <li id="page-last" class="hidden-xs">
+                      <a href="/search/query/<%= totalNumSections %>/<%= totalNumPages %>/<%= searchParam %>" aria-label="Last">
+                        <span aria-hidden="true">&Rarr;</span>
+                      </a>
+                    </li>
+                  <% } else { %>
+                    <% if (currentPageNum === totalNumPages) { %>
+                      <li id="page-next" class="disabled right">
+                        <span>
+                          <span aria-hidden="true">&rsaquo;</span>
+                        </span>
+                      </li>
+                      <li id="page-next-section" class="disabled right">
+                        <span>
+                          <span aria-hidden="true">&raquo;</span>
+                        </span>
+                      </li>
+                      <li id="page-last" class="disabled hidden-xs right">
+                        <span>
+                          <span aria-hidden="true">&Rarr;</span>
+                        </span>
+                      </li>
+                    <% } else { %>
+                      <li id="page-next" class="">
+                        <a href="/search/query/<%= currentSectionNum %>/<%= currentPageNum + 1 %>/<%= searchParam %>" aria-label="Next">
+                          <span aria-hidden="true">&rsaquo;</span>
+                        </a>
+                      </li>
+                      <li id="page-next-section" class="disabled right">
+                        <span>
+                          <span aria-hidden="true">&raquo;</span>
+                        </span>
+                      </li>
+                      <li id="page-last" class="hidden-xs">
+                        <a href="/search/query/<%= totalNumSections %>/<%= totalNumPages %>/<%= searchParam %>" aria-label="Last">
+                          <span aria-hidden="true">&Rarr;</span>
+                        </a>
+                      </li>
+                    <% } %>
+                  <% } %>
+                  </ul>
+                </nav>
+            </div>
+        <% } %>
 
 
     </div>
@@ -155,5 +317,16 @@
         <script src="/js/hilitor.js"></script>
         <script src="/js/search2.js"></script>
 
+        <!-- Custom JavaScript with EJS -->
+        <script>
+            $(document).ready(function() {
+              // Current Page Active Handler
+              $('.page-item').each(function(index) {
+                  if ("<%= currentPageNum %>" === $(this).children().text()) {
+                      $(this).addClass('active');
+                  };
+              });
+            });
+        </script>
     </body>
 </html>
