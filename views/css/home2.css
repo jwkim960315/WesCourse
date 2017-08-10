@@ -1,0 +1,97 @@
+
+
+div.title h1 {
+    color: rgb(119,119,119);
+    padding-top: 40px;
+}
+
+div.subtitle h3 {
+    font-size: 2rem;
+    color: rgb(109,109,109);
+}
+
+div.first-info {
+    margin-top: 100px;
+}
+
+div.infos div.col-xs-12.col-md-4 {
+    margin-bottom: 100px;
+    color: rgb(99,99,99);
+    padding: 30px;
+    border-radius: 5px;
+}
+
+div.infos div.col-xs-12.col-md-4:hover {
+    background-color: red;
+    color: white;
+    transition: .3s all ease;
+}
+
+div.infos div.col-xs-12.col-md-4 div.extra-info p {
+    color: white;
+}
+
+
+@media (max-width: 992px) {
+    div.section {
+        margin-bottom: 30px !important;
+    }
+}
+
+
+div.infos h4 {
+    margin-top: 30px;
+}
+
+
+
+
+/* Footer */
+
+/*footer {
+    border-top: 1px solid rgb(221,221,221);
+    height: 80px;
+    background-color: rgb(149,149,149);
+    vertical-align: middle;
+}*/
+
+
+footer div.panel {
+    border-top: 1px solid rgb(99,99,99);
+    background: rgb(221,221,221);
+    margin-bottom: 0;
+    border-radius: 0;
+}
+
+footer div.panel div.panel-body {
+    padding-top: 0;
+}
+
+footer div.panel div.panel-body p {
+    margin-top: 37px;
+    font-size: 1.2em;
+}
+
+footer div.panel div.panel-body li {
+    margin-top: 17px;
+    padding-left: 10px;
+    background-color: transparent;
+    border: none;
+}
+
+footer div.panel div.panel-body li.first-item {
+    padding-left: 0;
+}
+
+footer div.panel div.panel-body ul.list-group.list-inline {
+    margin-bottom: 0;
+}
+
+footer div.panel div.panel-body a i {
+    color: rgb(99,99,99);
+}
+
+footer div.panel div.panel-body a i:hover {
+    color: rgb(225,0,0);
+    color: white;
+}
