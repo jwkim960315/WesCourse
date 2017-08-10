@@ -247,6 +247,7 @@ div.btn-group > div.btn-group > button:hover {
 
 div.like-group > h3 {
 	display: inline-block !important;
+	color: rgb(119,119,119);
 }
 
 div.like-group > h3 > a {
