@@ -37,7 +37,7 @@ $('.search-keyword').on('input', function() {
             if (data === "-1") {
                 $('.courses-group').fadeIn(400);
                 return $('ul.list-group.inside-courses-group').html(`<li class="list-group-item categories">
-                                                    <p>No Matching Results Found</p>
+                                                    <p>No Matching Result Found</p>
                                                 </li>`);
             };
             
@@ -122,4 +122,4 @@ $(document).ready(function() {
     $('.courses-group').hide();
 });
 
-window.onbeforeunload = function(){ window.scrollTo(0,0); }
+// window.onbeforeunload = function(){ window.scrollTo(0,0); }

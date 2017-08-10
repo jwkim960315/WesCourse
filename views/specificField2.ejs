@@ -12,8 +12,8 @@
       <!-- Bootstrap CSS -->
       <link rel="stylesheet" type="text/css" href="/bootstrap/css/bootstrap.css">
 
-      <!-- Foundation CSS -->
-      <!-- <link rel="stylesheet" type="text/css" href="/foundation/css/foundation.css"> -->
+      <!-- Font Awesome -->
+      <link rel="stylesheet" type="text/css" href="/font-awesome.0/css/font-awesome.min.css">
 
       <!-- Custom CSS -->
       <link rel="stylesheet" type="text/css" href="/css/container.css">
@@ -51,9 +51,6 @@
                 </li>
                 <li class="nav-item active">
                   <a class="nav-link" href="/catalog">Catalog</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="/about">About</a>
                 </li>
                 <li class="nav-item">
                   <a class="nav-link" href="/search">Search</a>
@@ -108,7 +105,7 @@
               
               <a href="/catalog/<%= fallCourses[i].field_acronym %>/<%= fallCourses[i].course_acronym %>/likes">
                 <div class="infos class-time col-xs-12 col-md-6 text-right">
-                  <p>Class Time: <%= fallCourses[i].class_date %></p>
+                  <p>Class Time: <%= fallCourses[i].class_date.slice(0,fallCourses[i].class_date.length-1) %></p>
                 </div>
                 <div class="infos rest col-xs-12 col-md-6">
                   <span class="course-acronym"><%= fallCourses[i].course_acronym %></span><p class="course-name"><%= fallCourses[i].course_name %></p>
@@ -155,8 +152,6 @@
         </div>
       </div>
 
-      <!-- Font Awesome -->
-      <script src="https://use.fontawesome.com/b6a42b064c.js"></script> 
 
       <!-- JQuery -->
       <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>

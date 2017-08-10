@@ -510,23 +510,12 @@ app.get('/catalog/:fieldAc/:courseAc/:category',async (req,res) => {
             return res.status(404).send();
         };
 
-        switch(category) {
-            case "likes":
-                category = "likes DESC";
-                break;
-            case "overall_rating":
-                category = "overall_rating DESC";
-                break;
-            case "organization":
-                category = "organization DESC";
-                break;
-            case "professors":
-                category = "professors DESC";
-                break;
-            case "created_at":
-                category = "ratings.created_at DESC";
-                break;
+        if (category === 'created_at') {
+            category = `ratings.${category} DESC`;
+        } else {
+            category = `${category} DESC`;    
         };
+
     };
 
     
@@ -590,13 +579,13 @@ app.get('/catalog/:fieldAc/:courseAc/:category',async (req,res) => {
         case "overall_rating DESC":
             categoryDisplay = "Overall Rating";
             break;
-        case "difficulty":
+        case "difficulty DESC":
             categoryDisplay = "Difficulty";
             break;
         case "organization DESC":
             categoryDisplay = "Organization";
             break;
-        case "effort":
+        case "effort DESC":
             categoryDisplay = "Effort Required";
             break;
         case "professors DESC":
@@ -682,7 +671,7 @@ app.get('/catalog/:fieldAc/:courseAc/:selectedSectionNum/:selectedPageNum/:categ
     if (!isSectionAndPageTypeValid) {
         let message = "Invalid Section Number Type or Page Number Type";
         console.log(message);
-        return res.render('invalidPage',{ message });
+        return res.status(404).render('invalidPage',{ message });
     };
 
     // console.log('selectedSectionNum: ',selectedSectionNum);
@@ -738,6 +727,7 @@ app.get('/like/:fieldAc/:courseAc/:ratingId',async (req,res) => {
     let ratingId = parseInt(req.params.ratingId),
         userId = req.user.id,
         inc = '+ 1';
+
     console.log('Liking...');
     console.log(ratingId);
     console.log(userId);
@@ -783,6 +773,8 @@ app.get('/comment-submit/:fieldAc/:courseAc/',(req,res) => {
     userLoggedIn = true;
     username = req.user.username;
     image = (req.user.use_google_img) ? req.user.google_image : req.user.custom_image; 
+
+    req.session.returnTo = req.header('Referer');
 
     res.render('submitRating',{ userLoggedIn,
                                  username,
@@ -854,9 +846,16 @@ app.post('/submittingRating',async (req,res) => {
     console.log(anonymous);
     // res.status(404).send();
     console.log('*************');
-    console.log(req.header('Referer'));
+    console.log(req.session.returnTo);
+    let returnTo = req.session.returnTo;
+    delete req.session.returnTo;
     console.log('*************');
-    if (req.header('Referer').slice(22,29) === 'catalog') {
+
+    if (!returnTo) {
+        return res.status(404).send();
+    };
+
+    if (returnTo.slice(22,29) === 'catalog') {
         return res.redirect(`/catalog/${fieldAc}/${courseAc}/likes`);
     };
 
@@ -1071,7 +1070,7 @@ app.get('/search',async (req,res) => {
                                      userLoggedIn,
                                      username,
                                      image,
-                                     paginationExists: false });
+                                     paginationExists: "Not Defined" });
     };
 
     let searchParam = req.session.searchParam,
@@ -1124,8 +1123,8 @@ app.get('/search',async (req,res) => {
     };
 
     console.log('HERE');
-    let paginationExists = true;
-    res.render('search2', { paginationExists,
+    
+    res.render('search2', { paginationExists: true,
                             searchParam,
                             currentSectionNum,
                             currentPageNum,
@@ -1272,22 +1271,10 @@ app.get('/profile/:category',async (req,res) => {
             return res.status(404).send();
         };
 
-        switch(category) {
-            case "likes":
-                category = "likes DESC";
-                break;
-            case "overall_rating":
-                category = "overall_rating DESC";
-                break;
-            case "organization":
-                category = "organization DESC";
-                break;
-            case "ratings.professors":
-                category = "ratings.professors DESC";
-                break;
-            case "created_at":
-                category = "ratings.created_at DESC";
-                break;
+        if (category === 'created_at' || category === 'professors') {
+            category = `ratings.${category} DESC`;
+        } else {
+            category = `${category} DESC`;    
         };
     };
 
@@ -1318,13 +1305,13 @@ app.get('/profile/:category',async (req,res) => {
         case "overall_rating DESC":
             categoryDisplay = "Overall Rating";
             break;
-        case "difficulty":
+        case "difficulty DESC":
             categoryDisplay = "Difficulty";
             break;
         case "organization DESC":
             categoryDisplay = "Organization";
             break;
-        case "effort":
+        case "effort DESC":
             categoryDisplay = "Effort Required";
             break;
         case "ratings.professors DESC":
@@ -1379,10 +1366,18 @@ app.get('/profile/:category',async (req,res) => {
 
     category = category.slice(0,category.length-5);
 
+    let paginationExists;
+
+    if (userRatings.length === 0) {
+        paginationExists = false;
+    } else {
+        paginationExists = true;
+    };
 
 
     delete req.session.image;
-    res.render('profile2',{ userLoggedIn,
+    res.render('profile2',{ paginationExists,
+                            userLoggedIn,
                             username,
                             image,
                             email: req.user.email,
@@ -1543,6 +1538,7 @@ app.get('/profile/rating/edit/:category/:ratingId',async (req,res) => {
     console.log(userRating);
 
     req.session.editing = true;
+    req.session.returnTo = req.header('Referer');
 
     res.render('editRating',{ userRating });
 });
@@ -1598,6 +1594,7 @@ app.get('/catalog/rating/edit/:fieldAc/:courseAc/:category/:ratingId',async (req
     console.log(userRating);
 
     req.session.editing = true;
+    req.session.returnTo = req.header('Referer');
 
     res.render('editRating',{ userRating });
 });

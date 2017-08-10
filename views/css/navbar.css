@@ -58,6 +58,11 @@
   font-weight: 500;
 }
 
+.navbar-form.navbar-right {
+  padding-right: 0;
+  padding-left: 0;
+}
+
 
 /* Search Input */
 .navbar-form .form-control {
@@ -83,7 +88,6 @@
   margin: 0 auto;
   margin-bottom: 10px;
   letter-spacing: 1px;
-  margin-left: 10px;
 }
 
 .navbar-form button:hover {

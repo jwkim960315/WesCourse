@@ -1,5 +1,9 @@
 /* Bootstrap CSS Modification */
 
+div.container {
+	margin-bottom: 70px;
+}
+
 .panel {
 	-webkit-box-shadow: none;
 	box-shadow: none;
@@ -286,19 +290,23 @@ div.key-group p.keys {
 	padding-bottom: 10px;
 }
 
-div.key-group p.keys span.indicator-red {
+.ratings-header {
+	color: rgb(99,99,99);
+}
+
+.indicator-red {
 	color: rgb(217, 83, 79);
 }
-div.key-group p.keys span.indicator-yellow {
+.indicator-yellow {
 	color: rgb(240, 173, 78);
 }
-div.key-group p.keys span.indicator-blue {
+.indicator-blue {
 	color: rgb(2, 117, 216);
 }
-div.key-group p.keys span.indicator-lightBlue {
+.indicator-lightBlue {
 	color: rgb(91, 192, 222);
 }
-div.key-group p.keys span.indicator-green {
+.indicator-green {
 	color: rgb(92, 184, 92);
 }
 
@@ -325,3 +333,6 @@ div.edit-delete > div.row > div.col-md-6,
 div.account-delete-btn {
 	margin-top: 10px;
 }
+
+
+
