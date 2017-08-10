@@ -434,119 +434,122 @@
 
 		        	</div>
 		        </div>
+
+		        <div class="row text-center">
+		            <nav aria-label="Page navigation">
+		              <ul class="pagination pagination-lg">
+		              <% if (previousSectionExists) { %>
+		                <li id="page-first" class="hidden-xs">
+		                  <a href="/profile/<%= 1 %>/<%= 1 %>/<%= category %>" aria-label="First">
+		                    <span aria-hidden="true">&Larr;</span>
+		                  </a>
+		                </li>
+		                <li id="page-prev-section" class="">
+		                  <a href="/profile/<%= currentSectionNum - 1 %>/<%= currentPageNum - currentPageNum%5 - 4 %>/<%= category %>" aria-label="Previous-Section">
+		                    <span aria-hidden="true">&laquo;</span>
+		                  </a>
+		                </li>
+		                <li id="page-previous" class="">
+		                  <a href="/profile/<%= currentSectionNum %>/<%= currentPageNum - 1 %>/<%= category %>" aria-label="Previous">
+		                    <span aria-hidden="true">&lsaquo;</span>
+		                  </a>
+		                </li>
+		              <% } else { %>
+		                <% if (currentPageNum === 1) { %>
+		                  <li id="page-first" class="disabled hidden-xs left">
+		                    <span>
+		                      <span aria-hidden="true">&Larr;</span>
+		                    </span>
+		                  </li>
+		                  <li id="page-previous-section" class="disabled left">
+		                    <span>
+		                      <span aria-hidden="true">&laquo;</span>
+		                    </span>
+		                  </li>
+		                  <li id="page-previous" class="disabled left">
+		                    <span>
+		                      <span aria-hidden="true">&lsaquo;</span>
+		                    </span>
+		                  </li>
+		                <% } else { %>
+		                  <li id="page-first" class="hidden-xs">
+		                    <a href="/profile/<%= 1 %>/<%= 1 %>/<%= category %>" aria-label="First">
+		                      <span aria-hidden="true">&Larr;</span>
+		                    </a>
+		                  </li>
+		                  <li id="page-previous-section" class="disabled left">
+		                    <span>
+		                      <span aria-hidden="true">&laquo;</span>
+		                    </span>
+		                  </li>
+		                  <li id="page-previous" class="">
+		                    <a href="/profile/<%= currentSectionNum %>/<%= currentPageNum - 1 %>/<%= category %>" aria-label="Previous">
+		                      <span aria-hidden="true">&lsaquo;</span>
+		                    </a>
+		                  </li>
+		                <% } %>
+		              <% } %>
+		              <% for (var i=0; i < currentSectionPagesNumRange.length; i++) {%>
+		                <li class="page-item"><a href="/profile/<%= currentSectionNum %>/<%= currentSectionPagesNumRange[i] %>/<%= category %>"><%= currentSectionPagesNumRange[i] %></a></li>
+		              <% } %>
+		              <% if (nextSectionExists) { %>
+		                <li id="page-next" class="">
+		                  <a href="/profile/<%= currentSectionNum %>/<%= currentPageNum + 1 %>/<%= category %>" aria-label="Next">
+		                    <span aria-hidden="true">&rsaquo;</span>
+		                  </a>
+		                </li>
+		                <li id="page-next-section" class="">
+		                  <a href="/profile/<%= currentSectionNum + 1 %>/<%= currentPageNum-currentPageNum%5 + 6 %>/<%= category %>" aria-label="Next-Section">
+		                    <span aria-hidden="true">&raquo;</span>
+		                  </a>
+		                </li>
+		                <li id="page-last" class="hidden-xs">
+		                  <a href="/profile/<%= totalNumSections %>/<%= totalNumPages %>/<%= category %>" aria-label="Last">
+		                    <span aria-hidden="true">&Rarr;</span>
+		                  </a>
+		                </li>
+		              <% } else { %>
+		                <% if (currentPageNum === totalNumPages) { %>
+		                  <li id="page-next" class="disabled right">
+		                    <span>
+		                      <span aria-hidden="true">&rsaquo;</span>
+		                    </span>
+		                  </li>
+		                  <li id="page-next-section" class="disabled right">
+		                    <span>
+		                      <span aria-hidden="true">&raquo;</span>
+		                    </span>
+		                  </li>
+		                  <li id="page-last" class="disabled hidden-xs right">
+		                    <span>
+		                      <span aria-hidden="true">&Rarr;</span>
+		                    </span>
+		                  </li>
+		                <% } else { %>
+		                  <li id="page-next" class="">
+		                    <a href="/profile/<%= currentSectionNum %>/<%= currentPageNum + 1 %>/<%= category %>" aria-label="Next">
+		                      <span aria-hidden="true">&rsaquo;</span>
+		                    </a>
+		                  </li>
+		                  <li id="page-next-section" class="disabled right">
+		                    <span>
+		                      <span aria-hidden="true">&raquo;</span>
+		                    </span>
+		                  </li>
+		                  <li id="page-last" class="hidden-xs">
+		                    <a href="/profile/<%= totalNumSections %>/<%= totalNumPages %>/<%= category %>" aria-label="Last">
+		                      <span aria-hidden="true">&Rarr;</span>
+		                    </a>
+		                  </li>
+		                <% } %>
+		              <% } %>
+		              </ul>
+		            </nav>
+		        </div>
+
 	        </div>
 
-	        <div class="row text-center">
-	            <nav aria-label="Page navigation">
-	              <ul class="pagination pagination-lg">
-	              <% if (previousSectionExists) { %>
-	                <li id="page-first" class="hidden-xs">
-	                  <a href="/profile/<%= 1 %>/<%= 1 %>/<%= category %>" aria-label="First">
-	                    <span aria-hidden="true">&Larr;</span>
-	                  </a>
-	                </li>
-	                <li id="page-prev-section" class="">
-	                  <a href="/profile/<%= currentSectionNum - 1 %>/<%= currentPageNum - currentPageNum%5 - 4 %>/<%= category %>" aria-label="Previous-Section">
-	                    <span aria-hidden="true">&laquo;</span>
-	                  </a>
-	                </li>
-	                <li id="page-previous" class="">
-	                  <a href="/profile/<%= currentSectionNum %>/<%= currentPageNum - 1 %>/<%= category %>" aria-label="Previous">
-	                    <span aria-hidden="true">&lsaquo;</span>
-	                  </a>
-	                </li>
-	              <% } else { %>
-	                <% if (currentPageNum === 1) { %>
-	                  <li id="page-first" class="disabled hidden-xs left">
-	                    <span>
-	                      <span aria-hidden="true">&Larr;</span>
-	                    </span>
-	                  </li>
-	                  <li id="page-previous-section" class="disabled left">
-	                    <span>
-	                      <span aria-hidden="true">&laquo;</span>
-	                    </span>
-	                  </li>
-	                  <li id="page-previous" class="disabled left">
-	                    <span>
-	                      <span aria-hidden="true">&lsaquo;</span>
-	                    </span>
-	                  </li>
-	                <% } else { %>
-	                  <li id="page-first" class="hidden-xs">
-	                    <a href="/profile/<%= 1 %>/<%= 1 %>/<%= category %>" aria-label="First">
-	                      <span aria-hidden="true">&Larr;</span>
-	                    </a>
-	                  </li>
-	                  <li id="page-previous-section" class="disabled left">
-	                    <span>
-	                      <span aria-hidden="true">&laquo;</span>
-	                    </span>
-	                  </li>
-	                  <li id="page-previous" class="">
-	                    <a href="/profile/<%= currentSectionNum %>/<%= currentPageNum - 1 %>/<%= category %>" aria-label="Previous">
-	                      <span aria-hidden="true">&lsaquo;</span>
-	                    </a>
-	                  </li>
-	                <% } %>
-	              <% } %>
-	              <% for (var i=0; i < currentSectionPagesNumRange.length; i++) {%>
-	                <li class="page-item"><a href="/profile/<%= currentSectionNum %>/<%= currentSectionPagesNumRange[i] %>/<%= category %>"><%= currentSectionPagesNumRange[i] %></a></li>
-	              <% } %>
-	              <% if (nextSectionExists) { %>
-	                <li id="page-next" class="">
-	                  <a href="/profile/<%= currentSectionNum %>/<%= currentPageNum + 1 %>/<%= category %>" aria-label="Next">
-	                    <span aria-hidden="true">&rsaquo;</span>
-	                  </a>
-	                </li>
-	                <li id="page-next-section" class="">
-	                  <a href="/profile/<%= currentSectionNum + 1 %>/<%= currentPageNum-currentPageNum%5 + 6 %>/<%= category %>" aria-label="Next-Section">
-	                    <span aria-hidden="true">&raquo;</span>
-	                  </a>
-	                </li>
-	                <li id="page-last" class="hidden-xs">
-	                  <a href="/profile/<%= totalNumSections %>/<%= totalNumPages %>/<%= category %>" aria-label="Last">
-	                    <span aria-hidden="true">&Rarr;</span>
-	                  </a>
-	                </li>
-	              <% } else { %>
-	                <% if (currentPageNum === totalNumPages) { %>
-	                  <li id="page-next" class="disabled right">
-	                    <span>
-	                      <span aria-hidden="true">&rsaquo;</span>
-	                    </span>
-	                  </li>
-	                  <li id="page-next-section" class="disabled right">
-	                    <span>
-	                      <span aria-hidden="true">&raquo;</span>
-	                    </span>
-	                  </li>
-	                  <li id="page-last" class="disabled hidden-xs right">
-	                    <span>
-	                      <span aria-hidden="true">&Rarr;</span>
-	                    </span>
-	                  </li>
-	                <% } else { %>
-	                  <li id="page-next" class="">
-	                    <a href="/profile/<%= currentSectionNum %>/<%= currentPageNum + 1 %>/<%= category %>" aria-label="Next">
-	                      <span aria-hidden="true">&rsaquo;</span>
-	                    </a>
-	                  </li>
-	                  <li id="page-next-section" class="disabled right">
-	                    <span>
-	                      <span aria-hidden="true">&raquo;</span>
-	                    </span>
-	                  </li>
-	                  <li id="page-last" class="hidden-xs">
-	                    <a href="/profile/<%= totalNumSections %>/<%= totalNumPages %>/<%= category %>" aria-label="Last">
-	                      <span aria-hidden="true">&Rarr;</span>
-	                    </a>
-	                  </li>
-	                <% } %>
-	              <% } %>
-	              </ul>
-	            </nav>
-	        </div>
+	        
 	    </div>
 
 
