@@ -132,20 +132,19 @@ passport.use(new GoogleStrategy({
   },
   function(req, accessToken, refreshToken, profile, done) {
 
-        console.log(profile);
-        console.log(accessToken);
+        
+        
 
         
             connection.query(`SELECT * FROM users WHERE users.id=${profile.id}`).then((data,err) => {
                 if (profile._json.domain === "wesleyan.edu") {
-                    console.log(data);
+                    
                     if (err) {
-                        console.log(err);
+                        
                         return done(err);
                     };
 
-                    console.log(typeof req.query.state);
-                    console.log(profile.id);
+                    
 
                     if (data.length === 0 && req.query.state !== process.env.USER_ID_CHECK) {
                         connection.query(`INSERT INTO users (id,username,email,first_name,last_name,google_image) VALUES ("${profile.id}","${req.query.state}","${profile.email}","${profile.name.givenName}","${profile.name.familyName}","${profile.photos[0].value}")`);                
@@ -156,14 +155,14 @@ passport.use(new GoogleStrategy({
                                                  type: 'no account' });
                     };
 
-                    console.log('Loggin in...');
+                    
 
                     if (req.query.state !== process.env.USER_ID_CHECK && req.query.state !== undefined) {
                         return done(null, false, { message: 'You already have an account',
                                                    type: 'duplicate account' });
                     };
 
-                    console.log(profile._json.verified);
+                    
 
 
                     return done(null, data[0]);
@@ -194,7 +193,7 @@ passport.deserializeUser((id, done) => {
 let options;
 
 app.get('/',(req,res) => {
-    console.log(req.user);
+    
 
     if (req.user) {
         userLoggedIn = true;
@@ -308,7 +307,7 @@ const comments_getter = async (userId,courseAcronym,category,offset) => {
                              LIMIT ${offset},10`).then((res) => {
         return res;
     }).catch(e => {
-        console.log(e.message);
+        
         return undefined;
     });
 };
@@ -451,9 +450,6 @@ const currentSectionTotalNumPagesCalc = (currentSectionNum,totalNumSections,tota
         let lastSectionTotalNumComments = totalNumComments - (currentSectionNum-1)*50;
         return Math.ceil(lastSectionTotalNumComments/10);
     } else {
-        console.log('currentSectionTotalNumPage: Error Occurred!');
-        console.log('currentSectionNum: ',currentSectionNum);
-        console.log('totalNumSections: ',totalNumSections);
         return;
     };
 };
@@ -473,16 +469,12 @@ const nextSectionExistsCalc = (currentSectionNum,totalNumSections) => currentSec
 
 const paginationValidChecker = (currentSectionNum,currentPageNum,totalNumSections,totalNumPages,currentSectionTotalNumPages) => {
     if (currentPageNum <= 0 || currentPageNum > totalNumPages) {
-        console.log(`currentPageNum (${currentPageNum}) is less than/equal to 0 OR greater than totalNumPages (${totalNumPages})`);
         return false;
     } else if (currentSectionNum <= 0 || currentSectionNum > totalNumSections) {
-        console.log(`currentSectionNum (${currentSectionNum}) is less than/equal to 0 OR greater than totalNumSections (${totalNumSections})`);
         return false;
     } else if (currentPageNum < (currentSectionNum-1)*5+1 || currentPageNum > (currentSectionNum-1)*5+currentSectionTotalNumPages) {
-        console.log(`currentPageNum (${currentPageNum}) out of range`);
         return false;
     } else {
-        console.log(`currentSectionNum (${currentSectionNum}) and currentPageNum (${currentPageNum}) are valid`);
         return true;
     };
 };
@@ -539,7 +531,7 @@ app.get('/catalog/:fieldAc/:courseAc/:category',async (req,res) => {
     };
 
     category = req.params.category;
-    console.log(`category: ${category}\ntype: ${typeof category}`);
+    
 
     
     if (!category) {
@@ -547,7 +539,6 @@ app.get('/catalog/:fieldAc/:courseAc/:category',async (req,res) => {
     } else {
         categoryList = ["likes","overall_rating","difficulty","organization","effort","professors","created_at"]
         if (!categoryList.some((catItem,index,arr) => catItem === category)) {
-            console.log(`Sorting Category is invalid: ${category}`);
             return res.status(404).send();
         };
 
@@ -567,18 +558,15 @@ app.get('/catalog/:fieldAc/:courseAc/:category',async (req,res) => {
     
 
     if (!req.session.currentSectionNum && !req.session.currentPageNum) {
-        console.log('Session does not hold section and page');
         currentPageNum = 1;
         currentSectionNum = 1;
     } else if (req.session.currentSectionNum && req.session.currentPageNum) {
-        console.log('Session does hold section and page');
         currentSectionNum = req.session.currentSectionNum;
         currentPageNum = req.session.currentPageNum;
         delete req.session.currentSectionNum;
         delete req.session.currentPageNum;
     } else {
         let message = "Invalid section number or page number";
-        console.log(message);
         return res.render('invalidPage',{ message });
     };
 
@@ -591,23 +579,12 @@ app.get('/catalog/:fieldAc/:courseAc/:category',async (req,res) => {
     };
 
     
-    // console.log('courseComments: ',courseComments);
-    // console.log('*********************');
+    
     courseRating = await ratings_getter(courseAc);
     courseRating = (courseRating.length === 0) ? courseRating : courseRating[0];
-    // console.log('courseRating: ',courseRating);
-    // console.log('*********************');
     courseInfo = await specific_course_getter(courseAc);
-    // console.log('courseInfo: ',courseInfo);
-    // console.log('*********************');
     recommendNum = (courseRating.length === 0) ? undefined : await recommend_number_getter(courseRating.course_id);
-    // console.log('recommendNum: ',recommendNum);
-    // console.log('*********************');
     courseOverall = overall_avg_getter(courseRating);
-    // console.log('courseOverall: ',courseOverall);
-
-    // console.log('currentSectionNum: ',req.session.currentSectionNum);
-    // console.log('currentPageNum: ',req.session.currentPageNum);
     console.log(courseInfo);
     console.log(req.user);
 
@@ -656,7 +633,6 @@ app.get('/catalog/:fieldAc/:courseAc/:category',async (req,res) => {
     if (req.user) {
         haveLiked = await ratingLikesChecker(req.user.id,courseInfo[0].id,category,offset);
         userHaveLiked = await userRatingLikeChecker(userId,courseInfo[0].id);
-        console.log(haveLiked);
     } else {
         haveLiked = [];
         userHaveLiked = [];
@@ -664,22 +640,6 @@ app.get('/catalog/:fieldAc/:courseAc/:category',async (req,res) => {
 
 
     category = category.slice(0,category.length-5);
-
-    // console.log('currentSectionNum: ',currentSectionNum);
-    // console.log('currentPageNum: ',currentPageNum);
-    // console.log('totalNumComments: ',totalNumComments);
-    // console.log('offset: ',offset);
-    // console.log('totalNumPages: ',totalNumPages);
-    // console.log('totalNumSections: ',totalNumSections);
-    // console.log('currentSectionTotalNumPages: ',currentSectionTotalNumPages);
-    // console.log('currentSectionPagesNumRange: ',currentSectionPagesNumRange);
-    // console.log('previousSectionExists: ',previousSectionExists);
-    // console.log('nextSectionExists: ',nextSectionExists);
-    // console.log('*********************************************');
-    // console.log('*********************************************');
-    // console.log('*********************************************');
-
-    console.log('\nuserHaveLiked: ',userHaveLiked[0]);
 
     res.render('specificCourse2',{ fieldAc,
                                    courseAc,
@@ -709,7 +669,6 @@ app.get('/catalog/:fieldAc/:courseAc/:category',async (req,res) => {
 
 
 app.get('/catalog/:fieldAc/:courseAc/:selectedSectionNum/:selectedPageNum/:category',async (req,res) => {
-    // console.log('routing works');
 
     selectedPageNum = parseInt(req.params.selectedPageNum);
     selectedSectionNum = Math.ceil(selectedPageNum/5);
@@ -718,12 +677,8 @@ app.get('/catalog/:fieldAc/:courseAc/:selectedSectionNum/:selectedPageNum/:categ
 
     if (!isSectionAndPageTypeValid) {
         let message = "Invalid Section Number Type or Page Number Type";
-        console.log(message);
         return res.status(404).render('invalidPage',{ message });
     };
-
-    // console.log('selectedSectionNum: ',selectedSectionNum);
-    // console.log('selectedPageNum: ',selectedPageNum);
 
 
     fieldAc = req.params.fieldAc;
@@ -741,7 +696,6 @@ app.get('/catalog/:fieldAc/:courseAc/:selectedSectionNum/:selectedPageNum/:categ
 app.get('/checkLogin',(req,res) => {
 
     if (req.user === undefined) {
-        console.log('it is undefined');
         return res.send(false);
     };
 
@@ -776,10 +730,6 @@ app.get('/like/:fieldAc/:courseAc/:ratingId',async (req,res) => {
         userId = req.user.id,
         inc = '+ 1';
 
-    console.log('Liking...');
-    console.log(ratingId);
-    console.log(userId);
-
     let inserting = await insertNewLike(ratingId,userId),
         updating = await updateLike(ratingId,inc); 
 
@@ -797,9 +747,6 @@ app.get(`/unlike/:fieldAc/:courseAc/:ratingId`,async (req,res) => {
     let ratingId = parseInt(req.params.ratingId),
         userId = req.user.id,
         dec = '- 1';
-    console.log('Unliking...');
-    console.log(ratingId);
-    console.log(userId);
 
     let deleting = await deleteLike(ratingId,userId),
         updating = await updateLike(ratingId,dec); 
@@ -881,8 +828,6 @@ app.post('/submittingRating',async (req,res) => {
 
     let courseId = await courseIdFinder(courseAc);
     courseId = courseId[0].id;
-    console.log(courseId);
-    console.log(fieldAc);
 
     if (req.session.editing) {
         await updateRating(courseId,userId,difficulty,organization,effort,professors,recommend,comment,anonymous,fieldAc);
@@ -893,24 +838,8 @@ app.post('/submittingRating',async (req,res) => {
 
     
 
-    console.log(req.query);
-    console.log(req.params);
-    console.log(req.body);
-    console.log(fieldAc);
-    console.log(courseAc);
-    console.log(difficulty);
-    console.log(organization);
-    console.log(effort);
-    console.log(professors);
-    console.log(recommend);
-    console.log(comment);
-    console.log(anonymous);
-    // res.status(404).send();
-    console.log('*************');
-    console.log(req.session.returnTo);
     let returnTo = req.session.returnTo;
     delete req.session.returnTo;
-    console.log('*************');
 
     if (!returnTo) {
         return res.status(404).send();
@@ -929,14 +858,13 @@ const course_acronym_checker = async courseAc => {
 };
 
 app.post('/checkCourseAcronym',async (req,res) => {
-    console.log(req.body.courseAc);
 
     if (req.body.courseAc.length === 0) {
         return res.send("noInput");
     };
 
     let course = await course_acronym_checker(req.body.courseAc);
-    console.log(course);
+
     if (course.length === 0) {
         return res.send(false);
     };
@@ -948,7 +876,6 @@ app.post('/checkCourseAcronym',async (req,res) => {
 
 app.get('/createUser',(req,res) => {
     req.session.returnTo = req.header('Referer') || req.protocol + '://' + req.get('host');
-    console.log(req.session.success);
     
     if (req.session.success === undefined) {
         req.session.success = true;    
@@ -964,9 +891,6 @@ app.get('/createUser',(req,res) => {
         image = undefined;
     };
 
-    console.log('Directed to createUser');
-    console.log(req.session.success);
-    console.log(userLoggedIn);
 
     let success = req.session.success;
     let invalidMessage = req.session.invalidMessage;
@@ -983,8 +907,6 @@ app.get('/createUser',(req,res) => {
 
 app.get('/login',(req,res) => {
     req.session.returnTo = req.header('Referer') || req.protocol + '://' + req.get('host').slice(0,req.get('host').length);
-    console.log(req.session.returnTo);
-    console.log(req.session.success);
 
     if (req.session.success === undefined) {
         req.session.success = true;    
@@ -1000,9 +922,6 @@ app.get('/login',(req,res) => {
         image = undefined;
     };
 
-    console.log('Directed to login');
-    console.log(req.session.success);
-    console.log(userLoggedIn);
 
     let success = req.session.success;
     let invalidMessage = req.session.invalidMessage;
@@ -1034,10 +953,6 @@ app.get('/createUser/auth/google', (req,res) => {
 
 app.get('/login/auth/google', (req,res) => {
 
-    // console.log(req.body.username);
-    // console.log(req.query.username);
-    // console.log(req.params.username);
-
     passport.authenticate('google', { 
         hd: 'wesleyan.edu',
         scope: [ 'profile','email' ],
@@ -1049,7 +964,6 @@ app.get('/login/auth/google', (req,res) => {
 // Google Sign-In Callbacks
 app.get( '/auth/google/callback', (req,res,next) => {
     passport.authenticate('google',(err, user, info) => {
-        console.log(info);
         if (err) {
             return next(err);
         };
@@ -1057,25 +971,21 @@ app.get( '/auth/google/callback', (req,res,next) => {
         if (!user && info.type === 'duplicate account') {
             req.session.success = false;
             req.session.invalidMessage = info.message;
-            console.log('redirected to createUser...');
             return res.redirect('/createUser');
         } else if (!user && info.type === 'no account') {
             req.session.success = false;
-            console.log('redirected to login...');
             req.session.invalidMessage = info.message;
             return res.redirect('/login');
         } else if (!user && info.type === 'invalid domain') {
             req.session.success = false;
-            console.log('redirected to login for invalid domain...');
             req.session.invalidMessage = info.message;
             return res.redirect('/login');
-        }
+        };
 
         req.logIn(user, (err) => {
             if (err) {
                 return next(err);
             };
-            console.log('redirected successfully');
             res.redirect(req.session.returnTo);
             delete req.session.returnTo;
             delete req.session.success;
@@ -1142,10 +1052,6 @@ app.get('/search',async (req,res) => {
     delete req.session.currentSectionNum;
     delete req.session.currentPageNum;
 
-    console.log(searchParam);
-    console.log(currentSectionNum);
-    console.log(currentPageNum);
-
     let offset = offsetCalc(currentPageNum),
         searchedCourses = await searched_courses_getter(searchParam,offset),
         totalNumCourses = (await searched_courses_num_getter(searchParam,offset))[0].count,
@@ -1156,23 +1062,6 @@ app.get('/search',async (req,res) => {
         previousSectionExists = previousSectionExistsCalc(currentSectionNum),
         nextSectionExists = nextSectionExistsCalc(currentSectionNum,totalNumSections);
 
-    console.log('currentSectionNum: ',currentSectionNum);
-    console.log('currentPageNum: ',currentPageNum);
-    console.log('totalNumCourses: ',totalNumCourses);
-    console.log('offset: ',offset);
-    console.log('totalNumPages: ',totalNumPages);
-    console.log('totalNumSections: ',totalNumSections);
-    console.log('currentSectionTotalNumPages: ',currentSectionTotalNumPages);
-    console.log('currentSectionPagesNumRange: ',currentSectionPagesNumRange);
-    console.log('previousSectionExists: ',previousSectionExists);
-    console.log('nextSectionExists: ',nextSectionExists);
-    console.log('currentSectionNum: ',typeof currentSectionNum);
-    console.log('totalNumSections: ',typeof totalNumSections);
-    console.log('searchedCourses Length: ', searchedCourses.length);
-    console.log('*********************************************');
-    console.log('*********************************************');
-    console.log('*********************************************');
-
     if (totalNumCourses === 0) {
         console.log('WHY??????');
         return res.render('search2',{ data: undefined,
@@ -1182,8 +1071,6 @@ app.get('/search',async (req,res) => {
                                       image,
                                       paginationExists: false });
     };
-
-    console.log('HERE');
     
     res.render('search2', { paginationExists: true,
                             searchParam,
@@ -1328,7 +1215,6 @@ app.get('/profile/:category',async (req,res) => {
         categoryList = ["likes","overall_rating","difficulty","organization","effort","ratings.professors","created_at"];
 
         if (!categoryList.some((catItem,index,arr) => catItem === category)) {
-            console.log(`Sorting Category is invalid: ${category}`);
             return res.status(404).send();
         };
 
@@ -1339,21 +1225,16 @@ app.get('/profile/:category',async (req,res) => {
         };
     };
 
-    console.log(category);
-
     if (!req.session.currentSectionNum && !req.session.currentPageNum) {
-        console.log('Session does not hold section and page');
         currentPageNum = 1;
         currentSectionNum = 1;
     } else if (req.session.currentSectionNum && req.session.currentPageNum) {
-        console.log('Session does hold section and page');
         currentSectionNum = req.session.currentSectionNum;
         currentPageNum = req.session.currentPageNum;
         delete req.session.currentSectionNum;
         delete req.session.currentPageNum;
     } else {
         let message = "Invalid section number or page number";
-        console.log(message);
         return res.render('invalidPage',{ message });
     };
 
@@ -1399,7 +1280,6 @@ app.get('/profile/:category',async (req,res) => {
 
     if (req.user) {
         haveLiked = await user_ratings_like_checker(req.user.id,category,offset);
-        console.log(haveLiked);
     } else {
         haveLiked = [];
     };
@@ -1411,26 +1291,6 @@ app.get('/profile/:category',async (req,res) => {
     } else {
         customImgExists = true;
     };
-
-
-
-        
-
-    console.log(userRatings);
-    console.log(haveLiked);
-    console.log('currentSectionNum: ',currentSectionNum);
-    console.log('currentPageNum: ',currentPageNum);
-    console.log('totalNumUserRatings: ',totalNumUserRatings);
-    console.log('offset: ',offset);
-    console.log('totalNumPages: ',totalNumPages);
-    console.log('totalNumSections: ',totalNumSections);
-    console.log('currentSectionTotalNumPages: ',currentSectionTotalNumPages);
-    console.log('currentSectionPagesNumRange: ',currentSectionPagesNumRange);
-    console.log('previousSectionExists: ',previousSectionExists);
-    console.log('nextSectionExists: ',nextSectionExists);
-    console.log('*********************************************');
-    console.log('*********************************************');
-    console.log('*********************************************');
 
     
 
@@ -1483,7 +1343,6 @@ app.get('/profile/:selectedSectionNum/:selectedPageNum/:category',(req,res) => {
 
     if (!isSectionAndPageTypeValid) {
         let message = "Invalid Section Number Type or Page Number Type";
-        console.log(message);
         return res.render('invalidPage',{ message });
     };
 
@@ -1503,13 +1362,11 @@ app.get('/profile/:selectedSectionNum/:selectedPageNum/:category',(req,res) => {
 
 
 app.post('/checkUsername',(req,res) => {
-    console.log(req.body.username.length);
     if (req.body.username.length === 0) {
         return res.send("noInput");
     };
 
     connection.query(`SELECT * FROM users WHERE username="${req.body.username}"`).then(data => {
-        console.log(data);
         if (data.length === 0) {
             return res.send(true);
         };
@@ -1526,17 +1383,11 @@ app.post('/profile/upload/customImg',upload.single('image'),(req,res) => {
     };
 
 
-
-    console.log('*****************');
-    console.log(req.file);
-    console.log('*****************');
-    console.log(req.user.custom_image);
-
     DataURI(req.file.path).then(content => {
         fs.readdir(path.join(__dirname, '../uploads'), (err,files) => {
             fs.unlink(path.join(__dirname,`../uploads/${files[0]}`),(err) => {
                 if (err) {
-                    return console.log(err)
+                    return;
                 };
 
                 connection.query(`UPDATE users SET custom_image="${content}",use_google_img=false WHERE id=${req.user.id}`).then(() => {
@@ -1607,7 +1458,6 @@ app.get('/profile/rating/edit/:category/:ratingId',async (req,res) => {
         category = req.params.category;
 
     let userRating = (await userRatingGetter(ratingId,userId))[0];
-    console.log(userRating);
 
     req.session.editing = true;
     req.session.returnTo = req.header('Referer');
@@ -1618,7 +1468,6 @@ app.get('/profile/rating/edit/:category/:ratingId',async (req,res) => {
 
 
 app.get('/profile/rating/delete/:category/:ratingId',async (req,res) => {
-    console.log('SDFJLDSJFLSJDFLJSDFJDSJFLDSKJFKDSJFLSD');
     if (!req.user){
         return res.status(404).send();
     };
@@ -1663,7 +1512,6 @@ app.get('/catalog/rating/edit/:fieldAc/:courseAc/:category/:ratingId',async (req
         category = req.params.category;
 
     let userRating = (await userRatingGetter(ratingId,userId))[0];
-    console.log(userRating);
 
     req.session.editing = true;
     req.session.returnTo = req.header('Referer');
@@ -1687,9 +1535,7 @@ app.get('/catalog/rating/delete/:fieldAc/:courseAc/:category/:ratingId',async (r
 
 
 
-app.listen(port,() => {
-    console.log(`Server is running at ${port}`);
-});
+app.listen(port,() => console.log(`Server is running at ${port}`));
 
 
 
