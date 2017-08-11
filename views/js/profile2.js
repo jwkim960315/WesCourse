@@ -22,8 +22,6 @@ $(document).ready(function() {
 
   // Image Preview Handler
   $('input[type="file"]').on('change',function(e) {
-
-    console.log('File has been uploaded');
     
     var url = this.value;
     var ext = url.substring(url.lastIndexOf('.') + 1).toLowerCase();
