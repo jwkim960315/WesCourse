@@ -104,15 +104,26 @@ console.log(process.env.CLIENT_SECRET);
 console.log(process.env.USER_ID_CHECK);
 
 
+// Heroku Environment Variables 
+
+const host_global = process.env.CLEARDB_DATABASE_HOST;
+const user_global = process.env.CLEARDB_DATABASE_USER;
+const password_global = process.env.CLEARDB_DATABASE_PASSWORD;
+const database_global = process.env.CLEARDB_DATABASE_DATABASE;
+const clientID_global = process.env.CLIENT_ID;
+const clientSecret_global = process.env.CLIENT_SECRET;
+const userIDCheck_global = process.env.USER_ID_CHECK;
+
+
 // Database Connection
 
 let connection;
 
 mysql.createConnection({
-    host: process.env.CLEARDB_DATABASE_HOST,
-    user: process.env.CLEARDB_DATABASE_USER,
-    password: process.env.CLEARDB_DATABASE_PASSWORD,
-    database: process.env.CLEARDB_DATABASE_DATABASE
+    host: host_global,
+    user: user_global,
+    password: password_global,
+    database: database_global
 }).then(function(conn){
     connection = conn;
 });
@@ -123,8 +134,8 @@ mysql.createConnection({
 
 // Google-OAuth2 Passport Middleware
 passport.use(new GoogleStrategy({
-    clientID: process.env.CLIENT_ID,
-    clientSecret: process.env.CLIENT_SECRET,
+    clientID: clientID_global,
+    clientSecret: clientSecret_global,
     callbackURL: "/auth/google/callback",
     passReqToCallback: true
   },
@@ -144,18 +155,18 @@ passport.use(new GoogleStrategy({
 
                     
 
-                    if (data.length === 0 && req.query.state !== process.env.USER_ID_CHECK) {
+                    if (data.length === 0 && req.query.state !== userIDCheck_global) {
                         connection.query(`INSERT INTO users (id,username,email,first_name,last_name,google_image) VALUES ("${profile.id}","${req.query.state}","${profile.email}","${profile.name.givenName}","${profile.name.familyName}","${profile.photos[0].value}")`);                
                             return done(null, { id: profile.id,
                                                 username: req.query.state });  
-                    } else if (data.length === 0 && req.query.state === process.env.USER_ID_CHECK) {
+                    } else if (data.length === 0 && req.query.state === userIDCheck_global) {
                         return done(null,false,{ message: 'You do not have an account',
                                                  type: 'no account' });
                     };
 
                     
 
-                    if (req.query.state !== process.env.USER_ID_CHECK && req.query.state !== undefined) {
+                    if (req.query.state !== userIDCheck_global && req.query.state !== undefined) {
                         return done(null, false, { message: 'You already have an account',
                                                    type: 'duplicate account' });
                     };
@@ -780,7 +791,7 @@ app.get('/comment-submit/:fieldAc/:courseAc/',async (req,res) => {
     username = req.user.username;
     image = (req.user.use_google_img) ? req.user.google_image : req.user.custom_image; 
 
-    req.session.returnTo = req.header('Referer');
+    req.session.returnTo = req.header('Referer') || req.protocol + '://' + req.get('host');
 
     res.render('submitRating',{ userLoggedIn,
                                  username,
@@ -1458,7 +1469,7 @@ app.get('/profile/rating/edit/:category/:ratingId',async (req,res) => {
     let userRating = (await userRatingGetter(ratingId,userId))[0];
 
     req.session.editing = true;
-    req.session.returnTo = req.header('Referer');
+    req.session.returnTo = req.header('Referer') || req.protocol + '://' + req.get('host');
 
     res.render('editRating',{ userRating });
 });
