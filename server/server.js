@@ -20,7 +20,7 @@ var passport = require('passport')
   , session = require('express-session')
   , GoogleStrategy = require('passport-google-oauth2').Strategy;
 
-const port = process.env.port || 3000;
+const port = process.env.PORT || 3000;
 
 var app = express();
 
