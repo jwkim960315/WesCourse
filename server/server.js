@@ -41,8 +41,8 @@ app.use(passport.session());
 
 // Important Variables
 
-const courses = JSON.parse(fs.readFileSync(__dirname+'/../db/json/coursesTest.json'));
-const courseInfos = JSON.parse(fs.readFileSync(__dirname+'/../db/json/courseInfosTest.json'));
+// const courses = JSON.parse(fs.readFileSync(__dirname+'/../db/json/coursesTest.json'));
+const courseInfos = JSON.parse(fs.readFileSync(__dirname+'/../courseInfosTest.json'));
 let filteredCourseInfos;
 
 const {previousUrlSaver} = require(__dirname+'/../middleware/middleware'); 
