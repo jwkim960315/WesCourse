@@ -854,12 +854,13 @@ app.post('/submittingRating',async (req,res) => {
         return res.status(404).send();
     };
 
-    if (returnTo.slice(22,29) === 'catalog') {
-        return res.redirect(`/catalog/${fieldAc}/${courseAc}/likes`);
-    };
+    // if (returnTo.slice(22,29) === 'catalog') {
+    //     return res.redirect(`/catalog/${fieldAc}/${courseAc}/likes`);
+    // };
 
-    res.redirect(`profile/${category}`);
+    // res.redirect(`profile/${category}`);
     
+    res.redirect(returnTo);
 });
 
 const course_acronym_checker = async courseAc => {
