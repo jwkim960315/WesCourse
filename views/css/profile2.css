@@ -351,3 +351,13 @@ div.no-submitted-rating {
 	margin-bottom: 150px;
 	color:rgb(119,119,119);
 }
+
+
+/* Mobile Delete Button */
+
+a.btn.mobile-delete {
+	margin-top: 10px;
+	padding: 0;
+	padding-left: 15px;
+	padding-right: 15px;
+}
