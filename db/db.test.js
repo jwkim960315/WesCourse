@@ -136,10 +136,10 @@ tmp4.map((str,i,arr) => {
 console.log('Reading Greek Prose: Plato\'s Ion');
 
 mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: 'password',
-    database: 'wes_course_test',
+    host: 'us-cdbr-iron-east-05.cleardb.net',
+    user: 'bde7bea3621ed5',
+    password: '8a58d1dc',
+    database: 'heroku_3cf1e0afcd9cbfb',
     multipleStatements: true
 }).then((conn) => {
     connection = conn;

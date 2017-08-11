@@ -127,7 +127,7 @@ mysql.createConnection({
 passport.use(new GoogleStrategy({
     clientID: process.env.CLIENT_ID,
     clientSecret: process.env.CLIENT_SECRET,
-    callbackURL: "/auth/google/callback",
+    callbackURL: `${process.env.HOST}auth/google/callback`,
     passReqToCallback: true
   },
   function(req, accessToken, refreshToken, profile, done) {
@@ -1047,7 +1047,7 @@ app.get('/login/auth/google', (req,res) => {
 });
 
 // Google Sign-In Callbacks
-app.get( '/auth/google/callback', (req,res,next) => {
+app.get(`${process.env.HOST}auth/google/callback`, (req,res,next) => {
     passport.authenticate('google',(err, user, info) => {
         console.log(info);
         if (err) {
