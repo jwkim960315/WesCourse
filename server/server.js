@@ -97,6 +97,14 @@ const searchingDataHandler = (data) => {
     
 };
 
+console.log(process.env.CLEARDB_DATABASE_HOST);
+console.log(process.env.CLEARDB_DATABASE_USER);
+console.log(process.env.CLEARDB_DATABASE_PASSWORD);
+console.log(process.env.CLEARDB_DATABASE_DATABASE);
+console.log(process.env.CLIENT_ID);
+console.log(process.env.CLIENT_SECRET);
+console.log(process.env.USER_ID_CHECK);
+
 
 // Database Connection
 
