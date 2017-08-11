@@ -103,10 +103,9 @@ const searchingDataHandler = (data) => {
 let connection;
 
 mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: 'password',
-    database: 'wes_course_test'
+    host: process.env.CLEARDB_DATABASE_HOST,
+    user: process.env.CLEARDB_DATABASE_USER,
+    password: process.env.CLEARDB_DATABASE_PASSWORD
 }).then(function(conn){
     connection = conn;
 });
