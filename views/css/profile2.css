@@ -258,6 +258,12 @@ div.like-group > h3 > a {
 	div.created-at.text-right {
 		text-align: left;
 	}
+
+	div.user-info {
+		margin-left: 0;
+	}
+
+
 }
 
 div.like-group > h3 > a.liked {
@@ -336,4 +342,10 @@ div.account-delete-btn {
 }
 
 
+/* No Rating */
 
+div.no-submitted-rating {
+	margin-top: 150px;
+	margin-bottom: 150px;
+	color:rgb(119,119,119);
+}
