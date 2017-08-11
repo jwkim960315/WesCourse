@@ -219,7 +219,11 @@
 				        						<div class="btn-group">
 				        							<button type="button" class="btn btn-default upload-options" data-toggle="modal" data-target="#uploadImg">Upload Image</button>
 				        							<a href="/profile/update/googleImg" class="btn btn-default updateToGoogleImg-options">Google Image</a>
-				        							<a href="/profile/update/customImg" class="btn btn-default updateToCustomImg-options">Custom Image</a>
+				        							<% if (customImgExists) { %>
+					        							<a href="/profile/update/customImg" class="btn btn-default updateToCustomImg-options">Custom Image</a>
+				        							<% } else { %>
+				        								<a href="/profile/update/customImg" class="btn btn-default updateToCustomImg-options disabled">Custom Image</a>
+				        							<% } %>
 				        						</div>
 				        					</div>
 				        				</div>

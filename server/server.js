@@ -351,6 +351,41 @@ const comments_getter_not_logged_in = async (courseAcronym,category,offset) => {
                              LIMIT ${offset},10`);
 };
 
+const user_rating_getter = async (courseAcronym,userId) => {
+    return connection.query(`SELECT ratings.id,
+                                    CASE 
+                                        WHEN ratings.anonymous=true THEN "Anonymous"
+                                        ELSE username
+                                    END as username,
+                                    users.username as realUsername,
+                                    ratings.comment,
+                                    DATE_FORMAT(ratings.created_at,"%b %d, %Y %H:%i:%s") as created_at,
+                                    ratings.difficulty,
+                                    ratings.organization,
+                                    ratings.effort,
+                                    ratings.professors,
+                                    (ratings.difficulty+ratings.organization+ratings.effort+ratings.professors)/4 as overall_rating,
+                                    ratings.likes,
+                                    users.custom_image,
+                                    users.google_image,
+                                    users.use_google_img,
+                                    CASE
+                                        WHEN ratings.recommend=true THEN "Yes"
+                                        ELSE "No"
+                                    END as recommend,
+                                    CASE
+                                        WHEN ratings.user_id="${userId}" THEN 1
+                                        ELSE 0
+                                    END as canEditOrDelete
+                             FROM ratings 
+                             INNER JOIN courses 
+                                ON ratings.course_id = courses.id 
+                             INNER JOIN users 
+                                ON ratings.user_id = users.id 
+                             WHERE courses.course_acronym="${courseAcronym}"
+                             AND ratings.user_id="${userId}"`);
+};
+
 const overall_avg_getter = data => {
     if (!data) {
         return undefined;
@@ -478,6 +513,18 @@ const ratingLikesChecker = async (userId,courseId,category,offset) => {
                                       LIMIT ${offset},10`);
 };
 
+const userRatingLikeChecker = async (userId,courseId) => {
+    return connection.query(`SELECT *,CASE 
+                                            WHEN likes.user_id="${userId}"
+                                            THEN TRUE
+                                            ELSE FALSE
+                                      END AS haveLiked,
+                                      (ratings.difficulty+ratings.organization+ratings.effort+ratings.professors)/4 as overall_rating
+                                      FROM ratings LEFT JOIN likes ON ratings.id = likes.rating_id
+                                      WHERE ratings.course_id=${courseId}
+                                      AND ratings.user_id="${userId}"`);
+};
+
 
 app.get('/catalog/:fieldAc/:courseAc/:category',async (req,res) => {
 
@@ -542,9 +589,11 @@ app.get('/catalog/:fieldAc/:courseAc/:category',async (req,res) => {
     };
 
     if (!req.user) {
-        courseComments = await comments_getter_not_logged_in(courseAc,category,offsetCalc(currentPageNum));        
+        courseComments = await comments_getter_not_logged_in(courseAc,category,offsetCalc(currentPageNum));
+        userCourseRating = [];
     } else {
         courseComments = await comments_getter(userId,courseAc,category,offsetCalc(currentPageNum));
+        userCourseRating = await user_rating_getter(courseAc,userId);
     };
 
     
@@ -612,10 +661,13 @@ app.get('/catalog/:fieldAc/:courseAc/:category',async (req,res) => {
 
     if (req.user) {
         haveLiked = await ratingLikesChecker(req.user.id,courseInfo[0].id,category,offset);
+        userHaveLiked = await userRatingLikeChecker(userId,courseInfo[0].id);
         console.log(haveLiked);
     } else {
         haveLiked = [];
+        userHaveLiked = [];
     };
+
 
     category = category.slice(0,category.length-5);
 
@@ -633,7 +685,7 @@ app.get('/catalog/:fieldAc/:courseAc/:category',async (req,res) => {
     // console.log('*********************************************');
     // console.log('*********************************************');
 
-        
+    console.log('\nuserHaveLiked: ',userHaveLiked[0]);
 
     res.render('specificCourse2',{ fieldAc,
                                    courseAc,
@@ -655,7 +707,9 @@ app.get('/catalog/:fieldAc/:courseAc/:category',async (req,res) => {
                                    image,
                                    category,
                                    categoryDisplay,
-                                   haveLiked });
+                                   haveLiked,
+                                   userCourseRating,
+                                   userHaveLiked });
 });
 
 
@@ -761,13 +815,26 @@ app.get(`/unlike/:fieldAc/:courseAc/:ratingId`,async (req,res) => {
 
 
 
+const unique_user_rating_checker = async (courseAc,userId) => {
+    return connection.query(`SELECT COUNT(*) as count 
+                             FROM ratings
+                             INNER JOIN courses
+                                ON ratings.course_id = courses.id
+                             WHERE ratings.user_id="${userId}"
+                             AND course_acronym="${courseAc}"`);
+};
 
 
-
-app.get('/comment-submit/:fieldAc/:courseAc/',(req,res) => {
+app.get('/comment-submit/:fieldAc/:courseAc/',async (req,res) => {
 
     if (!req.user) {
         return res.redirect('/login');
+    };
+
+    let userRatingIsUnique = await unique_user_rating_checker(req.params.courseAc,req.user.id);
+
+    if (userRatingIsUnique !== 1) {
+        return res.status(404).send();
     };
 
     userLoggedIn = true;
@@ -1343,6 +1410,16 @@ app.get('/profile/:category',async (req,res) => {
         haveLiked = [];
     };
 
+    let customImgExists;
+
+    if (req.user.custom_image === null) {
+        customImgExists = false;
+    } else {
+        customImgExists = true;
+    };
+
+
+
         
 
     console.log(userRatings);
@@ -1376,7 +1453,8 @@ app.get('/profile/:category',async (req,res) => {
 
 
     delete req.session.image;
-    res.render('profile2',{ paginationExists,
+    res.render('profile2',{ customImgExists,
+                            paginationExists,
                             userLoggedIn,
                             username,
                             image,
