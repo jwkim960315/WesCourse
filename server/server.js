@@ -827,7 +827,7 @@ app.get('/comment-submit/:fieldAc/:courseAc/',async (req,res) => {
 
     let userRatingIsUnique = await unique_user_rating_checker(req.params.courseAc,req.user.id);
 
-    if (userRatingIsUnique === 1) {
+    if (userRatingIsUnique >= 1) {
         return res.status(404).send();
     };
 
