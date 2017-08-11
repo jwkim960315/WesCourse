@@ -46,7 +46,7 @@ $(document).ready(function() {
                   $('.createUser button.loginBtn.loginBtn--google').prop('disabled',false);
                   $('.createUser button.loginBtn.loginBtn--google').css('opacity','1');
                   $('#inputUsername1-err').switchClass('inputUsername1-err','inputUsername1-success',0);
-                  $('#inputUsername1-err').text(`${$('#inputUsername1').val()} works!`);
+                  $('#inputUsername1-err').text(String($('#inputUsername1').val())+' works!');
               }
           }
       });
