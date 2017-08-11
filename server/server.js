@@ -77,20 +77,6 @@ const catalogDataManipulator = data => {
     return renderData;
 };
 
-const authenticate = (req,res,next) => {
-    let reqToken = req.header('x-auth');
-    // console.log(reqToken);
-    
-    if (reqToken !== token) {
-        res.status(401).send();
-    }
-    next();
-};
-
-const generateToken = (userId) => {
-    return jwt.sign({id: userId},'SECRET');
-};
-
 
 
 const searchingDataHandler = (data) => {
@@ -131,8 +117,8 @@ mysql.createConnection({
 
 // Google-OAuth2 Passport Middleware
 passport.use(new GoogleStrategy({
-    clientID: "277763886590-097le00059nkdkt4dcv1pif6oirf955k.apps.googleusercontent.com",
-    clientSecret: "Ya6_3UPFSEMoMfSDHYRj2Eic",
+    clientID: process.env.CLIENT_ID,
+    clientSecret: process.env.CLIENT_SECRET,
     callbackURL: "/auth/google/callback",
     passReqToCallback: true
   },
@@ -153,18 +139,18 @@ passport.use(new GoogleStrategy({
                     console.log(typeof req.query.state);
                     console.log(profile.id);
 
-                    if (data.length === 0 && req.query.state !== "1111111111111111111111111111111") {
+                    if (data.length === 0 && req.query.state !== process.env.USER_ID_CHECK) {
                         connection.query(`INSERT INTO users (id,username,email,first_name,last_name,google_image) VALUES ("${profile.id}","${req.query.state}","${profile.email}","${profile.name.givenName}","${profile.name.familyName}","${profile.photos[0].value}")`);                
                             return done(null, { id: profile.id,
                                                 username: req.query.state });  
-                    } else if (data.length === 0 && req.query.state === "1111111111111111111111111111111") {
+                    } else if (data.length === 0 && req.query.state === process.env.USER_ID_CHECK) {
                         return done(null,false,{ message: 'You do not have an account',
                                                  type: 'no account' });
                     };
 
                     console.log('Loggin in...');
 
-                    if (req.query.state !== "1111111111111111111111111111111" && req.query.state !== undefined) {
+                    if (req.query.state !== process.env.USER_ID_CHECK && req.query.state !== undefined) {
                         return done(null, false, { message: 'You already have an account',
                                                    type: 'duplicate account' });
                     };
@@ -1048,7 +1034,7 @@ app.get('/login/auth/google', (req,res) => {
         hd: 'wesleyan.edu',
         scope: [ 'profile','email' ],
         prompt : "select_account",
-        state: "1111111111111111111111111111111"
+        state: process.env.USER_ID_CHECK
     })(req,res)
 });
 
