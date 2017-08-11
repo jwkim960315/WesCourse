@@ -16,16 +16,16 @@ $(document).ready(function() {
 
                 if ($('a[id="user0"]').hasClass('unliked')) {
                     $('a[id="user0"]').addClass('disabled');
-                    console.log('user has liked');
+                    
                     $.ajax({
                         method: 'GET',
                         url: link,
                         success: function(data) {
-                            console.log('successfully recorded');
+                            
                             var prevLikeNum = $('a[id="user0"]').next().text();
-                            console.log(prevLikeNum);
+                            
                             var updatedLikeNum = parseInt(prevLikeNum)+1;
-                            console.log(updatedLikeNum);
+                            
                             $('a[id="user0"]').next().text(updatedLikeNum);
                             $('a[id="user0"]').attr('class','liked');
                             $('a[id="user0"]').attr('data-like-link',link);
@@ -36,15 +36,15 @@ $(document).ready(function() {
 
                 if ($('a[id="user0"]').hasClass('liked')) {
                     $('a[id="user0"]').addClass('disabled');
-                    console.log('user has unliked');
+                    
                     $.ajax({
                         method: 'GET',
                         url: link,
                         success: function(data) {
                             var prevLikeNum = $('a[id="user0"]').next().text();
-                            console.log(prevLikeNum);
+                            
                             var updatedLikeNum = parseInt(prevLikeNum)-1;
-                            console.log(updatedLikeNum);
+                            
                             $('a[id="user0"]').next().text(updatedLikeNum);
                             $('a[id="user0"]').attr('class','unliked');
                             $('a[id="user0"]').attr('data-like-link',link);
