@@ -170,7 +170,7 @@ div.user-like-group > h3 {
 	display: inline-block !important;
 }
 
-div.like-group > h3 > a,
+div.like-group > h3 > div,
 div.user-like-group > h3 > a {
 	padding-right: 7px !important;
 }
@@ -181,19 +181,19 @@ div.user-like-group > h3 > a {
 	}
 }
 
-div.like-group > h3 > a.liked,
+div.like-group > h3 > div.liked,
 div.user-like-group > h3 > a.liked {
 	color: rgb(225,0,0);
 }
 
-div.like-group > h3 > a.unliked,
-div.like-group > h3 > a.unliked:focus,
+div.like-group > h3 > div.unliked,
+div.like-group > h3 > div.unliked:focus,
 div.user-like-group > h3 > a.unliked,
 div.user-like-group > h3 > a.unliked:focus {
 	color: rgb(119,119,119);
 }
 
-div.like-group > h3 > a.unliked:hover,
+div.like-group > h3 > div.unliked:hover,
 div.user-like-group > h3 > a.unliked:hover {
 	color: rgb(225,0,0);
 }
