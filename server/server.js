@@ -105,7 +105,8 @@ let connection;
 mysql.createConnection({
     host: process.env.CLEARDB_DATABASE_HOST,
     user: process.env.CLEARDB_DATABASE_USER,
-    password: process.env.CLEARDB_DATABASE_PASSWORD
+    password: process.env.CLEARDB_DATABASE_PASSWORD,
+    database: process.env.CLEARDB_DATABASE_DATABASE
 }).then(function(conn){
     connection = conn;
 });
