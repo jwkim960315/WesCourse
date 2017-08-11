@@ -6,8 +6,6 @@ const express = require('express');
 const ejs = require('ejs');
 const path = require('path');
 const fs = require('fs');
-const html = require('html');
-const jwt = require('jsonwebtoken');
 const multer = require('multer');
 var storage = multer.memoryStorage();
 var upload = multer({ dest: path.join( __dirname,'../uploads/') });
@@ -42,7 +40,7 @@ app.use(passport.session());
 // Important Variables
 
 // const courses = JSON.parse(fs.readFileSync(__dirname+'/../db/json/coursesTest.json'));
-const courseInfos = JSON.parse(fs.readFileSync(path.join(__dirname+'/../courseInfosTest.json')));
+const courseInfos = JSON.parse(fs.readFileSync(path.join(__dirname,'/../courseInfosTest.json')));
 console.log(__dirname+'/../courseInfosTest.json');
 let filteredCourseInfos;
 
