@@ -40,7 +40,7 @@ $(document).ready(function() {
                         url: link,
                         success: function(data) {
                             var prevLikeNum = $('a[id="user0"]').next().text();
-                            var updatedLikeNum = String(parseInt($(`a#user0`).parent().next().children().text())-1);
+                            var updatedLikeNum = String(parseInt($('a#user0').parent().next().children().text())-1);
                             $('a[id="user0"]').parent().next().children().text(updatedLikeNum);
                             $('a[id="user0"]').attr('class','unliked');
                             $('a[id="user0"]').attr('data-like-link',link);
