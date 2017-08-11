@@ -193,7 +193,7 @@ div.user-like-group > h3 > a.unliked:focus {
 	color: rgb(119,119,119);
 }
 
-div.like-group > h3 > div.unliked:hover,
+/*div.like-group > h3 > div.unliked:hover,*/
 div.user-like-group > h3 > a.unliked:hover {
 	color: rgb(225,0,0);
 }
