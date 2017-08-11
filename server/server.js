@@ -39,7 +39,7 @@ app.use(passport.session());
 // Important Variables
 
 // const courses = JSON.parse(fs.readFileSync(__dirname+'/../db/json/coursesTest.json'));
-const courseInfos = JSON.parse(fs.readFileSync(path.join(__dirname,'/../courseInfosTest.json')));
+const courseInfos = JSON.parse(fs.readFileSync(__dirname+'/../json/courseInfosTest.json'));
 console.log(__dirname+'/../courseInfosTest.json');
 let filteredCourseInfos;
 
