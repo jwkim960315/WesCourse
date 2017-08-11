@@ -262,13 +262,14 @@ div.edit-delete > div.row > div.col-md-6,
 button.category-btn,
 a.submit-btn {
 	margin-top: 20px;
+	margin-bottom: 80px;
 }
 
 
 /* No Submitted Rating */
 
 div.no-submitted-rating {
-	margin-top: 150px;
+	margin-top: 80px;
 }
 
 
