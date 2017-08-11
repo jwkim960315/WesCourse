@@ -21,7 +21,8 @@ div.infos div.col-xs-12.col-md-4 {
     border-radius: 5px;
 }
 
-div.infos div.col-xs-12.col-md-4:hover {
+div.infos div.col-xs-12.col-md-4:hover,
+div.infos div.col-xs-12.col-md-4:focus {
     background-color: red;
     color: white;
     transition: .3s all ease;
@@ -48,12 +49,6 @@ div.infos h4 {
 
 /* Footer */
 
-/*footer {
-    border-top: 1px solid rgb(221,221,221);
-    height: 80px;
-    background-color: rgb(149,149,149);
-    vertical-align: middle;
-}*/
 
 
 footer div.panel {
