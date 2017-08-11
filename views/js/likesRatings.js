@@ -24,7 +24,7 @@ $(document).ready(function() {
                             console.log('successfully recorded');
                             var prevLikeNum = $('a[id="user0"]').next().text();
                             console.log(prevLikeNum);
-                            var updatedLikeNum = parseInt($('a#user0').parent().next().children().text())+1;
+                            var updatedLikeNum = parseInt(prevLikeNum)+1;
                             console.log(updatedLikeNum);
                             $('a[id="user0"]').parent().next().children().text(updatedLikeNum);
                             $('a[id="user0"]').attr('class','liked');
@@ -43,7 +43,7 @@ $(document).ready(function() {
                         success: function(data) {
                             var prevLikeNum = $('a[id="user0"]').next().text();
                             console.log(prevLikeNum);
-                            var updatedLikeNum = parseInt($('a#user0').parent().next().children().text())-1;
+                            var updatedLikeNum = parseInt(prevLikeNum)-1;
                             console.log(updatedLikeNum);
                             $('a[id="user0"]').parent().next().children().text(updatedLikeNum);
                             $('a[id="user0"]').attr('class','unliked');
