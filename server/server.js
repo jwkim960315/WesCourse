@@ -7,7 +7,6 @@ const ejs = require('ejs');
 const path = require('path');
 const fs = require('fs');
 const multer = require('multer');
-var storage = multer.memoryStorage();
 var upload = multer({ dest: path.join( __dirname,'../uploads/') });
 const DataURI = require('datauri').promise;
 const rimraf = require('rimraf');
