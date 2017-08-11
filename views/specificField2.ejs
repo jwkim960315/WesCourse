@@ -104,11 +104,11 @@
             <% for (var i=0;i < fallCourses.length; ++i) { %>
               
               <a href="/catalog/<%= fallCourses[i].field_acronym %>/<%= fallCourses[i].course_acronym %>/likes">
-                <div class="infos class-time col-xs-12 col-md-6 text-right">
-                  <p>Class Time: <%= fallCourses[i].class_date.slice(0,fallCourses[i].class_date.length-1) %></p>
-                </div>
                 <div class="infos rest col-xs-12 col-md-6">
                   <span class="course-acronym"><%= fallCourses[i].course_acronym %></span><p class="course-name"><%= fallCourses[i].course_name %></p>
+                </div>
+                <div class="infos class-time col-xs-12 col-md-6 text-right">
+                  <p>Class Time: <%= fallCourses[i].class_date.slice(0,fallCourses[i].class_date.length-1) %></p>
                 </div>
                 <div class="infos rest col-xs-12 col-md-12">
                   <p>Section: <%= fallCourses[i].section %></p>

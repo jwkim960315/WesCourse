@@ -359,3 +359,8 @@ a.btn.mobile-delete {
 	margin: 0;
 	padding: 0;
 }
+
+a.btn.mobile-delete:hover,
+a.btn.mobile-delete:focus {
+	color: rgb(225,0,0);
+}
