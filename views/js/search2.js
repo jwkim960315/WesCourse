@@ -27,7 +27,9 @@ $('.search-keyword').on('input', function() {
 
     $.ajax({
         url: '/searching',
-        data: {keyword},
+        data: {
+            keyword: keyword
+        },
         success: function(data) {
             
             if (!data) {
