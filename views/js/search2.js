@@ -26,7 +26,7 @@ $('.search-keyword').on('input', function() {
     keyword = $('.search-keyword').val();
 
     $.ajax({
-        url: `/searching`,
+        url: '/searching',
         data: {keyword},
         success: function(data) {
             
