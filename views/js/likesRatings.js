@@ -26,7 +26,7 @@ $(document).ready(function() {
                             console.log(prevLikeNum);
                             var updatedLikeNum = parseInt(prevLikeNum)+1;
                             console.log(updatedLikeNum);
-                            $('a[id="user0"]').parent().next().text(updatedLikeNum);
+                            $('a[id="user0"]').next().text(updatedLikeNum);
                             $('a[id="user0"]').attr('class','liked');
                             $('a[id="user0"]').attr('data-like-link',link);
                             $('a[id="user0"]').removeClass('disabled');
@@ -45,7 +45,7 @@ $(document).ready(function() {
                             console.log(prevLikeNum);
                             var updatedLikeNum = parseInt(prevLikeNum)-1;
                             console.log(updatedLikeNum);
-                            $('a[id="user0"]').parent().next().text(updatedLikeNum);
+                            $('a[id="user0"]').next().text(updatedLikeNum);
                             $('a[id="user0"]').attr('class','unliked');
                             $('a[id="user0"]').attr('data-like-link',link);
                             $('a[id="user0"]').removeClass('disabled');   
