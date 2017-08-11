@@ -261,12 +261,11 @@ div.like-group > h3 > a {
 
 	div.user-info {
 		margin-left: 0;
+		padding-left: 0;
+		padding-right: 0;
 	}
 
-	div.col-xs-12 {
-		padding-left: 5px !important;
-		padding-right: 5px !important;
-	}
+	
 }
 
 div.like-group > h3 > a.liked {
