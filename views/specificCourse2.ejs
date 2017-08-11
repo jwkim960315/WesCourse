@@ -130,15 +130,15 @@
               </div>
               <div class="col-xs-12 overall-ratings-num text-center">
                 <% var overallColor = "" %>
-                <% if (1 <= courseOverall && courseOverall < 2) { %>
+                <% if (1 <= parseInt(courseOverall) && parseInt(courseOverall) < 2) { %>
                   <% overallColor = "indicator-red" %>
-                <% } else if (2 <= courseOverall && courseOverall < 3) { %>
+                <% } else if (2 <= parseInt(courseOverall) && parseInt(courseOverall) < 3) { %>
                   <% overallColor = "indicator-yellow" %>
-                <% } else if (3 <= courseOverall && courseOverall < 4) { %>
+                <% } else if (3 <= parseInt(courseOverall) && parseInt(courseOverall) < 4) { %>
                   <% overallColor = "indicator-blue" %>
-                <% } else if (4 <= courseOverall && courseOverall < 5) { %>
+                <% } else if (4 <= parseInt(courseOverall) && parseInt(courseOverall) < 5) { %>
                   <% overallColor = "indicator-lightBlue" %>
-                <% } else if (courseOverall === 5) { %>
+                <% } else if (parseInt(courseOverall) === 5) { %>
                   <% overallColor = "indicator-green" %>
                 <% } %>
                 <p class="<%= overallColor %>"><%= courseOverall %></p>
