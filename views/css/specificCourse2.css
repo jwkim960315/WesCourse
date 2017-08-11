@@ -165,7 +165,7 @@ div.btn-group > div.btn-group > button:hover {
 
 /* Likes */
 
-div.like-group > h3,
+div.like-group > h3 *,
 div.user-like-group > h3 {
 	display: inline-block !important;
 }
