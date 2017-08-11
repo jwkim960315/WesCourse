@@ -189,7 +189,7 @@ passport.serializeUser((user, done) => {
 });
 
 passport.deserializeUser((id, done) => {
-    connection.query(`SELECT id,username,email,first_name,last_name,google_image,custom_image,use_google_img,DATE_FORMAT(created_at,"%b %d, %Y") as created_date FROM users WHERE id="${id}"`).then((data,err) => {
+    connection.query(`SELECT id,username,email,first_name,last_name,google_image,custom_image,use_google_img,DATE_FORMAT(CONVERT_TZ(created_at,'+00:00','-05:00'),"%b %d, %Y") as created_date FROM users WHERE id="${id}"`).then((data,err) => {
         done(err,data[0]);
     })
 })
@@ -288,7 +288,7 @@ const comments_getter = async (userId,courseAcronym,category,offset) => {
                                     END as username,
                                     users.username as realUsername,
                                     ratings.comment,
-                                    DATE_FORMAT(ratings.created_at,"%b %d, %Y %H:%i:%s") as created_at,
+                                    DATE_FORMAT(CONVERT_TZ(ratings.created_at,"+00:00","-05:00"),"%b %d, %Y %H:%i:%s") as created_at,
                                     ratings.difficulty,
                                     ratings.organization,
                                     ratings.effort,
@@ -329,7 +329,7 @@ const comments_getter_not_logged_in = async (courseAcronym,category,offset) => {
                                     END as username,
                                     users.username as realUsername,
                                     ratings.comment,
-                                    DATE_FORMAT(ratings.created_at,"%b %d, %Y %H:%i:%s") as created_at,
+                                    DATE_FORMAT(CONVERT_TZ(ratings.created_at,"+00:00","-05:00"),"%b %d, %Y %H:%i:%s") as created_at,
                                     ratings.difficulty,
                                     ratings.organization,
                                     ratings.effort,
@@ -361,7 +361,7 @@ const user_rating_getter = async (courseAcronym,userId) => {
                                     END as username,
                                     users.username as realUsername,
                                     ratings.comment,
-                                    DATE_FORMAT(ratings.created_at,"%b %d, %Y %H:%i:%s") as created_at,
+                                    DATE_FORMAT(CONVERT_TZ(ratings.created_at,"+00:00","-05:00"),"%b %d, %Y %H:%i:%s") as created_at,
                                     ratings.difficulty,
                                     ratings.organization,
                                     ratings.effort,
@@ -853,12 +853,6 @@ app.post('/submittingRating',async (req,res) => {
     if (!returnTo) {
         return res.status(404).send();
     };
-
-    // if (returnTo.slice(22,29) === 'catalog') {
-    //     return res.redirect(`/catalog/${fieldAc}/${courseAc}/likes`);
-    // };
-
-    // res.redirect(`profile/${category}`);
     
     res.redirect(returnTo);
 });
@@ -1163,7 +1157,7 @@ app.get('/search/query/:sectionNum/:pageNum/:searchParam',(req,res) => {
 
 const user_ratings_getter = async (userId,category,offset) => {
     return connection.query(`SELECT *, 
-                                    DATE_FORMAT(ratings.created_at,"%b %d, %Y %H:%i:%s") as created_at,
+                                    DATE_FORMAT(CONVERT_TZ(ratings.created_at,'+00:00','-05:00'),"%b %d, %Y %H:%i:%s") as created_at,
                                     ratings.professors as professors,
                                     (ratings.difficulty+ratings.organization+ratings.effort+ratings.professors)/4 as overall_rating,
                                     ratings.id as id
