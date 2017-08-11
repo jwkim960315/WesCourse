@@ -23,6 +23,7 @@ $(document).ready(function() {
                         success: function(data) {
                             console.log('successfully recorded');
                             var prevLikeNum = $('a[id="user0"]').next().text();
+                            console.log(prevLikeNum);
                             var updatedLikeNum = parseInt($('a#user0').parent().next().children().text())+1;
                             console.log(updatedLikeNum);
                             $('a[id="user0"]').parent().next().children().text(updatedLikeNum);
@@ -41,6 +42,7 @@ $(document).ready(function() {
                         url: link,
                         success: function(data) {
                             var prevLikeNum = $('a[id="user0"]').next().text();
+                            console.log(prevLikeNum);
                             var updatedLikeNum = parseInt($('a#user0').parent().next().children().text())-1;
                             console.log(updatedLikeNum);
                             $('a[id="user0"]').parent().next().children().text(updatedLikeNum);
