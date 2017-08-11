@@ -356,8 +356,6 @@ div.no-submitted-rating {
 /* Mobile Delete Button */
 
 a.btn.mobile-delete {
-	margin-top: 10px;
+	margin: 0;
 	padding: 0;
-	padding-left: 15px;
-	padding-right: 15px;
 }
