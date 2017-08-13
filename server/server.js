@@ -127,13 +127,13 @@ console.log(process.env.USER_ID_CHECK);
 
 // Heroku Environment Variables 
 
-const host_global = process.env.CLEARDB_DATABASE_HOST || 'localhost';
-const user_global = process.env.CLEARDB_DATABASE_USER || 'root';
-const password_global = process.env.CLEARDB_DATABASE_PASSWORD || 'password';
-const database_global = process.env.CLEARDB_DATABASE_DATABASE || 'wes_course_test';
-const clientID_global = process.env.CLIENT_ID || '277763886590-097le00059nkdkt4dcv1pif6oirf955k.apps.googleusercontent.com';
-const clientSecret_global = process.env.CLIENT_SECRET || 'Ya6_3UPFSEMoMfSDHYRj2Eic';
-const userIDCheck_global = process.env.USER_ID_CHECK || '1111111111111111111111111111111';
+const host_global = process.env.CLEARDB_DATABASE_HOST;
+const user_global = process.env.CLEARDB_DATABASE_USER;
+const password_global = process.env.CLEARDB_DATABASE_PASSWORD;
+const database_global = process.env.CLEARDB_DATABASE_DATABASE;
+const clientID_global = process.env.CLIENT_ID;
+const clientSecret_global = process.env.CLIENT_SECRET;
+const userIDCheck_global = process.env.USER_ID_CHECK;
 
 
 // Database Connection
@@ -167,7 +167,7 @@ passport.use(new GoogleStrategy({
 
         
             connection.query(`SELECT * FROM users WHERE users.id=${profile.id}`).then((data,err) => {
-                // if (profile._json.domain === "wesleyan.edu") {
+                if (profile._json.domain === "wesleyan.edu") {
                     
                     if (err) {
                         
@@ -197,10 +197,10 @@ passport.use(new GoogleStrategy({
 
                     return done(null, data[0]);
 
-                // } else {
-                //     return done(null,false,{ message: "Domain must be @wesleyan.edu",
-                //                              type: 'invalid domain' })
-                // };
+                } else {
+                    return done(null,false,{ message: "Domain must be @wesleyan.edu",
+                                             type: 'invalid domain' })
+                };
         
   });
 }));
@@ -973,7 +973,7 @@ app.get('/createUser/auth/google', (req,res) => {
 
 
     passport.authenticate('google', { 
-        // hd: 'wesleyan.edu',
+        hd: 'wesleyan.edu',
         scope: [ 'profile','email' ],
         prompt : "select_account",
         state: req.query.username
@@ -984,7 +984,7 @@ app.get('/createUser/auth/google', (req,res) => {
 app.get('/login/auth/google', (req,res) => {
 
     passport.authenticate('google', { 
-        // hd: 'wesleyan.edu',
+        hd: 'wesleyan.edu',
         scope: [ 'profile','email' ],
         prompt : "select_account",
         state: userIDCheck_global
