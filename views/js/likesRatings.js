@@ -71,9 +71,12 @@ $(document).ready(function() {
                 
 
                 console.log(e);
-                $('div.like-group > h3 > a').each(function(index,elem) {
+
+                $('div.like-group > h3 > a, div.like-group > h3 > div').each(function(index,elem) {
+                    console.log(index);
                     console.log($(`a[id="${index}"]`));
-                    if ($(`a[id="${index}"]`).attr('id') === e.currentTarget.attributes[2].value) {
+                    console.log($(e.currentTarget.attributes[1].value));
+                    if ($(`a[id="${index}"]`).attr('id') === e.currentTarget.attributes[1].value) {
                         var prevLink = $(`a[id="${index}"]`).attr('data-like-link');
                         var link = (prevLink.slice(1,2) === 'u') ? `/like${prevLink.slice(7,prevLink.length)}` : `/unlike${prevLink.slice(5,prevLink.length)}`;
                         console.log(prevLink);
@@ -87,16 +90,17 @@ $(document).ready(function() {
                                 success: function(data) {
                                     console.log('successfully recorded');
                                     var prevLikeNum = $(`a[id="${index}"]`).next().text();
-                                    var updatedLikeNum = parseInt($(`a#${index}`).parent().next().children().text())+1;
-                                    $(`a[id="${index}"]`).parent().next().children().text(`${updatedLikeNum}`);
+                                    var updatedLikeNum = parseInt(prevLikeNum)+1;
+                                    console.log(prevLikeNum);
+                                    console.log(prevLikeNum);
+                                    $(`a[id="${index}"]`).next().text(`${updatedLikeNum}`);
                                     $(`a[id="${index}"]`).attr('class','liked');
                                     $(`a[id="${index}"]`).attr('data-like-link',`${link}`);
                                     $(`a[id="${index}"]`).removeClass('disabled');
                                 }
                             });
-                        };
 
-                        if ($(`a[id="${index}"]`).hasClass('liked')) {
+                        } else if ($(`a[id="${index}"]`).hasClass('liked')) {
                             $(`a[id="${index}"]`).addClass('disabled');
                             console.log('user has unliked');
                             $.ajax({
@@ -104,8 +108,8 @@ $(document).ready(function() {
                                 url: link,
                                 success: function(data) {
                                     var prevLikeNum = $(`a[id="${index}"]`).next().text();
-                                    var updatedLikeNum = parseInt($(`a#${index}`).parent().next().children().text())-1;
-                                    $(`a[id="${index}"]`).parent().next().children().text(`${updatedLikeNum}`);
+                                    var updatedLikeNum = parseInt(prevLikeNum)-1;
+                                    $(`a[id="${index}"]`).next().text(`${updatedLikeNum}`);
                                     $(`a[id="${index}"]`).attr('class','unliked');
                                     $(`a[id="${index}"]`).attr('data-like-link',`${link}`);
                                     $(`a[id="${index}"]`).removeClass('disabled');   

@@ -94,6 +94,28 @@ const searchingDataHandler = (data) => {
     
 };
 
+const likesMatcher = (courseComments,haveLiked,userId) => {
+    
+    return courseComments.map((obj,i,arr) => {
+        for (var i=0; i < haveLiked.length; i++) {
+            // console.log('\n');
+            // console.log('obj.id: ',obj.id);
+            // console.log(`haveLiked[${i}].rating_id: `,haveLiked[i].rating_id);
+            // console.log(`haveLiked[${i}].user_id: `,haveLiked[i].user_id);
+            // console.log('userId: ',userId);
+            // console.log(`haveLiked[${i}].haveLiked: `,haveLiked[i].haveLiked);
+            // console.log('\n');
+            if (obj.id === haveLiked[i].rating_id && haveLiked[i].user_id === userId && haveLiked[i].haveLiked === 1) {
+                obj.haveLiked = 1;
+                return obj;
+            };
+        };
+
+        obj.haveLiked = 0;
+        return obj;
+    });
+};
+
 console.log(process.env.CLEARDB_DATABASE_HOST);
 console.log(process.env.CLEARDB_DATABASE_USER);
 console.log(process.env.CLEARDB_DATABASE_PASSWORD);
@@ -145,7 +167,7 @@ passport.use(new GoogleStrategy({
 
         
             connection.query(`SELECT * FROM users WHERE users.id=${profile.id}`).then((data,err) => {
-                if (profile._json.domain === "wesleyan.edu") {
+                // if (profile._json.domain === "wesleyan.edu") {
                     
                     if (err) {
                         
@@ -175,10 +197,10 @@ passport.use(new GoogleStrategy({
 
                     return done(null, data[0]);
 
-                } else {
-                    return done(null,false,{ message: "Domain must be @wesleyan.edu",
-                                             type: 'invalid domain' })
-                };
+                // } else {
+                //     return done(null,false,{ message: "Domain must be @wesleyan.edu",
+                //                              type: 'invalid domain' })
+                // };
         
   });
 }));
@@ -499,7 +521,7 @@ const ratingLikesChecker = async (userId,courseId,category,offset) => {
                                             WHEN likes.user_id="${userId}"
                                             THEN TRUE
                                             ELSE FALSE
-                                            END AS haveLiked,
+                                      END AS haveLiked,
                                       (ratings.difficulty+ratings.organization+ratings.effort+ratings.professors)/4 as overall_rating
                                       FROM ratings LEFT JOIN likes ON ratings.id = likes.rating_id
                                       WHERE ratings.course_id=${courseId}
@@ -641,16 +663,21 @@ app.get('/catalog/:fieldAc/:courseAc/:category',async (req,res) => {
     if (req.user) {
         haveLiked = await ratingLikesChecker(req.user.id,courseInfo[0].id,category,offset);
         userHaveLiked = await userRatingLikeChecker(userId,courseInfo[0].id);
+        courseComments = likesMatcher(courseComments,haveLiked,req.user.id);
     } else {
         haveLiked = [];
         userHaveLiked = [];
     };
 
+    if (category.slice(0,8) === 'ratings.') {
+        category = category.slice(8,category.length-5);
+    } else {
+        category = category.slice(0,category.length-5);    
+    };
+    
 
-    category = category.slice(0,category.length-5);
-
-    console.log(userCourseRating);
-
+    console.log(courseComments);
+    console.log('\n');
     res.render('specificCourse2',{ fieldAc,
                                    courseAc,
                                    courseComments,
@@ -948,7 +975,7 @@ app.get('/createUser/auth/google', (req,res) => {
 
 
     passport.authenticate('google', { 
-        hd: 'wesleyan.edu',
+        // hd: 'wesleyan.edu',
         scope: [ 'profile','email' ],
         prompt : "select_account",
         state: req.query.username
@@ -959,10 +986,10 @@ app.get('/createUser/auth/google', (req,res) => {
 app.get('/login/auth/google', (req,res) => {
 
     passport.authenticate('google', { 
-        hd: 'wesleyan.edu',
+        // hd: 'wesleyan.edu',
         scope: [ 'profile','email' ],
         prompt : "select_account",
-        state: process.env.USER_ID_CHECK
+        state: userIDCheck_global
     })(req,res)
 });
 

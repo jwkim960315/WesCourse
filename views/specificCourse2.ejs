@@ -240,21 +240,9 @@
                 <% } %>
                 <div class="col-xs-12 col-md-7 user-like-group">
                   <h3 class="">
-                    <% if (userHaveLiked.length) { %>
-                      <% if (userHaveLiked[0].haveLiked) { %>
-                        <div href="#" class="liked" id="user0" data-like-link="/like/<%= fieldAc %>/<%= courseAc %>/<%= userCourseRating[0].id %>">
-                          <i class="fa fa-heart" aria-hidden="true"></i>
-                        </div>
-                      <% } else { %>
-                        <div href="#" class="unliked" id="user0" data-like-link="/unlike/<%= fieldAc %>/<%= courseAc %>/<%= userCourseRating[0].id %>">
-                          <i class="fa fa-heart" aria-hidden="true"></i>
-                        </div>
-                      <% } %>
-                    <% } else { %>
-                      <div href="#" class="unliked" id="user0" data-like-link="/unlike/<%= fieldAc %>/<%= courseAc %>/<%= userCourseRating[0].id %>">
-                        <i class="fa fa-heart" aria-hidden="true"></i>
-                      </div>
-                    <% } %>
+                    <div href="#" class="unliked" id="user0" data-like-link="/unlike/<%= fieldAc %>/<%= courseAc %>/<%= userCourseRating[0].id %>">
+                      <i class="fa fa-heart" aria-hidden="true"></i>
+                    </div>
                     : <span><%= userCourseRating[0].likes %></span>
                   </h3>
                 </div>
@@ -396,8 +384,36 @@
                   <% } %>
                   <div class="col-xs-12 col-md-7 like-group">
                     <h3 class="">
-                      <% if (haveLiked.length) { %>
-                        <% if (haveLiked[i].haveLiked) { %>
+                      <% if (userLoggedIn) { %>
+                        <!-- <% if (haveLiked.length !== 0) { %>
+                          <% if (haveLiked[i].haveLiked === 1) { %>
+                            <a class="liked" id="<%= i %>" data-like-link="/like/<%= fieldAc %>/<%= courseAc %>/<%= courseComments[i].id %>">
+                              <i class="fa fa-heart" aria-hidden="true"></i>
+                            </a>
+                          <% } else { %>
+                            <% if (userCourseRating.length !== 0) { %>
+                              <% if (courseComments[i].id !== userCourseRating[0].id) { %>
+                                <a class="unliked" id="<%= i %>" data-like-link="/unlike/<%= fieldAc %>/<%= courseAc %>/<%= courseComments[i].id %>">
+                                  <i class="fa fa-heart" aria-hidden="true"></i>
+                                </a>
+                              <% } else { %>
+                                <div class="unliked" id="<%= i %>" data-like-link="/unlike/<%= fieldAc %>/<%= courseAc %>/<%= courseComments[i].id %>">
+                                  <i class="fa fa-heart" aria-hidden="true"></i>
+                                </div>
+                              <% } %>
+                            <% } else { %>
+                              <a class="unliked" id="<%= i %>" data-like-link="/unlike/<%= fieldAc %>/<%= courseAc %>/<%= courseComments[i].id %>">
+                                <i class="fa fa-heart" aria-hidden="true"></i>
+                              </a>
+                            <% } %>
+                          <% } %>
+                        <% } else { %>
+                          <a class="unliked" id="<%= i %>" data-like-link="/unlike/<%= fieldAc %>/<%= courseAc %>/<%= courseComments[i].id %>">
+                            <i class="fa fa-heart" aria-hidden="true"></i>
+                          </a>
+                        <% } %> -->
+
+                        <% if (courseComments[i].haveLiked === 1) { %>
                           <a class="liked" id="<%= i %>" data-like-link="/like/<%= fieldAc %>/<%= courseAc %>/<%= courseComments[i].id %>">
                             <i class="fa fa-heart" aria-hidden="true"></i>
                           </a>
@@ -413,9 +429,9 @@
                           <% } %>
                         <% } %>
                       <% } else { %>
-                        <a class="unliked" id="<%= i %>" data-like-link="/unlike/<%= fieldAc %>/<%= courseAc %>/<%= courseComments[i].id %>">
+                        <div class="unliked" id="<%= i %>" data-like-link="/unlike/<%= fieldAc %>/<%= courseAc %>/<%= courseComments[i].id %>">
                           <i class="fa fa-heart" aria-hidden="true"></i>
-                        </a>
+                        </div>
                       <% } %>
                       : <span><%= courseComments[i].likes %></span>
                     </h3>
