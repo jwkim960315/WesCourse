@@ -48,7 +48,7 @@
 /* Both Container */
 
 .input-cont {
-    width: 400px !important;
+    width: 400px;
     color: black;
     margin-top: 180px;
     background: white;
@@ -56,6 +56,12 @@
     border-radius: .25rem;
     padding: 20px;
     border: 10px solid rgb(221,221,221);
+}
+
+@media (max-width: 400px) {
+    .input-cont {
+        width: 100%;
+    }
 }
 
 .input-cont form {

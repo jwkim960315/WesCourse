@@ -594,8 +594,8 @@ app.get('/catalog/:fieldAc/:courseAc/:category',async (req,res) => {
     courseInfo = await specific_course_getter(courseAc);
     recommendNum = (courseRating.length === 0) ? undefined : await recommend_number_getter(courseRating.course_id);
     courseOverall = overall_avg_getter(courseRating);
-    console.log(courseInfo);
-    console.log(req.user);
+    
+    
 
     
     
@@ -649,6 +649,8 @@ app.get('/catalog/:fieldAc/:courseAc/:category',async (req,res) => {
 
 
     category = category.slice(0,category.length-5);
+
+    console.log(userCourseRating);
 
     res.render('specificCourse2',{ fieldAc,
                                    courseAc,

@@ -19,3 +19,11 @@
 .nav-tabs > li.active a {
 	color: rgb(225,0,0);
 }
+
+
+@media (max-width: 766px) {
+    .tab-content > .active {
+        border: none;
+        border-bottom: 1px solid rgb(221,221,221);
+    }
+}

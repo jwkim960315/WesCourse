@@ -41,12 +41,11 @@ div.panel-heading h3 img {
 /* User Rating Panel */
 
 div.panel.user-rating > div.panel-heading {
-	border: 2px dashed rgb(225,0,0);
-	border-bottom: none;
+	border: none;
 }
 
 div.panel.user-rating > div.panel-body {
-	border: 2px dashed rgb(225,0,0);
+	border: none;
 	border-top: 1px solid rgb(221,221,221);
 }
 
@@ -166,13 +165,8 @@ div.btn-group > div.btn-group > button:hover {
 /* Likes */
 
 div.like-group > h3 *,
-div.user-like-group > h3 {
+div.user-like-group > h3 * {
 	display: inline-block !important;
-}
-
-div.like-group > h3 > div,
-div.user-like-group > h3 > a {
-	padding-right: 7px !important;
 }
 
 @media (max-width: 991px) {
@@ -181,20 +175,20 @@ div.user-like-group > h3 > a {
 	}
 }
 
-div.like-group > h3 > div.liked,
-div.user-like-group > h3 > a.liked {
+div.like-group > h3 > a.liked,
+div.user-like-group > h3 > div.liked {
 	color: rgb(225,0,0);
 }
 
-div.like-group > h3 > div.unliked,
-div.like-group > h3 > div.unliked:focus,
-div.user-like-group > h3 > a.unliked,
-div.user-like-group > h3 > a.unliked:focus {
+div.like-group > h3 > a.unliked,
+div.like-group > h3 > a.unliked:focus,
+div.user-like-group > h3 > div.unliked,
+div.user-like-group > h3 > div.unliked:focus {
 	color: rgb(119,119,119);
 }
 
 /*div.like-group > h3 > div.unliked:hover,*/
-div.user-like-group > h3 > a.unliked:hover {
+div.like-group > h3 > a.unliked:hover {
 	color: rgb(225,0,0);
 }
 
@@ -239,6 +233,13 @@ div.key-group p.keys {
 
 
 /* Submitted Ratings */
+
+div.user-rating {
+	border-color: rgb(225,0,0);
+	outline: 0;
+	-webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(225,0,0, 0.6);
+	box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(225,0,0, 0.6);
+}
 
 div.ratings-header h2 {
 	color: rgb(99,99,99);
