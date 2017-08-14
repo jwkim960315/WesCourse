@@ -56,7 +56,7 @@ For now, issues might occur when these actions are performed:
 
 ## Moving On
 
-As I was devloping this project, I realized that I could develop some code further and create a couple new open source projects:
+As I was developing this project, I realized that I could develop some code further and create a couple new open source projects:
 * Pagination
   * I tried to find a pagination module that allows a user to navigate to first/last pages, next/previous sections, and next/previous pages, but I gave up and built my own version of pagination with Node, html, and CSS. I am willing to further develop it and make it available to everyone
 * Wesleyan Courses API
