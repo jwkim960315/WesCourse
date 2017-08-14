@@ -42,7 +42,7 @@ For now, issues might occur when these actions are performed:
 * Some GET/POST requests are sent to the server (Some of them do not cover edge cases)
 * Like/Unlike a rating and refresh the page within a second
 * Browser Support 
-  * IE: Although the web application does function properly in most cases, it does not provide a user with a suggestive search (Found an issue, but yet to fix it)
+  * Interner Explorer: Although the web application does function properly in most cases, it does not provide a user with a suggestive search (Found a reason, but yet to fix it)
 
 
 ## Technologies Used
