@@ -7,11 +7,19 @@ A web application that displays & stores the ratings of the Wesleyan University 
 ## Table of Contents
 
 
+- [Browser Support](#browser-support)
 - [Overview](#overview)
 - [Limitations](#limitations)
 - [Issues](#issues)
 - [Technologies Used](#technologies-used)
 - [Moving On](#moving-on)
+
+## Browser Support
+
+Chrome | Safari | FireFox | IE | Edge
+------ | ------ | ------- | -- | ----
+60 &#10004; | 
+
 
 ## Overview
 
