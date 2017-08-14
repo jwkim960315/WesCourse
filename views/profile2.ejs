@@ -26,7 +26,6 @@
         <!-- Custom CSS -->
         <link rel="stylesheet" type="text/css" href="/css/container.css">
         <link rel="stylesheet" type="text/css" href="/css/navbar.css">
-        <link rel="stylesheet" type="text/css" href="/css/loading.css">
         <link rel="stylesheet" type="text/css" href="/css/profile2.css">
         <link rel="stylesheet" type="text/css" href="/css/pagination.css">
 	</head>
@@ -312,18 +311,18 @@
 									                    <h3 class="">
 									                      <% if (haveLiked.length) { %>
 									                        <% if (haveLiked[i].haveLiked) { %>
-									                          <a href="#" class="liked" id="<%= i %>" data-like-link="/like/<%= userRatings[i].field_acronym %>/<%= userRatings[i].course_acronym %>/<%= userRatings[i].id %>">
+									                          <div href="#" class="liked" id="<%= i %>" data-like-link="/like/<%= userRatings[i].field_acronym %>/<%= userRatings[i].course_acronym %>/<%= userRatings[i].id %>">
 									                            <i class="fa fa-heart" aria-hidden="true"></i>
-									                          </a>
+									                          </div>
 									                        <% } else { %>
-									                          <a href="#" class="unliked" id="<%= i %>" data-like-link="/unlike/<%= userRatings[i].field_acronym %>/<%= userRatings[i].course_acronym %>/<%= userRatings[i].id %>">
+									                          <div href="#" class="unliked" id="<%= i %>" data-like-link="/unlike/<%= userRatings[i].field_acronym %>/<%= userRatings[i].course_acronym %>/<%= userRatings[i].id %>">
 									                            <i class="fa fa-heart" aria-hidden="true"></i>
-									                          </a>
+									                          </div>
 									                        <% } %>
 									                      <% } else { %>
-									                        <a href="#" class="unliked" id="<%= i %>" data-like-link="/unlike/<%= userRatings[i].field_acronym %>/<%= userRatings[i].course_acronym %>/<%= userRatings[i].id %>">
+									                        <div href="#" class="unliked" id="<%= i %>" data-like-link="/unlike/<%= userRatings[i].field_acronym %>/<%= userRatings[i].course_acronym %>/<%= userRatings[i].id %>">
 									                          <i class="fa fa-heart" aria-hidden="true"></i>
-									                        </a>
+									                        </div>
 									                      <% } %>
 									                      <h3>: <span><%= userRatings[i].likes %></span></h3>
 									                    </h3>
@@ -580,9 +579,6 @@
         <!-- Custom JavaScript -->
         <script src="/js/navbar.js"></script>
         <script src="/js/profile2.js"></script>
- 		<script src="/js/likesRatings.js"></script>
- 		<script src="/js/paginationConfig.js"></script>
- 		<script src="/js/ratingsNumColor.js"></script>
 
  		<!-- Custom JavaScript with EJS -->
  		<script>

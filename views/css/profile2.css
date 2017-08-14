@@ -245,14 +245,12 @@ div.btn-group > div.btn-group > button:hover {
 
 /* Likes */
 
-div.like-group > h3 {
+div.like-group > h3 * {
 	display: inline-block !important;
 	color: rgb(119,119,119);
 }
 
-div.like-group > h3 > a {
-	padding-right: 7px !important;
-}
+
 
 @media (max-width: 991px) {
 	div.created-at.text-right {
@@ -271,16 +269,19 @@ div.like-group > h3 > a {
 	}
 }
 
-div.like-group > h3 > a.liked {
+
+div.like-group > h3 > div.liked {
 	color: rgb(225,0,0);
 }
 
-div.like-group > h3 > a.unliked,
-div.like-group > h3 > a.unliked:focus {
+
+div.like-group > h3 > div.unliked,
+div.like-group > h3 > div.unliked:focus {
 	color: rgb(119,119,119);
 }
 
-div.like-group > h3 > a.unliked:hover {
+
+div.like-group > h3 > div.unliked:hover {
 	color: rgb(225,0,0);
 }
 
