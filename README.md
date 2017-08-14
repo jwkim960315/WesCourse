@@ -18,7 +18,7 @@ A web application that displays & stores the ratings of the Wesleyan University 
 
 Chrome | Safari | FireFox | IE | Edge
 ------ | ------ | ------- | -- | ----
-60 &#10004; | 
+60 &#10004; | 10 &#10004; | 55 &#10004; | 11 &#10004; | 15 &#10004;
 
 
 ## Overview
