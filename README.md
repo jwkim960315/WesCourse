@@ -41,7 +41,7 @@ For now, it has some limitations on using this web application:
 - Connections to/from ClearDB is pretty slow, which may cause some troubles during the following actions:
     * Liking/Unliking a rating may take up to a second to complete
     * After changing a profile picture, loading a page from the web application will take some time
-- Some pages might have some shift/disappear effects because of CSS files not being loaded completely
+- Some pages might have some shift or appearing/disappearing effects because of the CSS files not being loaded completely on time
 
 
 ## Issues
@@ -70,7 +70,7 @@ As I was developing this project, I realized that I could develop some code furt
 * Wesleyan Courses API
   * I also had to scrap all the Wesleyan courses data from WesMaps since Wesleyan REST API has been shutdown during the Summer Break. This tragedy actually allowed me to realize that I could make this an open source project and allow Wesleyan developers to use it freely
 * Refactoring
-  * I have a lot to refactor both back-end and front-end code. Hopefully, I can make is much cleaner than what I have now
+  * I have a lot to refactor both back-end and front-end code. Hopefully, I can make it much cleaner than what I have now
 
 
 
