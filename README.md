@@ -7,11 +7,11 @@ A web application that displays & stores the ratings of the Wesleyan University 
 ## Table of Contents
 
 
-- #### [Overview](#overview)
-- #### [Limitations](#limitations)
-- #### [Issues](#issues)
-- #### [Technologies Used](#technologies-used)
-- #### [Moving On](#moving-on)
+- [Overview](#overview)
+- [Limitations](#limitations)
+- [Issues](#issues)
+- [Technologies Used](#technologies-used)
+- [Moving On](#moving-on)
 
 ## Overview
 
