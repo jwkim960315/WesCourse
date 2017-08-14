@@ -74,45 +74,38 @@ $(document).ready(function() {
 
                 $('div.like-group > h3 > a, div.like-group > h3 > div').each(function(index,elem) {
                     console.log(index);
-                    console.log($(`a[id="${index}"]`));
+                    console.log($('a[id="+'index+'}"]'));
                     console.log($(e.currentTarget.attributes[1].value));
-                    if ($(`a[id="${index}"]`).attr('id') === e.currentTarget.attributes[1].value) {
-                        var prevLink = $(`a[id="${index}"]`).attr('data-like-link');
-                        var link = (prevLink.slice(1,2) === 'u') ? `/like${prevLink.slice(7,prevLink.length)}` : `/unlike${prevLink.slice(5,prevLink.length)}`;
-                        console.log(prevLink);
-                        console.log(link);
-                        if ($(`a[id="${index}"]`).hasClass('unliked')) {
-                            $(`a[id="${index}"]`).addClass('disabled');
-                            console.log('user has liked');
+                    if ($('a[id="+'index+'}"]').attr('id') === e.currentTarget.attributes[1].value) {
+                        var prevLink = $('a[id="+'index+'}"]').attr('data-like-link');
+                        var link = (prevLink.slice(1,2) === 'u') ? '/like'+prevLink.slice(7,prevLink.length) : '/unlike'+prevLink.slice(5,prevLink.length);
+                        if ($('a[id="+'index+'}"]').hasClass('unliked')) {
+                            $('a[id="+'index+'}"]').addClass('disabled');
                             $.ajax({
                                 method: 'GET',
                                 url: link,
                                 success: function(data) {
-                                    console.log('successfully recorded');
-                                    var prevLikeNum = $(`a[id="${index}"]`).next().text();
+                                    var prevLikeNum = $('a[id="+'index+'}"]').next().text();
                                     var updatedLikeNum = parseInt(prevLikeNum)+1;
-                                    console.log(prevLikeNum);
-                                    console.log(prevLikeNum);
-                                    $(`a[id="${index}"]`).next().text(`${updatedLikeNum}`);
-                                    $(`a[id="${index}"]`).attr('class','liked');
-                                    $(`a[id="${index}"]`).attr('data-like-link',`${link}`);
-                                    $(`a[id="${index}"]`).removeClass('disabled');
+                                    $('a[id="+'index+'}"]').next().text(updatedLikeNum);
+                                    $('a[id="+'index+'}"]').attr('class','liked');
+                                    $('a[id="+'index+'}"]').attr('data-like-link',link);
+                                    $('a[id="+'index+'}"]').removeClass('disabled');
                                 }
                             });
 
-                        } else if ($(`a[id="${index}"]`).hasClass('liked')) {
-                            $(`a[id="${index}"]`).addClass('disabled');
-                            console.log('user has unliked');
+                        } else if ($('a[id="+'index+'}"]').hasClass('liked')) {
+                            $('a[id="+'index+'}"]').addClass('disabled');
                             $.ajax({
                                 method: 'GET',
                                 url: link,
                                 success: function(data) {
-                                    var prevLikeNum = $(`a[id="${index}"]`).next().text();
+                                    var prevLikeNum = $('a[id="+'index+'}"]').next().text();
                                     var updatedLikeNum = parseInt(prevLikeNum)-1;
-                                    $(`a[id="${index}"]`).next().text(`${updatedLikeNum}`);
-                                    $(`a[id="${index}"]`).attr('class','unliked');
-                                    $(`a[id="${index}"]`).attr('data-like-link',`${link}`);
-                                    $(`a[id="${index}"]`).removeClass('disabled');   
+                                    $('a[id="+'index+'}"]').next().text(updatedLikeNum);
+                                    $('a[id="+'index+'}"]').attr('class','unliked');
+                                    $('a[id="+'index+'}"]').attr('data-like-link',link);
+                                    $('a[id="+'index+'}"]').removeClass('disabled');   
                                 }
                             });
                         };

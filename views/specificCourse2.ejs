@@ -678,11 +678,7 @@
 
           // HighCharts Configuration
           <% if (courseRating.length === 0) { %>
-              $('div.body').html(`
-                <div class="text-center no-submitted-rating">
-                  <p style="">NO DATA. PLEASE EVALUATE THIS COURSE IF YOU HAVE TAKEN IT.</p>
-                  <a class="submit-btn btn btn-danger" href="/comment-submit/<%= fieldAc %>/<%= courseAc %>">Submit a New Rating</a>
-                </div>`);
+              $('div.body').html('<div class="text-center no-submitted-rating"><p>NO DATA. PLEASE EVALUATE THIS COURSE IF YOU HAVE TAKEN IT.</p><a class="submit-btn btn btn-danger" href="/comment-submit/<%= fieldAc %>/<%= courseAc %>">Submit a New Rating</a></div>');
           <% } else { %>
               <% var tmp = []; %>
               <% for (var i=0;i < Object.keys(courseRating).length-3; ++i) { %>
