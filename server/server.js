@@ -98,13 +98,6 @@ const likesMatcher = (courseComments,haveLiked,userId) => {
     
     return courseComments.map((obj,i,arr) => {
         for (var i=0; i < haveLiked.length; i++) {
-            // console.log('\n');
-            // console.log('obj.id: ',obj.id);
-            // console.log(`haveLiked[${i}].rating_id: `,haveLiked[i].rating_id);
-            // console.log(`haveLiked[${i}].user_id: `,haveLiked[i].user_id);
-            // console.log('userId: ',userId);
-            // console.log(`haveLiked[${i}].haveLiked: `,haveLiked[i].haveLiked);
-            // console.log('\n');
             if (obj.id === haveLiked[i].rating_id && haveLiked[i].user_id === userId && haveLiked[i].haveLiked === 1) {
                 obj.haveLiked = 1;
                 return obj;
