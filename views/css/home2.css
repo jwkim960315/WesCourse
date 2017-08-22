@@ -19,7 +19,6 @@ div.infos div.col-xs-12.col-md-4 {
     color: rgb(99,99,99);
     padding: 30px;
     border-radius: 5px;
-    cursor: pointer;
 }
 
 div.infos div.col-xs-12.col-md-4:hover,
@@ -38,6 +37,11 @@ div.infos div.col-xs-12.col-md-4 div.extra-info p {
     div.section {
         margin-bottom: 30px !important;
     }
+
+    div.infos div.col-xs-12.col-md-4 {
+        cursor: pointer;    
+    }
+    
 }
 
 
