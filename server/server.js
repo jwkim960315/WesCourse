@@ -21,6 +21,18 @@ const port = process.env.PORT || 3000;
 
 var app = express();
 
+// Heroku Environment Variables 
+
+const host_global = process.env.CLEARDB_DATABASE_HOST;
+const user_global = process.env.CLEARDB_DATABASE_USER;
+const password_global = process.env.CLEARDB_DATABASE_PASSWORD;
+const database_global = process.env.CLEARDB_DATABASE_DATABASE;
+const clientID_global = process.env.CLIENT_ID;
+const clientSecret_global = process.env.CLIENT_SECRET;
+const userIDCheck_global = process.env.USER_ID_CHECK;
+const session_password = process.env.SESSION_PASSWORD;
+
+
 // Pre-Setting for the server
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -30,7 +42,7 @@ console.log(__dirname);
 
 
 app.set('view engine','ejs');
-app.use(session({ secret: 'a random password!'}));
+app.use(session({ secret: session_password }));
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -41,8 +53,6 @@ app.use(passport.session());
 const courseInfos = JSON.parse(fs.readFileSync(__dirname+'/../json/courseInfosTest.json'));
 console.log(__dirname+'/../courseInfosTest.json');
 let filteredCourseInfos;
-
-const {previousUrlSaver} = require(__dirname+'/../middleware/middleware'); 
 
 
 
@@ -118,15 +128,7 @@ console.log(process.env.CLIENT_SECRET);
 console.log(process.env.USER_ID_CHECK);
 
 
-// Heroku Environment Variables 
 
-const host_global = process.env.CLEARDB_DATABASE_HOST;
-const user_global = process.env.CLEARDB_DATABASE_USER;
-const password_global = process.env.CLEARDB_DATABASE_PASSWORD;
-const database_global = process.env.CLEARDB_DATABASE_DATABASE;
-const clientID_global = process.env.CLIENT_ID;
-const clientSecret_global = process.env.CLIENT_SECRET;
-const userIDCheck_global = process.env.USER_ID_CHECK;
 
 
 // Database Connection
