@@ -66,7 +66,7 @@ For now, issues might occur when these actions are performed:
 
 As I was developing this project, I realized that I could develop some code further and create a couple new open source projects:
 * Pagination
-  * I tried to find a pagination module that allows a user to navigate to first/last pages, next/previous sections, and next/previous pages, but I gave up and built my own version of pagination with Node, html, and CSS. I am willing to further develop it and make it available to everyone
+  * ~~I tried to find a pagination module that allows a user to navigate to first/last pages, next/previous sections, and next/previous pages, but I gave up and built my own version of pagination with Node, html, and CSS. I am willing to further develop it and make it available to everyone~~ I have actually found a better pagination module than mine...
 * Wesleyan Courses API
   * I also had to scrap all the Wesleyan courses data from WesMaps since Wesleyan REST API has been shutdown during the Summer Break. This tragedy actually allowed me to realize that I could make this an open source project and allow Wesleyan developers to use it freely
 * Refactoring
